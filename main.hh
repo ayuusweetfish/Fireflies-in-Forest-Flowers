@@ -14,5 +14,6 @@ public:
 };
 
 scene *scene_startup();
+scene *scene_game();
 
 #endif

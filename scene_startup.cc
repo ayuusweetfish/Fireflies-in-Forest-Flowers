@@ -4,11 +4,10 @@
 #include <cstdio>
 
 class _scene_startup : public scene {
-private:
+public:
   int count;
   float p[2];
 
-public:
   _scene_startup() {
     count = 100;
     p[0] = -1;
