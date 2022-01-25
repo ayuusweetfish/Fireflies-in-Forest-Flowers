@@ -1,20 +1,16 @@
-#include "main.h"
+#include "main.hh"
 
 #include "raylib.h"
 #include "raymath.h"
 
-#include <math.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cmath>
 
 int main(int argc, char *argv[])
 {
   InitWindow(W, H, NULL);
   SetTargetFPS(60);
 
-  scene cur_scene = scene_startup_create();
+  scene *cur_scene = scene_startup();
   bool pt_laston = false;
   float pt_lastx, pt_lasty;
 
@@ -28,16 +24,16 @@ int main(int argc, char *argv[])
     bool pt_on = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
     Vector2 pt_pos = GetMousePosition();
     if (!pt_laston && pt_on) {
-      if (cur_scene.pton) cur_scene.pton(cur_scene.data, pt_pos.x, pt_pos.y);
+      cur_scene->pton(pt_pos.x, pt_pos.y);
       pt_lastx = pt_lasty = nanf("");
     }
     if (pt_on && (pt_pos.x != pt_lastx || pt_pos.y != pt_lasty)) {
-      if (cur_scene.ptmove) cur_scene.ptmove(cur_scene.data, pt_pos.x, pt_pos.y);
+      cur_scene->ptmove(pt_pos.x, pt_pos.y);
       pt_lastx = pt_pos.x;
       pt_lasty = pt_pos.y;
     }
     if (pt_laston && !pt_on) {
-      if (cur_scene.ptoff) cur_scene.ptoff(cur_scene.data, pt_pos.x, pt_pos.y);
+      cur_scene->ptoff(pt_pos.x, pt_pos.y);
     }
     pt_laston = pt_on;
 
@@ -45,11 +41,11 @@ int main(int argc, char *argv[])
     time += GetFrameTime();
     while (time >= STEP) {
       time -= STEP;
-      cur_scene.update(cur_scene.data);
+      cur_scene->update();
     }
 
     // Draw
-    cur_scene.draw(cur_scene.data);
+    cur_scene->draw();
 
     EndDrawing();
   }
