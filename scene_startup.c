@@ -1,7 +1,7 @@
 #include <stdbool.h>
 
 int `count;
-bool `c2[3];
+float `p[2];
 
 int some_fn() {
   return 100;
@@ -9,12 +9,17 @@ int some_fn() {
 
 void `init() {
   `count = some_fn();
+  `p[0] = -1;
+  `p[1] = -1;
 }
 
-void `pton(float x, float y) {
+void `ptoff(float x, float y) {
+  `p[0] = -1;
 }
 
 void `ptmove(float x, float y) {
+  `p[0] = x;
+  `p[1] = y;
 }
 
 void `update() {
@@ -24,6 +29,6 @@ void `update() {
 void `draw() {
   ClearBackground(WHITE);
   char s[32];
-  snprintf(s, sizeof s, "%d", `count);
-  DrawText(s, W / 2, H / 2, 30, BLACK);
+  snprintf(s, sizeof s, "%f %f | %d", `p[0], `p[1], `count);
+  DrawText(s, 10, H / 2, 30, BLACK);
 }
