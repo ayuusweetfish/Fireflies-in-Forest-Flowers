@@ -5,9 +5,11 @@ RM ?= rm -f
 CFLAGS := -I$(RAYLIB_INC)
 LDFLAGS := $(RAYLIB_LIB) -framework Cocoa -framework OpenGL -framework IOKit
 
-main: main.o
+SOURCES = $(wildcard *.c)
+HEADERS = $(wildcard *.h)
 
-main.o: main.c
+main: $(SOURCES) $(HEADERS)
+	$(CC) -o $@ $(SOURCES) $(CFLAGS) $(LDFLAGS)
 
 clean:
-	$(RM) main main.o
+	$(RM) main

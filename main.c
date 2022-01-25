@@ -1,3 +1,5 @@
+#include "main.h"
+
 #include "raylib.h"
 #include "raymath.h"
 
@@ -5,18 +7,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const int W = 800;
-static const int H = 450;
+static scene cur_scene;
 
 int main(int argc, char *argv[])
 {
   InitWindow(W, H, NULL);
   SetTargetFPS(60);
 
+  cur_scene = scene_startup_create();
+
   while (!WindowShouldClose()) {
     BeginDrawing();
 
-    ClearBackground(WHITE);
+    cur_scene.update(cur_scene.data);
+    cur_scene.draw(cur_scene.data);
 
     EndDrawing();
   }
