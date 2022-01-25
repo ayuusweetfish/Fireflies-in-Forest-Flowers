@@ -1,44 +1,29 @@
-#include "main.h"
+#include <stdbool.h>
 
-#include <stdio.h>
-#include <stdlib.h>
+int `count;
+bool `c2[3];
 
-typedef struct D {
-  int count;
-} D;
-
-static void init(void *_d);
-static void update(void *_d);
-static void draw(void *_d);
-
-scene scene_startup_create()
-{
-  D *d = (D *)malloc(sizeof(D));
-  init(d);
-  return (scene){
-    .data = d,
-    .update = update,
-    .draw = draw,
-  };
+int some_fn() {
+  return 100;
 }
 
-static void init(void *_d) {
-  D *d = (D *)_d;
-  d->count = 100;
+void `init() {
+  `count = some_fn();
 }
 
-static void update(void *_d) {
-  D *d = (D *)_d;
-  d->count++;
+void `pton(float x, float y) {
 }
 
-#include "raylib.h"
+void `ptmove(float x, float y) {
+}
 
-static void draw(void *_d) {
-  D *d = (D *)_d;
+void `update() {
+  `count++;
+}
 
+void `draw() {
   ClearBackground(WHITE);
   char s[32];
-  snprintf(s, sizeof s, "%d", d->count);
+  snprintf(s, sizeof s, "%d", `count);
   DrawText(s, W / 2, H / 2, 30, BLACK);
 }
