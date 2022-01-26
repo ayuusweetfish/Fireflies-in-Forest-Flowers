@@ -30,6 +30,21 @@ struct vec2 {
 
 class scene_game : public scene {
 public:
+  // ==== Display-related constants ====
+  static constexpr float BOARD_W = 20;
+  static constexpr float BOARD_H = 12;
+  static constexpr float SCALE = 35;
+  static constexpr float OFFSET_X = W / 2 - BOARD_W / 2 * SCALE;
+  static constexpr float OFFSET_Y = H / 2 - BOARD_H / 2 * SCALE;
+  static rl::Vector2 scr(vec2 p) {
+    vec2 q = p * SCALE + vec2(OFFSET_X, OFFSET_Y);
+    return (rl::Vector2){q.x, q.y};
+  }
+  static vec2 board(float x, float y) {
+    return (vec2(x, y) - vec2(OFFSET_X, OFFSET_Y)) / SCALE;
+  }
+
+  // ==== Fireflies ====
   struct firefly {
     vec2 o;
     float T;  // Period
@@ -56,19 +71,6 @@ public:
     virtual void draw() const = 0;
   };
 
-  static constexpr float BOARD_W = 20;
-  static constexpr float BOARD_H = 12;
-  static constexpr float SCALE = 35;
-  static constexpr float OFFSET_X = W / 2 - BOARD_W / 2 * SCALE;
-  static constexpr float OFFSET_Y = H / 2 - BOARD_H / 2 * SCALE;
-  static rl::Vector2 scr(vec2 p) {
-    vec2 q = p * SCALE + vec2(OFFSET_X, OFFSET_Y);
-    return (rl::Vector2){q.x, q.y};
-  }
-  static vec2 board(float x, float y) {
-    return (vec2(x, y) - vec2(OFFSET_X, OFFSET_Y)) / SCALE;
-  }
-
   struct firefly_cir : public firefly {
     float r, v; // Radius and velocity
     firefly_cir(vec2 o, float r, float v, float tc)
@@ -89,11 +91,62 @@ public:
     }
   };
 
+  // ==== Bellflowers ====
+  struct bellflower {
+    vec2 o;
+    float r;
+    int c0, c;  // Initial count and current count
+
+    bellflower(vec2 o, float r, int c0)
+      : o(o), r(r), c0(c0)
+    {
+      reset();
+    }
+
+    bool last_on;
+    void reset() {
+      last_on = false;
+      c = c0;
+    }
+    void update(bool on) {
+      if (!last_on && on) c--;
+      last_on = on;
+    }
+    virtual void update(const std::vector<firefly *> &fireflies) = 0;
+    virtual void draw() const = 0;
+  };
+
+  struct bellflower_ord : public bellflower {
+    bellflower_ord(vec2 o, float r, int c0)
+      : bellflower(o, r, c0)
+      { }
+    void update(const std::vector<firefly *> &fireflies) {
+      bool on = false;
+      for (const auto f : fireflies)
+        if ((f->at() - o).norm() <= r) {
+          on = true;
+          break;
+        }
+      bellflower::update(on);
+    }
+    void draw() const {
+      using namespace rl;
+      DrawCircleV(scr(o), r * SCALE, (Color){64, 64, 64, 128});
+      DrawCircleV(scr(o), 0.5 * SCALE, last_on ? GREEN : GRAY);
+      char s[8];
+      snprintf(s, sizeof s, "%d", c);
+      DrawText(s, scr(o).x - 4, scr(o).y - 8, 16, BLACK);
+    }
+  };
+
+  // ==== Scene ====
   std::vector<firefly *> fireflies;
+  std::vector<bellflower *> bellflowers;
 
   scene_game() {
     fireflies.push_back(new firefly_cir(vec2(4, 3), 2, 1, 0));
     fireflies.push_back(new firefly_cir(vec2(6, 5), 3, 1, 0.25));
+    bellflowers.push_back(new bellflower_ord(vec2(5, 7), 2, 4));
   }
 
   firefly *sel_ff;
@@ -160,6 +213,7 @@ public:
   }
   inline void stop_run() {
     for (auto f : fireflies) f->tc = f->tc0;
+    for (auto b : bellflowers) b->reset();
   }
 
   bool last_space_down = false;
@@ -175,6 +229,7 @@ public:
         if ((f->tc += 1 / (240 * f->T)) >= 1)
           f->tc -= 1;
       }
+      for (auto b : bellflowers) b->update(fireflies);
     }
   }
 
@@ -186,6 +241,7 @@ public:
     for (int i = 0; i <= BOARD_H; i++)
       DrawLineV(scr(vec2(0, i)), scr(vec2(BOARD_W, i)), (Color){48, 48, 48, 255});
     for (const auto f : fireflies) f->draw();
+    for (const auto b : bellflowers) b->draw();
   }
 };
 
