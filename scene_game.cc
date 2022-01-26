@@ -138,7 +138,7 @@ public:
     inline void update(const std::vector<track *> &tracks) {
       float t_prev = t;
       vec2 p1 = pos();
-      t += v / 240;
+      t += v / 480;
       if (t >= tr->len) t -= tr->len;
       vec2 p2 = pos();
 
@@ -328,7 +328,10 @@ public:
       if (run_state & 1) start_run(); else stop_run();
     }
     last_space_down = space_down;
-    if (run_state & 1) {
+    run_state = (run_state & 1) |
+      ((rl::IsKeyDown(rl::KEY_GRAVE) ? 1 :
+        rl::IsKeyDown(rl::KEY_ONE) ? 16 : 4) << 1);
+    if (run_state & 1) for (int i = 0; i < (run_state >> 1); i++) {
       for (auto &f : fireflies) f.update(tracks);
       for (auto b : bellflowers) b->update(fireflies);
     }
