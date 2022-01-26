@@ -56,14 +56,18 @@ public:
   struct track {
     vec2 o;
     float len;  // Total length in units
-    bool attract;
+    enum {
+      ATTRACT = 1,
+      RETURN = 2,
+    };
+    unsigned int colli;
 
     bool sel;   // Is selected
 
     track() { }
     track(vec2 o, float len)
       : o(o), len(len),
-        attract(false),
+        colli(0),
         sel(false)
       { }
     // Local position at given phase
@@ -92,7 +96,28 @@ public:
     void draw() const {
       using namespace rl;
       // DrawCircleV(scr(o), 3, DARKGRAY);
-      DrawRing(scr(o), r * SCALE - 2, r * SCALE + 2, 0, 360, 48, sel ? RED : (attract ? YELLOW : WHITE));
+      DrawRing(scr(o), r * SCALE - 2, r * SCALE + 2, 0, 360, 48,
+        sel ? RED : ((colli & ATTRACT) ? YELLOW : WHITE));
+    }
+  };
+
+  struct track_seg : public track {
+    vec2 ext; // Extension on both sides
+    track_seg(vec2 o, vec2 ext)
+      : ext(ext / ext.norm()),
+        track(o, ext.norm() * 2)
+      { }
+    vec2 local_at(float t) const { return ext * (t - len / 2); }
+    std::pair<float, float> local_nearest(vec2 p) const {
+      float t = p.dot(ext);
+      t = (t < -len / 2 ? -len / 2 : (t > len / 2 ? len / 2 : t));
+      return {t + len / 2, (p - (ext * t)).norm()};
+    }
+    void draw() const {
+      using namespace rl;
+      DrawLineV(
+        scr(o - ext * len / 2), scr(o + ext * len / 2),
+        sel ? RED : ((colli & RETURN) ? ORANGE : WHITE));
     }
   };
 
@@ -111,26 +136,35 @@ public:
       { }
 
     inline void update(const std::vector<track *> &tracks) {
+      float t_prev = t;
       vec2 p1 = pos();
       t += v / 240;
       if (t >= tr->len) t -= tr->len;
       vec2 p2 = pos();
 
       // Attracting tracks
-      for (const auto tr : tracks) if (tr != this->tr && tr->attract) {
+      for (const auto tr : tracks) if (tr != this->tr && tr->colli != 0) {
         auto near = tr->nearest(p1);
-        if (near.second >= 0.1) continue;
+        if (near.second >= 0.01) continue;
         float t1 = near.first;
         float t2 = tr->nearest(p2).first;
         // Lemma: (p1, p2) crosses the curve C iff
         // (p1, p2) crosses (C(t1), C(t2))
         if (seg_intxn(p1, p2, tr->at(t1), tr->at(t2))) {
-          // Move to the new track
-          this->tr = tr;
+          // Point of intersection
           // XXX: Find the intersection with the curve with ternary search?
-          this->t = (t1 + t2) / 2;
-          // Reverse if making acute turns
-          if (this->v * (t2 - t1) < 0) this->v = -this->v;
+          float ti = (t1 + t2) / 2;
+          if (tr->colli & track::ATTRACT) {
+            // Move to the new track
+            this->tr = tr;
+            this->t = ti;
+            // Reverse if making acute turns
+            if (this->v * (t2 - t1) < 0) this->v = -this->v;
+          }
+          if (tr->colli & track::RETURN) {
+            this->t = t_prev;
+            this->v = -this->v;
+          }
           break;
         }
       }
@@ -205,7 +239,9 @@ public:
     tracks.push_back(new track_cir(vec2(4, 3), 2));
     tracks.push_back(new track_cir(vec2(6, 5), 3));
     tracks.push_back(new track_cir(vec2(10, 5), 3));
-    tracks[2]->attract = true;
+    tracks.back()->colli = track::ATTRACT;
+    tracks.push_back(new track_seg(vec2(11, 7), vec2(2, 1)));
+    tracks.back()->colli = track::RETURN;
     fireflies.push_back(firefly(tracks[0], 0, 1));
     fireflies.push_back(firefly(tracks[1], 0.25, 1));
     bellflowers.push_back(new bellflower_ord(vec2(5, 7), 2, 4));
