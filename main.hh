@@ -18,6 +18,6 @@ public:
 };
 
 scene *scene_startup();
-scene *scene_game();
+scene *scene_game(int level_id);
 
 #endif
