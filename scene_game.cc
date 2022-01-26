@@ -260,6 +260,8 @@ public:
   std::vector<firefly> fireflies, fireflies_init;
   std::vector<bellflower *> bellflowers;
 
+  std::vector<std::vector<std::pair<firefly *, float>>> ff_links;
+
   firefly *sel_ff;
   track *sel_track;
   vec2 sel_offs;
@@ -273,9 +275,30 @@ public:
     tracks.push_back(new track_cir(vec2(10, 5), 3, track::ATTRACT));
     tracks.push_back(new track_seg(vec2(11, 7), vec2(2, 1), track::RETURN | track::FIXED));
     fireflies.push_back(firefly(tracks[0], 0, 1));
+    fireflies.push_back(firefly(tracks[0], 1, 1));
+    fireflies.push_back(firefly(tracks[0], 2, 1));
+    fireflies.push_back(firefly(tracks[0], 3, 1));
+    fireflies.push_back(firefly(tracks[0], 4, 1));
     fireflies.push_back(firefly(tracks[1], 0.25, 1));
+    build_links({
+      {0, 1},
+      {2, 3, 4},
+    });
     bellflowers.push_back(new bellflower_ord(vec2(5, 7), 2, 4));
     bellflowers.push_back(new bellflower_delay(vec2(11, 7), 2, 4, 480));
+  }
+
+  inline void build_links(std::vector<std::vector<int>> links) {
+    ff_links.resize(fireflies.size());
+    for (const auto group : links) {
+      for (const auto indep : group) {
+        auto &list = ff_links[indep];
+        float t = fireflies[indep].t;
+        list.reserve(group.size() - 1);
+        for (const auto dep : group) if (dep != indep)
+          list.push_back({&fireflies[dep], fireflies[dep].t - t});
+      }
+    }
   }
 
   inline std::pair<firefly *, track *> find(const vec2 p) {
@@ -325,6 +348,10 @@ public:
     vec2 p = board(x, y);
     if (sel_ff != nullptr) {
       sel_ff->t = sel_ff->tr->nearest(p + sel_offs).first;
+      // Move linked fireflies
+      int index = sel_ff - &fireflies[0];
+      for (const auto link : ff_links[index])
+        link.first->t = sel_ff->t + link.second;
     }
     if (sel_track != nullptr) {
       sel_track->o = p + sel_offs;
