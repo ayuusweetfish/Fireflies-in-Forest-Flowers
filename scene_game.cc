@@ -188,7 +188,7 @@ public:
     }
 
     bool last_on;
-    void reset() {
+    virtual void reset() {
       last_on = false;
       c = c0;
     }
@@ -198,6 +198,12 @@ public:
     }
     virtual void update(const std::vector<firefly> &fireflies) = 0;
     virtual void draw() const = 0;
+
+    inline bool fireflies_within(const std::vector<firefly> &fireflies) {
+      for (const auto f : fireflies)
+        if ((f.pos() - o).norm() <= r) return true;
+      return false;
+    }
   };
 
   struct bellflower_ord : public bellflower {
@@ -205,18 +211,42 @@ public:
       : bellflower(o, r, c0)
       { }
     void update(const std::vector<firefly> &fireflies) {
-      bool on = false;
-      for (const auto f : fireflies)
-        if ((f.pos() - o).norm() <= r) {
-          on = true;
-          break;
-        }
+      bool on = fireflies_within(fireflies);
       bellflower::update(on);
     }
     void draw() const {
       using namespace rl;
       DrawCircleV(scr(o), r * SCALE, (Color){64, 64, 64, 128});
       DrawCircleV(scr(o), 0.5 * SCALE, last_on ? GREEN : GRAY);
+      char s[8];
+      snprintf(s, sizeof s, "%d", c);
+      DrawText(s, scr(o).x - 4, scr(o).y - 8, 16, BLACK);
+    }
+  };
+
+  struct bellflower_delay : public bellflower {
+    int d, d0;
+    bellflower_delay(vec2 o, float r, int c0, int d0)
+      : bellflower(o, r, c0), d(d0), d0(d0)
+      { reset(); }
+    void reset() {
+      bellflower::reset();
+      d = d0;
+    }
+    void update(const std::vector<firefly> &fireflies) {
+      bool on = fireflies_within(fireflies);
+      if (on) {
+        if (d > 0) d--;
+      } else {
+        d = d0;
+      }
+      bellflower::update(d == 0);
+    }
+    void draw() const {
+      using namespace rl;
+      DrawCircleV(scr(o), r * SCALE, (Color){64, 64, 64, 128});
+      DrawCircleV(scr(o), 0.5 * SCALE, GRAY);
+      DrawCircleV(scr(o), 0.5 * SCALE * (d0 - d) / d0, GREEN);
       char s[8];
       snprintf(s, sizeof s, "%d", c);
       DrawText(s, scr(o).x - 4, scr(o).y - 8, 16, BLACK);
@@ -245,6 +275,7 @@ public:
     fireflies.push_back(firefly(tracks[0], 0, 1));
     fireflies.push_back(firefly(tracks[1], 0.25, 1));
     bellflowers.push_back(new bellflower_ord(vec2(5, 7), 2, 4));
+    bellflowers.push_back(new bellflower_delay(vec2(11, 7), 2, 4, 480));
   }
 
   inline std::pair<firefly *, track *> find(const vec2 p) {
