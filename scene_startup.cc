@@ -1,6 +1,5 @@
 #include "main.hh"
 
-#include "raylib.h"
 #include <cstdio>
 
 class _scene_startup : public scene {
@@ -28,6 +27,8 @@ public:
   }
 
   void draw() {
+    using namespace rl;
+
     ClearBackground(WHITE);
     char s[32];
     snprintf(s, sizeof s, "%f %f | %d", p[0], p[1], count);

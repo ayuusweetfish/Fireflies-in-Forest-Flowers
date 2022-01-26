@@ -1,6 +1,5 @@
 #include "main.hh"
 
-#include "raylib.h"
 #include <cstdio>
 
 class _scene_game : public scene {

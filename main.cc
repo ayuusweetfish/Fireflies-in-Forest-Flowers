@@ -1,7 +1,5 @@
 #include "main.hh"
-
-#include "raylib.h"
-#include "raymath.h"
+using namespace rl;
 
 #include <cmath>
 
