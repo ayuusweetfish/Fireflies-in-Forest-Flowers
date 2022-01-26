@@ -35,6 +35,7 @@ public:
     float T;  // Period
 
     float tc;       // Current phase
+    float tc0;      // Phase at start
     bool selpath;   // Selected path
     bool selpt;     // Selected lighting point
 
@@ -97,8 +98,10 @@ public:
 
   firefly *sel_ff;
   vec2 sel_offs;
+  int run_state = 0;
 
   void pton(float x, float y) {
+    if (run_state & 1) return;
     vec2 p = board(x, y);
     firefly *bestf = nullptr;
 
@@ -149,6 +152,29 @@ public:
     if (sel_ff != nullptr) {
       sel_ff->selpath = sel_ff->selpt = false;
       sel_ff = nullptr;
+    }
+  }
+
+  inline void start_run() {
+    for (auto f : fireflies) f->tc0 = f->tc;
+  }
+  inline void stop_run() {
+    for (auto f : fireflies) f->tc = f->tc0;
+  }
+
+  bool last_space_down = false;
+  void update() {
+    bool space_down = rl::IsKeyDown(rl::KEY_SPACE);
+    if (sel_ff == nullptr && !last_space_down && space_down) {
+      run_state ^= 1;
+      if (run_state & 1) start_run(); else stop_run();
+    }
+    last_space_down = space_down;
+    if (run_state & 1) {
+      for (auto f : fireflies) {
+        if ((f->tc += 1 / (240 * f->T)) >= 1)
+          f->tc -= 1;
+      }
     }
   }
 
