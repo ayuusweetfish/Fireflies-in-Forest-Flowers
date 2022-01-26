@@ -57,17 +57,19 @@ public:
     vec2 o;
     float len;  // Total length in units
     enum {
-      ATTRACT = 1,
-      RETURN = 2,
+      ATTRACT = (1 << 0),
+      RETURN = (1 << 1),
+      COLLI = ATTRACT | RETURN,
+      FIXED = (1 << 4),
     };
-    unsigned int colli;
+    unsigned flags;
 
     bool sel;   // Is selected
 
     track() { }
-    track(vec2 o, float len)
+    track(vec2 o, float len, float flags)
       : o(o), len(len),
-        colli(0),
+        flags(flags),
         sel(false)
       { }
     // Local position at given phase
@@ -83,9 +85,9 @@ public:
 
   struct track_cir : public track {
     float r;  // Radius
-    track_cir(vec2 o, float r)
+    track_cir(vec2 o, float r, unsigned flags = 0)
       : r(r),
-        track(o, 2 * M_PI * r)
+        track(o, 2 * M_PI * r, flags)
       { }
     vec2 local_at(float t) const { return vec2(r, 0).rot(t / r); }
     std::pair<float, float> local_nearest(vec2 p) const {
@@ -97,15 +99,15 @@ public:
       using namespace rl;
       // DrawCircleV(scr(o), 3, DARKGRAY);
       DrawRing(scr(o), r * SCALE - 2, r * SCALE + 2, 0, 360, 48,
-        sel ? RED : ((colli & ATTRACT) ? YELLOW : WHITE));
+        sel ? RED : ((flags & ATTRACT) ? YELLOW : WHITE));
     }
   };
 
   struct track_seg : public track {
     vec2 ext; // Extension on both sides
-    track_seg(vec2 o, vec2 ext)
+    track_seg(vec2 o, vec2 ext, unsigned flags = 0)
       : ext(ext / ext.norm()),
-        track(o, ext.norm() * 2)
+        track(o, ext.norm() * 2, flags)
       { }
     vec2 local_at(float t) const { return ext * (t - len / 2); }
     std::pair<float, float> local_nearest(vec2 p) const {
@@ -117,7 +119,7 @@ public:
       using namespace rl;
       DrawLineV(
         scr(o - ext * len / 2), scr(o + ext * len / 2),
-        sel ? RED : ((colli & RETURN) ? ORANGE : WHITE));
+        sel ? RED : ((flags & RETURN) ? ORANGE : WHITE));
     }
   };
 
@@ -143,7 +145,7 @@ public:
       vec2 p2 = pos();
 
       // Attracting tracks
-      for (const auto tr : tracks) if (tr != this->tr && tr->colli != 0) {
+      for (const auto tr : tracks) if (tr != this->tr && (tr->flags & track::COLLI)) {
         auto near = tr->nearest(p1);
         if (near.second >= 0.01) continue;
         float t1 = near.first;
@@ -154,14 +156,14 @@ public:
           // Point of intersection
           // XXX: Find the intersection with the curve with ternary search?
           float ti = (t1 + t2) / 2;
-          if (tr->colli & track::ATTRACT) {
+          if (tr->flags & track::ATTRACT) {
             // Move to the new track
             this->tr = tr;
             this->t = ti;
             // Reverse if making acute turns
             if (this->v * (t2 - t1) < 0) this->v = -this->v;
           }
-          if (tr->colli & track::RETURN) {
+          if (tr->flags & track::RETURN) {
             this->t = t_prev;
             this->v = -this->v;
           }
@@ -268,10 +270,8 @@ public:
   {
     tracks.push_back(new track_cir(vec2(4, 3), 2));
     tracks.push_back(new track_cir(vec2(6, 5), 3));
-    tracks.push_back(new track_cir(vec2(10, 5), 3));
-    tracks.back()->colli = track::ATTRACT;
-    tracks.push_back(new track_seg(vec2(11, 7), vec2(2, 1)));
-    tracks.back()->colli = track::RETURN;
+    tracks.push_back(new track_cir(vec2(10, 5), 3, track::ATTRACT));
+    tracks.push_back(new track_seg(vec2(11, 7), vec2(2, 1), track::RETURN | track::FIXED));
     fireflies.push_back(firefly(tracks[0], 0, 1));
     fireflies.push_back(firefly(tracks[1], 0.25, 1));
     bellflowers.push_back(new bellflower_ord(vec2(5, 7), 2, 4));
@@ -294,7 +294,7 @@ public:
     // Find the nearest firefly track
     track *best_track = nullptr;
     std::pair<float, float> best_result = {0, 0.5};
-    for (const auto t : tracks) {
+    for (const auto t : tracks) if (!(t->flags & track::FIXED)) {
       auto result = t->nearest(p);
       if (result.second < best_result.second) {
         best_result = result;
