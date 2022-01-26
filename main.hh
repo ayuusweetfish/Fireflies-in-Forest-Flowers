@@ -12,11 +12,11 @@ static const int H = 450;
 
 class scene {
 public:
-  virtual void update() {};
-  virtual void draw() {};
-  virtual void pton(float, float) {};
-  virtual void ptmove(float, float) {};
-  virtual void ptoff(float, float) {};
+  virtual void update() {}
+  virtual void draw() {}
+  virtual void pton(float, float) {}
+  virtual void ptmove(float, float) {}
+  virtual void ptoff(float, float) {}
 };
 
 scene *scene_startup();

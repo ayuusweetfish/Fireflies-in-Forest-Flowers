@@ -2,12 +2,12 @@
 
 #include <cstdio>
 
-class _scene_startup : public scene {
+class scene_startup : public scene {
 public:
   int count;
   float p[2];
 
-  _scene_startup() {
+  scene_startup() {
     count = 100;
     p[0] = -1;
     p[1] = -1;
@@ -37,5 +37,5 @@ public:
 };
 
 scene *scene_startup() {
-  return new _scene_startup();
+  return new class scene_startup();
 }
