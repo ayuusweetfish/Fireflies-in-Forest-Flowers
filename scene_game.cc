@@ -28,6 +28,14 @@ struct vec2 {
   inline float norm() const { return sqrtf(x * x + y * y); }
 };
 
+static inline bool seg_intxn(
+  const vec2 a, const vec2 b,
+  const vec2 c, const vec2 d
+) {
+  return (c - a).det(b - a) * (d - a).det(b - a) <= 0 &&
+         (a - c).det(d - c) * (b - c).det(d - c) <= 0;
+}
+
 class scene_game : public scene {
 public:
   // ==== Display-related constants ====
@@ -48,12 +56,14 @@ public:
   struct track {
     vec2 o;
     float len;  // Total length in units
+    bool attract;
 
     bool sel;   // Is selected
 
     track() { }
     track(vec2 o, float len)
       : o(o), len(len),
+        attract(false),
         sel(false)
       { }
     // Local position at given phase
@@ -82,7 +92,7 @@ public:
     void draw() const {
       using namespace rl;
       // DrawCircleV(scr(o), 3, DARKGRAY);
-      DrawRing(scr(o), r * SCALE - 2, r * SCALE + 2, 0, 360, 48, sel ? RED : WHITE);
+      DrawRing(scr(o), r * SCALE - 2, r * SCALE + 2, 0, 360, 48, sel ? RED : (attract ? YELLOW : WHITE));
     }
   };
 
@@ -101,8 +111,29 @@ public:
       { }
 
     inline void update(const std::vector<track *> &tracks) {
-      t += 1.0 / 240;
+      vec2 p1 = pos();
+      t += v / 240;
       if (t >= tr->len) t -= tr->len;
+      vec2 p2 = pos();
+
+      // Attracting tracks
+      for (const auto tr : tracks) if (tr != this->tr && tr->attract) {
+        auto near = tr->nearest(p1);
+        if (near.second >= 0.1) continue;
+        float t1 = near.first;
+        float t2 = tr->nearest(p2).first;
+        // Lemma: (p1, p2) crosses the curve C iff
+        // (p1, p2) crosses (C(t1), C(t2))
+        if (seg_intxn(p1, p2, tr->at(t1), tr->at(t2))) {
+          // Move to the new track
+          this->tr = tr;
+          // XXX: Find the intersection with the curve with ternary search?
+          this->t = (t1 + t2) / 2;
+          // Reverse if making acute turns
+          if (this->v * (t2 - t1) < 0) this->v = -this->v;
+          break;
+        }
+      }
     }
     inline void draw() const {
       using namespace rl;
@@ -173,6 +204,8 @@ public:
   {
     tracks.push_back(new track_cir(vec2(4, 3), 2));
     tracks.push_back(new track_cir(vec2(6, 5), 3));
+    tracks.push_back(new track_cir(vec2(10, 5), 3));
+    tracks[2]->attract = true;
     fireflies.push_back(firefly(tracks[0], 0, 1));
     fireflies.push_back(firefly(tracks[1], 0.25, 1));
     bellflowers.push_back(new bellflower_ord(vec2(5, 7), 2, 4));
