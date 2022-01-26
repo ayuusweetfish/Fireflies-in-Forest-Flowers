@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
   InitWindow(W, H, NULL);
   SetTargetFPS(60);
 
-  scene *cur_scene = scene_startup();
+  scene *cur_scene = scene_game();
   bool pt_laston = false;
   float pt_lastx, pt_lasty;
 

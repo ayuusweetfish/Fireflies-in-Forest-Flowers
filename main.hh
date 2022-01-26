@@ -1,10 +1,8 @@
 #ifndef _main_hh_
 #define _main_hh_
 
-#include <math.h>
 namespace rl {
 #include "raylib.h"
-#include "raymath.h"
 }
 
 static const int W = 800;
