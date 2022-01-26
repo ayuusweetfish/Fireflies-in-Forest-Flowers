@@ -42,14 +42,12 @@ public:
   static constexpr float BOARD_W = 20;
   static constexpr float BOARD_H = 12;
   static constexpr float SCALE = 35;
-  static constexpr float OFFSET_X = W / 2 - BOARD_W / 2 * SCALE;
-  static constexpr float OFFSET_Y = H / 2 - BOARD_H / 2 * SCALE;
   static rl::Vector2 scr(vec2 p) {
-    vec2 q = p * SCALE + vec2(OFFSET_X, OFFSET_Y);
+    vec2 q = p * SCALE + vec2(W, H) / 2;
     return (rl::Vector2){q.x, q.y};
   }
   static vec2 board(float x, float y) {
-    return (vec2(x, y) - vec2(OFFSET_X, OFFSET_Y)) / SCALE;
+    return (vec2(x, y) - vec2(W, H) / 2) / SCALE;
   }
 
   // ==== Tracks ====
@@ -228,8 +226,8 @@ public:
 
   struct bellflower_delay : public bellflower {
     int d, d0;
-    bellflower_delay(vec2 o, float r, int c0, int d0)
-      : bellflower(o, r, c0), d(d0), d0(d0)
+    bellflower_delay(vec2 o, float r, int c0, float d0)
+      : bellflower(o, r, c0), d0(d0 * 480)
       { reset(); }
     void reset() {
       bellflower::reset();
@@ -256,6 +254,7 @@ public:
   };
 
   // ==== Scene ====
+  const char *level_title;
   std::vector<track *> tracks;
   std::vector<firefly> fireflies, fireflies_init;
   std::vector<bellflower *> bellflowers;
@@ -393,13 +392,24 @@ public:
   void draw() {
     using namespace rl;
     ClearBackground(BLACK);
-    for (int i = 0; i <= BOARD_W; i++)
-      DrawLineV(scr(vec2(i, 0)), scr(vec2(i, BOARD_H)), (Color){48, 48, 48, 255});
-    for (int i = 0; i <= BOARD_H; i++)
-      DrawLineV(scr(vec2(0, i)), scr(vec2(BOARD_W, i)), (Color){48, 48, 48, 255});
+    int x_range = (W / 2 / SCALE) + 1;
+    for (int i = -x_range; i <= x_range; i++) {
+      float x = scr(vec2(i, 0)).x;
+      DrawLineV((Vector2){x, 0}, (Vector2){x, H}, (Color){30, 30, 30, 255});
+    }
+    int y_range = (H / 2 / SCALE) + 1;
+    for (int i = -y_range; i <= y_range; i++) {
+      float y = scr(vec2(0, i)).y;
+      DrawLineV((Vector2){0, y}, (Vector2){W, y}, (Color){30, 30, 30, 255});
+    }
     for (const auto t : tracks) t->draw();
     for (const auto b : bellflowers) b->draw();
     for (const auto &f : fireflies) f.draw();
+    DrawTextEx(
+      GetFontDefault(),
+      level_title,
+      (Vector2){20, H - 40},
+      32, 3, WHITE);
   }
 };
 

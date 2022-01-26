@@ -6,7 +6,7 @@ namespace rl {
 }
 
 static const int W = 800;
-static const int H = 450;
+static const int H = 500;
 
 class scene {
 public:
