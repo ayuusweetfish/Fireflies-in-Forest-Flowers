@@ -96,7 +96,7 @@ public:
     void draw() const {
       using namespace rl;
       // DrawCircleV(scr(o), 3, DARKGRAY);
-      DrawRing(scr(o), r * SCALE - 2, r * SCALE + 2, 0, 360, 48,
+      DrawRing(scr(o), r * SCALE - 1, r * SCALE + 1, 0, 360, 48,
         sel ? RED : ((flags & ATTRACT) ? YELLOW : WHITE));
     }
   };
@@ -115,8 +115,9 @@ public:
     }
     void draw() const {
       using namespace rl;
-      DrawLineV(
+      DrawLineEx(
         scr(o - ext * len / 2), scr(o + ext * len / 2),
+        2,
         sel ? RED : ((flags & RETURN) ? ORANGE : WHITE));
     }
   };
@@ -277,6 +278,11 @@ public:
   vec2 sel_offs;
   int run_state = 0;
 
+  const float RT_SCALE = 2; // Scaling factor for render targets
+  rl::RenderTexture2D texBloomBase, texBloomStage1, texBloomStage2;
+  rl::Shader shaderBloom;
+  int shaderBloomPassLoc;
+
   scene_game(int puzzle_id)
     : sel_ff(nullptr), sel_track(nullptr)
   {
@@ -291,6 +297,15 @@ public:
       #include "puzzles.hh"
     }
     build_links(links);
+
+    texBloomBase = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
+    rl::SetTextureFilter(texBloomBase.texture, rl::TEXTURE_FILTER_BILINEAR);
+    texBloomStage1 = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
+    rl::SetTextureFilter(texBloomStage1.texture, rl::TEXTURE_FILTER_BILINEAR);
+    texBloomStage2 = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
+    rl::SetTextureFilter(texBloomStage2.texture, rl::TEXTURE_FILTER_BILINEAR);
+    shaderBloom = rl::LoadShader(NULL, "res/bloom_pass1.frag");
+    shaderBloomPassLoc = rl::GetShaderLocation(shaderBloom, "pass");
   }
 
   inline void build_links(std::vector<std::vector<int>> links) {
@@ -403,6 +418,7 @@ public:
 
   void draw() {
     using namespace rl;
+
     ClearBackground(BLACK);
     int x_range = (W / 2 / SCALE) + 1;
     for (int i = -x_range; i <= x_range; i++) {
@@ -414,9 +430,63 @@ public:
       float y = scr(vec2(0, i)).y;
       DrawLineV((Vector2){0, y}, (Vector2){W, y}, (Color){30, 30, 30, 255});
     }
-    for (const auto t : tracks) t->draw();
+
+    // Render scaled to texture
+    BeginBlendMode(BLEND_ADD_COLORS);
+
+    Color bg = (Color){0, 0, 0, 0};
+    BeginTextureMode(texBloomBase);
+    BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE});
+      ClearBackground(bg);
+      for (const auto t : tracks) t->draw();
+      for (const auto &f : fireflies) f.draw();
+      // DrawRectangle(0, 0, 100, 100, (Color){255, 255, 255, 128});
+    EndMode2D();
+    EndTextureMode();
+    //GenTextureMipmaps(&texBloomBase.texture);
+
+    int pass;
+    BeginTextureMode(texBloomStage1);
+    BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE});
+    pass = 1;
+    SetShaderValue(shaderBloom, shaderBloomPassLoc, &pass, SHADER_UNIFORM_INT);
+    BeginShaderMode(shaderBloom);
+      ClearBackground(bg);
+      DrawTexturePro(texBloomBase.texture,
+        (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
+        (Rectangle){0, 0, W, H},
+        (Vector2){0, 0}, 0, WHITE);
+    EndShaderMode();
+    EndMode2D();
+    EndTextureMode();
+    //GenTextureMipmaps(&texBloomStage1.texture);
+
+    BeginTextureMode(texBloomStage2);
+    BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE});
+    pass = 2;
+    SetShaderValue(shaderBloom, shaderBloomPassLoc, &pass, SHADER_UNIFORM_INT);
+    BeginShaderMode(shaderBloom);
+      ClearBackground(bg);
+      DrawTexturePro(texBloomStage1.texture,
+        (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
+        (Rectangle){0, 0, W, H},
+        (Vector2){0, 0}, 0, WHITE);
+    EndShaderMode();
+    EndMode2D();
+    EndTextureMode();
+
+    EndBlendMode();
+
+    DrawTexturePro(texBloomBase.texture,
+      (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
+      (Rectangle){0, 0, W, H},
+      (Vector2){0, 0}, 0, (Color){255, 255, 255, 128});
+    DrawTexturePro(texBloomStage2.texture,
+      (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
+      (Rectangle){0, 0, W, H},
+      (Vector2){0, 0}, 0, WHITE);
+
     for (const auto b : bellflowers) b->draw();
-    for (const auto &f : fireflies) f.draw();
     DrawTextEx(
       GetFontDefault(),
       level_title,

@@ -5,10 +5,11 @@ using namespace rl;
 
 int main(int argc, char *argv[])
 {
+  SetConfigFlags(FLAG_MSAA_4X_HINT);
   InitWindow(W, H, NULL);
   SetTargetFPS(60);
 
-  scene *cur_scene = scene_game(10);
+  scene *cur_scene = scene_game(99);
   bool pt_laston = false;
   float pt_lastx, pt_lasty;
 
