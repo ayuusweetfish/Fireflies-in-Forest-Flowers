@@ -1,14 +1,14 @@
-#version 330
-
+#version 100
+precision mediump float;
 uniform sampler2D texture0;
-in vec2 fragTexCoord;
-out vec4 outValue;
+varying vec2 fragTexCoord;
+#define outValue gl_FragColor
 
-in vec2 samplePosition[25];
+varying vec2 samplePosition[25];
 
 vec4 premul(vec2 pos)
 {
-  vec4 value = texture(texture0, pos);
+  vec4 value = texture2D(texture0, pos);
   value.rgb *= value.a;
   return value;
 }

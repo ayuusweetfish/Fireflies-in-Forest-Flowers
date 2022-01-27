@@ -1,6 +1,7 @@
 #include "main.hh"
 
 #include <cmath>
+#include <cstdio>
 #include <utility>
 #include <vector>
 
@@ -308,7 +309,11 @@ public:
     rl::SetTextureFilter(texBloomStage1.texture, rl::TEXTURE_FILTER_BILINEAR);
     texBloomStage2 = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
     rl::SetTextureFilter(texBloomStage2.texture, rl::TEXTURE_FILTER_BILINEAR);
+  #ifndef PLATFORM_WEB
     shaderBloom = rl::LoadShader("res/bloom.vert", "res/bloom.frag");
+  #else
+    shaderBloom = rl::LoadShader("res/bloom_web.vert", "res/bloom_web.frag");
+  #endif
     shaderBloomPassLoc = rl::GetShaderLocation(shaderBloom, "pass");
   }
 

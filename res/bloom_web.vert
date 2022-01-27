@@ -1,8 +1,8 @@
-#version 330
-
-in vec3 vertexPosition;
-in vec2 vertexTexCoord;
-out vec2 fragTexCoord;
+#version 100
+precision mediump float;
+attribute vec3 vertexPosition;
+attribute vec2 vertexTexCoord;
+varying vec2 fragTexCoord;
 uniform mat4 mvp;
 
 const float W = 800.;
@@ -10,7 +10,7 @@ const float H = 500.;
 
 uniform int pass;
 
-out vec2 samplePosition[25];
+varying vec2 samplePosition[25];
 
 void main()
 {
