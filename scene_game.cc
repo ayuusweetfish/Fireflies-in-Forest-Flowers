@@ -95,9 +95,11 @@ public:
     }
     void draw() const {
       using namespace rl;
-      // DrawCircleV(scr(o), 3, DARKGRAY);
+      // DrawCircleV(scr(o), 3, GRAY);
       DrawRing(scr(o), r * SCALE - 1, r * SCALE + 1, 0, 360, 48,
-        sel ? RED : ((flags & ATTRACT) ? YELLOW : WHITE));
+        sel ? RED :
+        (flags & ATTRACT) ? YELLOW :
+        (flags & RETURN) ? ORANGE : GRAY);
     }
   };
 
@@ -118,7 +120,9 @@ public:
       DrawLineEx(
         scr(o - ext * len / 2), scr(o + ext * len / 2),
         2,
-        sel ? RED : ((flags & RETURN) ? ORANGE : WHITE));
+        sel ? RED :
+        (flags & ATTRACT) ? YELLOW :
+        (flags & RETURN) ? ORANGE : GRAY);
     }
   };
 
@@ -304,7 +308,7 @@ public:
     rl::SetTextureFilter(texBloomStage1.texture, rl::TEXTURE_FILTER_BILINEAR);
     texBloomStage2 = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
     rl::SetTextureFilter(texBloomStage2.texture, rl::TEXTURE_FILTER_BILINEAR);
-    shaderBloom = rl::LoadShader(NULL, "res/bloom_pass1.frag");
+    shaderBloom = rl::LoadShader("res/bloom.vert", "res/bloom.frag");
     shaderBloomPassLoc = rl::GetShaderLocation(shaderBloom, "pass");
   }
 
@@ -480,7 +484,7 @@ public:
     DrawTexturePro(texBloomBase.texture,
       (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
       (Rectangle){0, 0, W, H},
-      (Vector2){0, 0}, 0, (Color){255, 255, 255, 128});
+      (Vector2){0, 0}, 0, (Color){255, 255, 255, 160});
     DrawTexturePro(texBloomStage2.texture,
       (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
       (Rectangle){0, 0, W, H},
