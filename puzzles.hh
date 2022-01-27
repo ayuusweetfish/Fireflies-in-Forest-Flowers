@@ -128,6 +128,56 @@ case 12:
   };
   break;
 
+case 13:
+  level_title = "Linger";
+  tracks = {
+    T_cir(vec2(0, -2), 3),
+    T_cir(vec2(0, 0), 3, track::ATTRACT | track::FIXED),
+    T_seg(vec2(4, 0), vec2(1.8, 0), track::RETURN | track::FIXED),
+  };
+  fireflies = {
+    F(0, 0.75, 1),
+  };
+  bellflowers = {
+    B_ord(vec2(-4, 0), 2, 1),
+    B_ord(vec2(4, 0), 2, 3),
+  };
+  break;
+
+case 14:
+  level_title = "Lockstep";
+  tracks = {
+    T_seg(vec2(0, -1), vec2(5, 0), track::FIXED),
+    T_seg(vec2(0, 1), vec2(5, 0), track::FIXED),
+    T_seg(vec2(0, 3), vec2(0, 0.5), track::RETURN),
+  };
+  fireflies = {
+    F(0, 0.2, 1),
+    F(1, 0.3, 1),
+  };
+  bellflowers = {
+    B_ord(vec2(-6, 0), 2, 3),
+    B_ord(vec2(6, 0), 2, 1),
+  };
+  break;
+
+case 15:
+  level_title = "Circulation";
+  tracks = {
+    T_cir(vec2(0, 0.5), 4.5, track::FIXED | track::ATTRACT),
+    T_cir(vec2(0, 0.5), 2.5),
+  };
+  fireflies = {
+    F(0, 0.95, 1),
+    F(1, 0.5, 1),
+  };
+  bellflowers = {
+    B_ord(vec2(0, -5), 2, 1),
+    B_ord(vec2(-5, 3), 2, 4),
+    B_ord(vec2(5, 3), 2, 1),
+  };
+  break;
+
 case 99:
   level_title = "Testbed";
   tracks = {
@@ -138,10 +188,10 @@ case 99:
   };
   fireflies = {
     F(0, 0, 1),
-    F(0, 1, 1),
-    F(0, 2, 1),
-    F(0, 3, 1),
-    F(0, 4, 1),
+    F(0, .1, 1),
+    F(0, .2, 1),
+    F(0, .3, 1),
+    F(0, .4, 1),
     F(1, 0.25, 1),
   };
   links = {

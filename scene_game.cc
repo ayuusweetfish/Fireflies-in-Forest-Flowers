@@ -140,6 +140,7 @@ public:
       vec2 p1 = pos();
       t += v / 480;
       if (t >= tr->len) t -= tr->len;
+      if (t < 0) t += tr->len;
       vec2 p2 = pos();
 
       // Attracting tracks
@@ -148,6 +149,11 @@ public:
         if (near.second >= 0.01) continue;
         float t1 = near.first;
         float t2 = tr->nearest(p2).first;
+        if (fabs(t1 - t2) < 1e-6) {
+          float d = (t1 < 1 ? 1e-6 : (t1 * 1e-6));
+          t1 -= d;
+          t2 += d;
+        }
         // Lemma: (p1, p2) crosses the curve C iff
         // (p1, p2) crosses (C(t1), C(t2))
         if (seg_intxn(p1, p2, tr->at(t1), tr->at(t2))) {
@@ -162,6 +168,12 @@ public:
             if (this->v * (t2 - t1) < 0) this->v = -this->v;
           }
           if (tr->flags & track::RETURN) {
+          /*
+            printf("p1 = (%f, %f)\n", p1.x, p1.y);
+            printf("p2 = (%f, %f)\n", p2.x, p2.y);
+            printf("tr->at(t1) = (%f, %f)\n", tr->at(t1).x, tr->at(t1).y);
+            printf("tr->at(t2) = (%f, %f)\n", tr->at(t2).x, tr->at(t2).y);
+          */
             this->t = t_prev;
             this->v = -this->v;
           }
