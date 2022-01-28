@@ -68,7 +68,7 @@ public:
     bool sel;   // Is selected
 
     track() { }
-    track(vec2 o, float len, float flags)
+    track(vec2 o, float len, unsigned flags)
       : o(o), len(len),
         flags(flags),
         sel(false)
@@ -81,13 +81,54 @@ public:
     virtual std::pair<float, float> local_nearest(vec2 p) const = 0;
     std::pair<float, float> nearest(vec2 p) const { return local_nearest(p - o); }
 
-    virtual void draw() const = 0;
+    virtual void draw(int T) const = 0;
+
+    inline rl::Color tint() const {
+      rl::Color t = (rl::Color){128, 128, 128, 255};
+      if (flags & ATTRACT) t = (rl::Color){136, 136, 64, 255};
+      if (flags & RETURN) t = (rl::Color){64, 160, 216, 255};
+      if (sel) t = (rl::Color){216, 64, 32, 255};
+      /*if (flags & FIXED) {
+        t.r = t.r * 2/3;
+        t.g = t.g * 2/3;
+        t.b = t.b * 2/3;
+      }*/
+      return t;
+    }
+    inline void ripples(int T, float &dist, float &alpha) const {
+      if (flags & RETURN) {
+        float phase = (float)(T % 900) / 600;
+        if (phase < 1) {
+          dist = (1 - powf(1 - phase, 4)) * 0.26;
+          alpha = (13 * expf(-4 * phase) * sin(phase) * (1 - phase)) * 0.6;
+        }
+      }
+      if (flags & ATTRACT) {
+        float phase = (float)(T % 900) / 600;
+        if (phase < 1) {
+          dist = powf(1 - phase, 4) * 0.26;
+          alpha = (19 * expf(-5.9 * phase) * sin(phase) * (1 - phase)) * 0.6;
+        }
+      }
+    }
   };
+
+  static inline rl::Color premul_alpha(rl::Color tint, float alpha) {
+    return (rl::Color){
+      (unsigned char)(tint.r * alpha),
+      (unsigned char)(tint.g * alpha),
+      (unsigned char)(tint.b * alpha),
+      (unsigned char)(tint.a * alpha),
+    };
+  }
 
   struct track_cir : public track {
     float r;  // Radius
-    track_cir(vec2 o, float r, unsigned flags = 0)
-      : r(r),
+    float fix_angle;  // Angle at which the fix mark is displayed
+    int fix_count;    // Number of fix marks
+    track_cir(vec2 o, float r, unsigned flags = 0,
+      float fix_angle = 0, int fix_count = 2)
+      : r(r), fix_angle(fix_angle), fix_count(fix_count),
         track(o, 2 * M_PI * r, flags)
       { }
     vec2 local_at(float t) const { return vec2(r, 0).rot(t / r); }
@@ -96,13 +137,34 @@ public:
       if (a < 0) a += 2 * M_PI;
       return {a * r, (p - vec2(r, 0).rot(a)).norm()};
     }
-    void draw() const {
+    void draw(int T) const {
       using namespace rl;
-      // DrawCircleV(scr(o), 3, GRAY);
-      DrawRing(scr(o), r * SCALE - 1, r * SCALE + 1, 0, 360, 48,
-        sel ? RED :
-        (flags & ATTRACT) ? YELLOW :
-        (flags & RETURN) ? ORANGE : GRAY);
+      float w = (flags & FIXED) ? 2 : 2;
+      DrawRing(scr(o),
+        r * SCALE - w / 2, r * SCALE + w / 2,
+        0, 360, 24 * (r < 1 ? 1 : r), tint());
+
+      if (flags & FIXED) {
+        float angle = fix_angle;
+        vec2 p = vec2(r, 0).rot(angle);
+        vec2 move = vec2(0.13, 0).rot(angle - 1.0);
+        DrawLineEx(scr(o + p - move), scr(o + p + move), 2, tint());
+        if (fix_count != 1)
+          DrawLineEx(scr(o - p - move), scr(o - p + move), 2, tint());
+      }
+
+      float dist = 0, alpha = 0;
+      ripples(T, dist, alpha);
+      if (alpha > 0) {
+        DrawRing(scr(o),
+          (r + dist) * SCALE - w / 2,
+          (r + dist) * SCALE + w / 2,
+          0, 360, 48, premul_alpha(tint(), alpha));
+        if (r > dist) DrawRing(scr(o),
+          (r - dist) * SCALE - w / 2,
+          (r - dist) * SCALE + w / 2,
+          0, 360, 48, premul_alpha(tint(), alpha));
+      }
     }
   };
 
@@ -118,14 +180,33 @@ public:
       t = (t < -len / 2 ? -len / 2 : (t > len / 2 ? len / 2 : t));
       return {t + len / 2, (p - (ext * t)).norm()};
     }
-    void draw() const {
+    void draw(int T) const {
       using namespace rl;
       DrawLineEx(
         scr(o - ext * len / 2), scr(o + ext * len / 2),
-        2,
-        sel ? RED :
-        (flags & ATTRACT) ? YELLOW :
-        (flags & RETURN) ? ORANGE : GRAY);
+        2, tint());
+
+      vec2 n = (ext / ext.norm()).rot(M_PI / 2);
+
+      if (flags & FIXED) {
+        for (vec2 endpt : {(o - ext * len / 2), (o + ext * len / 2)}) {
+          DrawLineEx(
+            scr(endpt - n * 0.1), scr(endpt + n * 0.1),
+            2, tint());
+        }
+      }
+
+      float dist = 0, alpha = 0;
+      ripples(T + 450, dist, alpha);
+      if (alpha > 0) {
+        vec2 move = n * dist;
+        DrawLineEx(
+          scr(o + move - ext * len / 2), scr(o + move + ext * len / 2),
+          2, premul_alpha(tint(), alpha));
+        DrawLineEx(
+          scr(o - move - ext * len / 2), scr(o - move + ext * len / 2),
+          2, premul_alpha(tint(), alpha));
+      }
     }
   };
 
@@ -195,7 +276,7 @@ public:
     }
     inline void draw(int offs) const {
       using namespace rl;
-      Color tint = (sel ? RED : YELLOW);
+      Color tint = (sel ? RED : (Color){255, 255, 16, 255});
       float alpha = 1.0/8 * (v < 1 ? 1 : v);
       Color fade = (Color){
         (unsigned char)(tint.r * alpha),
@@ -283,7 +364,7 @@ public:
     }
     void draw() const {
       using namespace rl;
-      DrawCircleV(scr(o), r * SCALE, (Color){64, 64, 64, 128});
+      DrawRing(scr(o), r * SCALE - 1, r * SCALE + 1, 0, 360, 48, (Color){64, 64, 64, 128});
       DrawCircleV(scr(o), 0.5 * SCALE, last_on ? GREEN : GRAY);
       char s[8];
       snprintf(s, sizeof s, "%d", c);
@@ -311,7 +392,7 @@ public:
     }
     void draw() const {
       using namespace rl;
-      DrawCircleV(scr(o), r * SCALE, (Color){64, 64, 64, 128});
+      DrawRing(scr(o), r * SCALE - 1, r * SCALE + 1, 0, 360, 48, (Color){64, 64, 64, 128});
       DrawCircleV(scr(o), 0.5 * SCALE, GRAY);
       DrawCircleV(scr(o), 0.5 * SCALE * (d0 - d) / d0, GREEN);
       char s[8];
@@ -321,6 +402,8 @@ public:
   };
 
   // ==== Scene ====
+  int T;
+
   const char *level_title;
   std::vector<track *> tracks;
   std::vector<firefly> fireflies, fireflies_init;
@@ -340,7 +423,8 @@ public:
   int shaderBloomPassLoc;
 
   scene_game(int puzzle_id)
-    : sel_ff(nullptr), sel_track(nullptr),
+    : T(0),
+      sel_ff(nullptr), sel_track(nullptr),
       trail_m(fireflies)
   {
     std::vector<std::vector<int>> links;
@@ -468,6 +552,7 @@ public:
 
   bool last_space_down = false;
   void update() {
+    T++;
     bool space_down = rl::IsKeyDown(rl::KEY_SPACE);
     if (sel_track == nullptr && !last_space_down && space_down) {
       run_state ^= 1;
@@ -506,7 +591,7 @@ public:
     BeginTextureMode(texBloomBase);
     BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE});
       ClearBackground(bg);
-      for (const auto t : tracks) t->draw();
+      for (const auto t : tracks) t->draw(T);
       for (const auto &f : fireflies) f.draw(trail_m.pointer);
       // DrawRectangle(0, 0, 100, 100, (Color){255, 255, 255, 128});
     EndMode2D();

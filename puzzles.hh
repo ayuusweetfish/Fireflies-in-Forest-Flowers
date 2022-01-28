@@ -46,7 +46,7 @@ case 5:
 case 6:
   level_title = "Ebb and Flow";
   tracks = {
-    T_cir(vec2(0, 0), 4, track::FIXED),
+    T_cir(vec2(0, 0), 4, track::FIXED, M_PI / 2),
   };
   fireflies = {
     F(0, 0.125, 0.5),
@@ -64,8 +64,8 @@ case 6:
 case 10:
   level_title = "Twin Paradox";
   tracks = {
-    T_cir(vec2(2, -1), 3, track::FIXED),
-    T_cir(vec2(-2, 1), 3, track::FIXED),
+    T_cir(vec2(2, -1), 3, track::FIXED, 1),
+    T_cir(vec2(-2, 1), 3, track::FIXED, 1),
     T_cir(vec2(8.5, 3.5), 1.5, track::ATTRACT),
   };
   fireflies = {
@@ -84,8 +84,8 @@ case 10:
 case 11:
   level_title = "Accompany";
   tracks = {
-    T_cir(vec2(-3, 0), sqrtf(5), track::FIXED),
-    T_cir(vec2(-3, 0), 4, track::ATTRACT | track::FIXED),
+    T_cir(vec2(-3, 0), sqrtf(5), track::FIXED, M_PI / 2),
+    T_cir(vec2(-3, 0), 4, track::ATTRACT | track::FIXED, M_PI / 2),
     T_cir(vec2(5, -0.5), 3.5),
   };
   fireflies = {
@@ -102,11 +102,11 @@ case 11:
 case 12:
   level_title = "Olympiad";
   tracks = {
-    T_cir(vec2(-6, -1), 2, track::FIXED),
-    T_cir(vec2(-3, 1), 2, track::FIXED),
-    T_cir(vec2(0, -1), 2, track::FIXED),
-    T_cir(vec2(3, 1), 2, track::FIXED),
-    T_cir(vec2(6, -1), 2, track::FIXED),
+    T_cir(vec2(-6, -1), 2, track::FIXED, 4, true),
+    T_cir(vec2(-3, 1), 2, track::FIXED, 2, true),
+    T_cir(vec2(0, -1), 2, track::FIXED, 4, true),
+    T_cir(vec2(3, 1), 2, track::FIXED, 2, true),
+    T_cir(vec2(6, -1), 2, track::FIXED, 4, true),
     T_cir(vec2(6, 3), 0.25, track::RETURN),
   };
   fireflies = {
@@ -132,7 +132,7 @@ case 13:
   level_title = "Linger";
   tracks = {
     T_cir(vec2(0, -2), 3),
-    T_cir(vec2(0, 0), 3, track::ATTRACT | track::FIXED),
+    T_cir(vec2(0, 0), 3, track::ATTRACT | track::FIXED, 1),
     T_seg(vec2(4, 0), vec2(1.8, 0), track::RETURN | track::FIXED),
   };
   fireflies = {
