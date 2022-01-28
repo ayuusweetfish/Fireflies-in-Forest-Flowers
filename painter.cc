@@ -1,6 +1,7 @@
 #include "main.hh"
 using namespace rl;
 
+#include <cstdio>
 #include <map>
 
 typedef unsigned long hash_t;
