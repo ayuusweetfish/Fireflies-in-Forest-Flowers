@@ -94,7 +94,7 @@ case 11:
   };
   bellflowers = {
     B_ord(vec2(6, -3), 2, 1),
-    B_delay(vec2(-5.5, -2), 2, 4, 4),
+    B_ord(vec2(-5.5, -2), 2, 4),
     B_ord(vec2(-5.5, 2), 2, 4),
   };
   break;
@@ -263,6 +263,6 @@ case 99:
   };
   bellflowers = {
     B_ord(vec2(-5, 1), 2, 4),
-    B_delay(vec2(1, 1), 2, 4, 2),
+    B_ord(vec2(1, 1), 2, 4),
   };
   break;
