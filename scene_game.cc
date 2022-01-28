@@ -97,7 +97,7 @@ public:
     }
     inline void ripples(int T, float &dist, float &alpha) const {
       if (flags & RETURN) {
-        float phase = (float)(T % 900) / 600;
+        float phase = (float)((T + 450) % 900) / 600;
         if (phase < 1) {
           dist = (1 - powf(1 - phase, 4)) * 0.26;
           alpha = (13 * expf(-4 * phase) * sin(phase) * (1 - phase)) * 0.6;
@@ -197,7 +197,7 @@ public:
       }
 
       float dist = 0, alpha = 0;
-      ripples(T + 450, dist, alpha);
+      ripples(T, dist, alpha);
       if (alpha > 0) {
         vec2 move = n * dist;
         DrawLineEx(
@@ -251,12 +251,11 @@ public:
         // (p1, p2) crosses (C(t1), C(t2))
         if (seg_intxn(p1, p2, tr->at(t1), tr->at(t2))) {
           // Point of intersection
-          // XXX: Find the intersection with the curve with ternary search?
-          float ti = (t1 + t2) / 2;
           if (tr->flags & track::ATTRACT) {
             // Move to the new track
             this->tr = tr;
-            this->t = ti;
+            // Take the later parameter to avoid recursion
+            this->t = t2;
             // Reverse if making acute turns
             if (this->v * (t2 - t1) < 0) this->v = -this->v;
           }
