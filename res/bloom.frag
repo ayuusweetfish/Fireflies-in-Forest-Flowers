@@ -4,7 +4,7 @@ uniform sampler2D texture0;
 in vec2 fragTexCoord;
 out vec4 outValue;
 
-in vec2 samplePosition[25];
+in vec2 samplePosition[11];
 
 vec4 premul(vec2 pos)
 {
@@ -16,13 +16,14 @@ vec4 premul(vec2 pos)
 void main()
 {
   vec4 blurA = vec4(0);
-  blurA += 0.1611802577972412 * premul(samplePosition[12]);
-  blurA += 0.14878177642822266 * (premul(samplePosition[11]) + premul(samplePosition[13]));
-  blurA += 0.11689996719360352 * (premul(samplePosition[10]) + premul(samplePosition[14]));
-  blurA += 0.07793331146240234 * (premul(samplePosition[9]) + premul(samplePosition[15]));
-  blurA += 0.04383748769760132 * (premul(samplePosition[8]) + premul(samplePosition[16]));
-  blurA += 0.020629405975341797 * (premul(samplePosition[7]) + premul(samplePosition[17]));
+  blurA += 0.15497842 * (premul(samplePosition[5]));
+  blurA += 0.14464653 * (premul(samplePosition[4]) + premul(samplePosition[6]));
+  blurA += 0.11752530 * (premul(samplePosition[3]) + premul(samplePosition[7]));
+  blurA += 0.08295904 * (premul(samplePosition[2]) + premul(samplePosition[8]));
+  blurA += 0.05069719 * (premul(samplePosition[1]) + premul(samplePosition[9]));
+  blurA += 0.02668273 * (premul(samplePosition[0]) + premul(samplePosition[10]));
 
   outValue = blurA;
   if (outValue.a != 0.0) outValue.rgb /= outValue.a;
+  if (samplePosition[0].x == fragTexCoord.x) outValue.a = pow(outValue.a, 0.8);
 }
