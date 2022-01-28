@@ -38,12 +38,28 @@ struct vec2 {
   inline float norm() const { return sqrtf(x * x + y * y); }
 };
 
+struct tint4 {
+  float r, g, b, a;
+  tint4(float r = 0, float g = 0, float b = 0, float a = 1)
+    : r(r), g(g), b(b), a(a) { }
+};
+
 class painter {
 public:
   static void init();
   static void text(
     const char *s, int size,
     vec2 pos, vec2 anchor, float alpha);
+  static void image(
+    const char *name,
+    vec2 pos, vec2 dims,
+    tint4 tint);
+  static void image(
+    const char *name,
+    vec2 pos, vec2 dims,
+    vec2 src_pos, vec2 src_dims,
+    vec2 anchor, float rot,
+    tint4 tint);
 };
 
 #endif

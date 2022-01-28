@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
   SetTargetFPS(60);
 
   painter::init();
-  cur_scene = scene_game(99);
+  cur_scene = scene_game(13);
 
 #ifdef PLATFORM_WEB
   emscripten_set_main_loop(update_draw_frame, 0, 1);

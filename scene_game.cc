@@ -360,7 +360,6 @@ public:
   };
 
   struct bellflower_ord : public bellflower {
-    static rl::Texture2D texBellflowerOrd;
     bellflower_ord(vec2 o, float r, int c0)
       : bellflower(o, r, c0)
       { }
@@ -386,11 +385,11 @@ public:
       float t = since_on / 480.0f;
       float scale = 1;
       if (t < 2) scale = 1 + 0.15 * expf(-t) * sinf(t * 8) * (2 - t);
-      unsigned char alpha = 192 + (float)(63.5f * tint());
-      DrawTexturePro(texBellflowerOrd,
-        (Rectangle){0, 0, 80, 80},
-        (Rectangle){cen.x - 42, cen.y - 66 * scale, 80, 80 * scale},
-        (Vector2){0, 0}, 0, (Color){alpha, alpha, alpha, alpha});
+      float alpha = 0.75 + (0.25 * tint());
+      painter::image("bellflower_ord",
+        vec2(cen.x - 42, cen.y - 66 * scale),
+        vec2(80, 80 * scale),
+        tint4(alpha, alpha, alpha, alpha));
       char s[8];
       snprintf(s, sizeof s, "%d", c);
       painter::text(s, 32, vec2(cen.x, cen.y + 20), vec2(0.5, 0.5), 0.6);
@@ -427,7 +426,6 @@ public:
   };
 
   // ==== Scene ====
-  static bool static_initialized;
   int T;  // Update counter. Overflows after 51 days but whatever
 
   const char *level_title;
@@ -448,12 +446,11 @@ public:
   rl::Shader shaderBloom;
   int shaderBloomPassLoc;
 
-  rl::Texture2D texBackground;
   static const int BG_TREES_N = 25;
   struct {
     vec2 pos;
     float rot_cen, rot_amp, rot_period;
-    unsigned char tint;
+    float tint;
   } trees[BG_TREES_N];
 
   scene_game(int puzzle_id)
@@ -461,11 +458,6 @@ public:
       sel_ff(nullptr), sel_track(nullptr),
       trail_m(fireflies)
   {
-    if (!static_initialized) {
-      static_initialized = true;
-      bellflower_ord::texBellflowerOrd = rl::LoadTexture("res/bellflower_ord.png");
-    }
-
     std::vector<std::vector<int>> links;
     switch (puzzle_id) {
       #define T_cir   new track_cir
@@ -493,8 +485,6 @@ public:
   #endif
     shaderBloomPassLoc = rl::GetShaderLocation(shaderBloom, "pass");
 
-    texBackground = rl::LoadTexture("res/board_bg.png");
-
     unsigned seed = 20220128;
     for (const char *s = level_title; *s != '\0'; s++)
       seed = (seed * 997 + *s);
@@ -509,7 +499,7 @@ public:
         .rot_cen = (float)rands[2] / 0x7fffffff * (float)M_PI * 2,
         .rot_amp = 0.05f + (float)rands[3] / 0x7fffffff * 0.05f,
         .rot_period = 1200 + 1200 * (float)((rands[4] >> 8) % 256) / 256,
-        .tint = (unsigned char)(180 + ((rands[4] >> 16) % 32)),
+        .tint = (180 + ((rands[4] >> 16) % 32)) / 255.0f,
       };
     }
     for (int it = 0; it < 1000; it++) {
@@ -653,13 +643,15 @@ public:
       int id = i % 4;
       float rot = trees[i].rot_cen + trees[i].rot_amp *
         sinf((float)T / trees[i].rot_period * M_PI * 2);
-      unsigned char tint = trees[i].tint;
-      DrawTexturePro(texBackground,
-        (Rectangle){i * 240.f, 0, 240, 240},
-        (Rectangle){trees[i].pos.x, trees[i].pos.y, 240, 240},
-        (Vector2){120, 120},
-        rot * 180 / M_PI,
-        (Color){tint, tint, tint, 255});
+      float tint = trees[i].tint;
+      painter::image("board_bg",
+        trees[i].pos,
+        vec2(240, 240),
+        vec2(i * 240, 0),
+        vec2(240, 240),
+        vec2(120, 120),
+        rot,
+        tint4(tint, tint, tint));
     }
 
     // Rule grid
@@ -735,8 +727,6 @@ public:
       vec2(0, 1), 1);
   }
 };
-bool scene_game::static_initialized = false;
-rl::Texture2D scene_game::bellflower_ord::texBellflowerOrd;
 
 scene *scene_game(int level_id) {
   return new class scene_game(level_id);
