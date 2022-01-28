@@ -86,8 +86,12 @@ public:
     inline rl::Color tint() const {
       rl::Color t = (rl::Color){128, 128, 128, 255};
       if (flags & ATTRACT) t = (rl::Color){136, 136, 64, 255};
-      if (flags & RETURN) t = (rl::Color){64, 160, 216, 255};
-      if (sel) t = (rl::Color){216, 64, 32, 255};
+      if (flags & RETURN) t = (rl::Color){160, 96, 216, 255};
+      if (sel) {
+        t.r = 255 - (255 - t.r) / 2;
+        t.g = 255 - (255 - t.g) / 2;
+        t.b = 255 - (255 - t.b) / 2;
+      }
       /*if (flags & FIXED) {
         t.r = t.r * 2/3;
         t.g = t.g * 2/3;
@@ -275,7 +279,9 @@ public:
     }
     inline void draw(int offs) const {
       using namespace rl;
-      Color tint = (sel ? RED : (Color){255, 255, 16, 255});
+      Color tint = (sel ?
+        (Color){255, 64, 64, 255} :
+        (Color){255, 255, 16, 255});
       float alpha = 1.0/8 * (v < 1 ? 1 : v);
       Color fade = (Color){
         (unsigned char)(tint.r * alpha),
