@@ -401,7 +401,7 @@ public:
   };
 
   // ==== Scene ====
-  int T;
+  int T;  // Update counter. Overflows after 51 days but whatever
 
   const char *level_title;
   std::vector<track *> tracks;
@@ -420,6 +420,14 @@ public:
   rl::RenderTexture2D texBloomBase, texBloomStage1, texBloomStage2;
   rl::Shader shaderBloom;
   int shaderBloomPassLoc;
+
+  rl::Texture2D texBackground;
+  static const int BG_TREES_N = 25;
+  struct {
+    vec2 pos;
+    float rot_cen, rot_amp, rot_period;
+    unsigned char tint;
+  } trees[BG_TREES_N];
 
   scene_game(int puzzle_id)
     : T(0),
@@ -452,6 +460,41 @@ public:
     shaderBloom = rl::LoadShader("res/bloom.vert", "res/bloom.frag");
   #endif
     shaderBloomPassLoc = rl::GetShaderLocation(shaderBloom, "pass");
+
+    texBackground = rl::LoadTexture("res/board_bg.png");
+
+    unsigned seed = 20220128;
+    for (const char *s = level_title; *s != '\0'; s++)
+      seed = (seed * 997 + *s);
+    for (int i = 0; i < BG_TREES_N; i++) {
+      unsigned rands[5];
+      for (int j = 0; j < 5; j++) {
+        seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+        rands[j] = seed;
+      }
+      trees[i] = {
+        .pos = vec2(rands[0] % W, rands[1] % H),
+        .rot_cen = (float)rands[2] / 0x7fffffff * (float)M_PI * 2,
+        .rot_amp = 0.05f + (float)rands[3] / 0x7fffffff * 0.05f,
+        .rot_period = 1200 + 1200 * (float)((rands[4] >> 8) % 256) / 256,
+        .tint = (unsigned char)(180 + ((rands[4] >> 16) % 32)),
+      };
+    }
+    for (int it = 0; it < 1000; it++) {
+      for (int i = 0; i < BG_TREES_N; i++) {
+        vec2 move = vec2(0, 0);
+        for (int j = 0; j < BG_TREES_N; j++) if (j != i) {
+          vec2 d = (trees[i].pos - trees[j].pos);
+          if (d.norm() < 240)
+            move = move + d / d.norm() * (240 - d.norm());
+        }
+        trees[i].pos = trees[i].pos + move * 0.01;
+        if (trees[i].pos.x < 0) trees[i].pos.x /= 2;
+        if (trees[i].pos.x > W) trees[i].pos.x -= (trees[i].pos.x - W) / 2;
+        if (trees[i].pos.y < 0) trees[i].pos.y /= 2;
+        if (trees[i].pos.y > H) trees[i].pos.y -= (trees[i].pos.y - H) / 2;
+      }
+    }
   }
 
   inline void build_links(std::vector<std::vector<int>> links) {
@@ -571,7 +614,23 @@ public:
   void draw() {
     using namespace rl;
 
-    ClearBackground(BLACK);
+    ClearBackground((Color){5, 8, 1, 255});
+
+    // Background
+    for (int i = 0; i < BG_TREES_N; i++) {
+      int id = i % 4;
+      float rot = trees[i].rot_cen + trees[i].rot_amp *
+        sinf((float)T / trees[i].rot_period * M_PI * 2);
+      unsigned char tint = trees[i].tint;
+      DrawTexturePro(texBackground,
+        (Rectangle){i * 240.f, 0, 240, 240},
+        (Rectangle){trees[i].pos.x, trees[i].pos.y, 240, 240},
+        (Vector2){120, 120},
+        rot * 180 / M_PI,
+        (Color){tint, tint, tint, 255});
+    }
+
+    // Rule grid
     int x_range = (W / 2 / SCALE) + 1;
     for (int i = -x_range; i <= x_range; i++) {
       float x = scr(vec2(i, 0)).x;
