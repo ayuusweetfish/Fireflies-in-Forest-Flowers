@@ -51,6 +51,8 @@ public:
     return (vec2(x, y) - vec2(W, H) / 2) / SCALE;
   }
 
+  static const int STEPS = 480;
+
   // ==== Tracks ====
   struct track {
     vec2 o;
@@ -134,7 +136,11 @@ public:
     float t;
     inline vec2 pos() const { return tr->at(t); }
     float v;    // Velocity
+
     bool sel;   // Selected?
+    static const int TRAIL_N = 20;
+    static const int TRAIL_I = 8;
+    vec2 trail[TRAIL_N];
 
     firefly(const track *tr, float t, float v)
       : tr(tr), t(t), v(v),
@@ -144,7 +150,7 @@ public:
     inline void update(const std::vector<track *> &tracks) {
       float t_prev = t;
       vec2 p1 = pos();
-      t += v / 480;
+      t += v / STEPS;
       if (t >= tr->len) t -= tr->len;
       if (t < 0) t += tr->len;
       vec2 p2 = pos();
@@ -187,10 +193,53 @@ public:
         }
       }
     }
-    inline void draw() const {
+    inline void draw(int offs) const {
       using namespace rl;
-      DrawCircleV(scr(pos()), 4, sel ? RED : YELLOW);
+      Color tint = (sel ? RED : YELLOW);
+      float alpha = 1.0/8 * (v < 1 ? 1 : v);
+      Color fade = (Color){
+        (unsigned char)(tint.r * alpha),
+        (unsigned char)(tint.g * alpha),
+        (unsigned char)(tint.b * alpha),
+        (unsigned char)(tint.a * alpha)
+      };
+
+      DrawCircleV(scr(pos()), 4, tint);
+      for (int i = 0; i < TRAIL_N; i++) {
+        vec2 p = trail[(i + offs) % TRAIL_N];
+        DrawCircleV(scr(p), 4 - (float)i / TRAIL_N * 2, fade);
+      }
     }
+
+    struct trail_manager {
+      std::vector<firefly> &fireflies;
+      int counter = 0;
+      int pointer = 0;
+      trail_manager(std::vector<firefly> &fireflies)
+        : fireflies(fireflies),
+          counter(0), pointer(0)
+        { }
+
+      void reset() {
+        counter = pointer = 0;
+      }
+
+      void recalc_init() {
+        for (auto &f : fireflies) {
+          for (int i = 0; i < TRAIL_N; i++)
+            f.trail[i] = f.tr->at(f.t - f.v * (float(TRAIL_I) / STEPS) * i);
+        }
+      }
+
+      void step() {
+        if (++counter == TRAIL_I) {
+          counter = 0;
+          pointer = (pointer + (TRAIL_N - 1)) % TRAIL_N;
+          for (firefly &f : fireflies)
+            f.trail[pointer] = f.pos();
+        }
+      }
+    };
   };
 
   // ==== Bellflowers ====
@@ -245,7 +294,7 @@ public:
   struct bellflower_delay : public bellflower {
     int d, d0;
     bellflower_delay(vec2 o, float r, int c0, float d0)
-      : bellflower(o, r, c0), d0(d0 * 480)
+      : bellflower(o, r, c0), d0(d0 * STEPS)
       { reset(); }
     void reset() {
       bellflower::reset();
@@ -278,6 +327,8 @@ public:
   std::vector<bellflower *> bellflowers;
   std::vector<std::vector<std::pair<firefly *, float>>> ff_links;
 
+  firefly::trail_manager trail_m;
+
   firefly *sel_ff;
   track *sel_track;
   vec2 sel_offs;
@@ -289,7 +340,8 @@ public:
   int shaderBloomPassLoc;
 
   scene_game(int puzzle_id)
-    : sel_ff(nullptr), sel_track(nullptr)
+    : sel_ff(nullptr), sel_track(nullptr),
+      trail_m(fireflies)
   {
     std::vector<std::vector<int>> links;
     switch (puzzle_id) {
@@ -302,6 +354,8 @@ public:
       #include "puzzles.hh"
     }
     build_links(links);
+
+    trail_m.recalc_init();
 
     texBloomBase = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
     rl::SetTextureFilter(texBloomBase.texture, rl::TEXTURE_FILTER_BILINEAR);
@@ -380,11 +434,14 @@ public:
       sel_ff->t = sel_ff->tr->nearest(p + sel_offs).first;
       // Move linked fireflies
       int index = sel_ff - &fireflies[0];
-      for (const auto link : ff_links[index])
+      for (const auto link : ff_links[index]) {
         link.first->t = sel_ff->t + link.second;
+      }
+      trail_m.recalc_init();
     }
     if (sel_track != nullptr) {
       sel_track->o = p + sel_offs;
+      trail_m.recalc_init();
     }
   }
 
@@ -406,6 +463,7 @@ public:
   inline void stop_run() {
     fireflies = fireflies_init;
     for (auto b : bellflowers) b->reset();
+    trail_m.reset();
   }
 
   bool last_space_down = false;
@@ -422,6 +480,7 @@ public:
     if (run_state & 1) for (int i = 0; i < (run_state >> 1); i++) {
       for (auto &f : fireflies) f.update(tracks);
       for (auto b : bellflowers) b->update(fireflies);
+      trail_m.step();
     }
   }
 
@@ -448,7 +507,7 @@ public:
     BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE});
       ClearBackground(bg);
       for (const auto t : tracks) t->draw();
-      for (const auto &f : fireflies) f.draw();
+      for (const auto &f : fireflies) f.draw(trail_m.pointer);
       // DrawRectangle(0, 0, 100, 100, (Color){255, 255, 255, 128});
     EndMode2D();
     EndTextureMode();
