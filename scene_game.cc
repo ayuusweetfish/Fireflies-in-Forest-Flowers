@@ -341,25 +341,44 @@ public:
     }
 
     bool last_on;
+    int since_on, since_off;
     virtual void reset() {
       last_on = false;
+      since_on = since_off = 9999;
       c = c0;
     }
     void update(bool on) {
-      if (!last_on && on) c--;
+      since_on++;
+      since_off++;
+      if (!last_on && on) { c--; since_on = 0; }
+      if (last_on && !on) since_off = 0;
       last_on = on;
     }
     virtual void update(const std::vector<firefly> &fireflies) = 0;
-    virtual void draw() const = 0;
+    virtual void draw1() const { }
+    virtual void draw2() const { }
 
     inline bool fireflies_within(const std::vector<firefly> &fireflies) {
       for (const auto f : fireflies)
         if ((f.pos() - o).norm() <= r) return true;
       return false;
     }
+
+    inline float tint() const {
+      float t_on = since_on / 480.0f;
+      float t_off = since_off / 480.0f;
+      if (last_on) {
+        if (t_on >= 0.2) return 1;
+        return t_on * 5;
+      } else {
+        if (t_off >= 0.2) return 0;
+        return (0.2 - t_off) * 5;
+      }
+    }
   };
 
   struct bellflower_ord : public bellflower {
+    static rl::Texture2D texBellflowerOrd;
     bellflower_ord(vec2 o, float r, int c0)
       : bellflower(o, r, c0)
       { }
@@ -367,10 +386,29 @@ public:
       bool on = fireflies_within(fireflies);
       bellflower::update(on);
     }
-    void draw() const {
+    void draw1() const {
       using namespace rl;
-      DrawRing(scr(o), r * SCALE - 1, r * SCALE + 1, 0, 360, 48, (Color){64, 64, 64, 128});
-      DrawCircleV(scr(o), 0.5 * SCALE, last_on ? GREEN : GRAY);
+      Vector2 cen = scr(o);
+      Color off = (Color){32, 60, 96, 128};
+      Color on = (Color){96, 96, 64, 128};
+      DrawCircleV(cen, r * SCALE, (Color){
+        (unsigned char)(off.r + (float)(on.r - off.r) * tint()),
+        (unsigned char)(off.g + (float)(on.g - off.g) * tint()),
+        (unsigned char)(off.b + (float)(on.b - off.b) * tint()),
+        128
+      });
+    }
+    void draw2() const {
+      using namespace rl;
+      Vector2 cen = scr(o);
+      float t = since_on / 480.0f;
+      float scale = 1;
+      if (t < 2) scale = 1 + 0.15 * expf(-t) * sinf(t * 8) * (2 - t);
+      unsigned char alpha = 192 + (float)(63.5f * tint());
+      DrawTexturePro(texBellflowerOrd,
+        (Rectangle){0, 0, 80, 80},
+        (Rectangle){cen.x - 42, cen.y - 66 * scale, 80, 80 * scale},
+        (Vector2){0, 0}, 0, (Color){alpha, alpha, alpha, alpha});
       char s[8];
       snprintf(s, sizeof s, "%d", c);
       DrawText(s, scr(o).x - 4, scr(o).y - 8, 16, BLACK);
@@ -395,7 +433,7 @@ public:
       }
       bellflower::update(d == 0);
     }
-    void draw() const {
+    void draw1() const {
       using namespace rl;
       DrawRing(scr(o), r * SCALE - 1, r * SCALE + 1, 0, 360, 48, (Color){64, 64, 64, 128});
       DrawCircleV(scr(o), 0.5 * SCALE, GRAY);
@@ -407,6 +445,7 @@ public:
   };
 
   // ==== Scene ====
+  static bool static_initialized;
   int T;  // Update counter. Overflows after 51 days but whatever
 
   const char *level_title;
@@ -440,6 +479,11 @@ public:
       sel_ff(nullptr), sel_track(nullptr),
       trail_m(fireflies)
   {
+    if (!static_initialized) {
+      static_initialized = true;
+      bellflower_ord::texBellflowerOrd = rl::LoadTexture("res/bellflower_ord.png");
+    }
+
     std::vector<std::vector<int>> links;
     switch (puzzle_id) {
       #define T_cir   new track_cir
@@ -692,6 +736,8 @@ public:
 
     EndBlendMode();
 
+    for (const auto b : bellflowers) b->draw1();
+
     DrawTexturePro(texBloomBase.texture,
       (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
       (Rectangle){0, 0, W, H},
@@ -701,7 +747,7 @@ public:
       (Rectangle){0, 0, W, H},
       (Vector2){0, 0}, 0, WHITE);
 
-    for (const auto b : bellflowers) b->draw();
+    for (const auto b : bellflowers) b->draw2();
     DrawTextEx(
       GetFontDefault(),
       level_title,
@@ -709,6 +755,8 @@ public:
       32, 3, WHITE);
   }
 };
+bool scene_game::static_initialized = false;
+rl::Texture2D scene_game::bellflower_ord::texBellflowerOrd;
 
 scene *scene_game(int level_id) {
   return new class scene_game(level_id);
