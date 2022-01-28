@@ -1,6 +1,5 @@
 #include "main.hh"
 
-#include <cmath>
 #include <cstdio>
 #include <utility>
 #include <vector>
@@ -11,23 +10,6 @@
 #ifndef M_TAU
 #define M_TAU 6.28318530717958647692
 #endif
-
-struct vec2 {
-  float x, y;
-  vec2(float x = 0, float y = 0) : x(x), y(y) { }
-  inline vec2 operator + (const vec2 &b) const { return vec2(x + b.x, y + b.y); }
-  inline vec2 operator - (const vec2 &b) const { return vec2(x - b.x, y - b.y); }
-  inline vec2 operator - () const { return vec2(-x, -y); }
-  inline vec2 operator * (const float k) const { return vec2(x * k, y * k); }
-  inline vec2 operator / (const float k) const { return vec2(x / k, y / k); }
-  inline float dot(const vec2 &b) const { return x * b.x + y * b.y; }
-  inline float det(const vec2 &b) const { return x * b.y - y * b.x; }
-  inline vec2 rot(const float a) const {
-    float sin_a = sinf(a), cos_a = cosf(a);
-    return vec2(x * cos_a - y * sin_a, x * sin_a + y * cos_a);
-  }
-  inline float norm() const { return sqrtf(x * x + y * y); }
-};
 
 static inline bool seg_intxn(
   const vec2 a, const vec2 b,
@@ -411,7 +393,7 @@ public:
         (Vector2){0, 0}, 0, (Color){alpha, alpha, alpha, alpha});
       char s[8];
       snprintf(s, sizeof s, "%d", c);
-      DrawText(s, scr(o).x - 4, scr(o).y - 8, 16, BLACK);
+      painter::text(s, 32, vec2(cen.x, cen.y + 20), vec2(0.5, 0.5), 0.6);
     }
   };
 
@@ -748,11 +730,9 @@ public:
       (Vector2){0, 0}, 0, WHITE);
 
     for (const auto b : bellflowers) b->draw2();
-    DrawTextEx(
-      GetFontDefault(),
-      level_title,
-      (Vector2){20, H - 40},
-      32, 3, WHITE);
+    painter::text(level_title, 36,
+      vec2(20, H - 20),
+      vec2(0, 1), 1);
   }
 };
 bool scene_game::static_initialized = false;

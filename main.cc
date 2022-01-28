@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
   InitWindow(W, H, NULL);
   SetTargetFPS(60);
 
+  painter::init();
   cur_scene = scene_game(99);
 
 #ifdef PLATFORM_WEB
