@@ -476,7 +476,7 @@ public:
     rl::SetTextureFilter(texBloomBase.texture, rl::TEXTURE_FILTER_BILINEAR);
     texBloomStage1 = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
     rl::SetTextureFilter(texBloomStage1.texture, rl::TEXTURE_FILTER_BILINEAR);
-    texBloomStage2 = rl::LoadRenderTexture(W, H);
+    texBloomStage2 = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
     rl::SetTextureFilter(texBloomStage2.texture, rl::TEXTURE_FILTER_BILINEAR);
   #ifdef PLATFORM_WEB
     shaderBloom = rl::LoadShader("res/bloom_web.vert", "res/bloom_web.frag");
@@ -697,6 +697,7 @@ public:
     //GenTextureMipmaps(&texBloomStage1.texture);
 
     BeginTextureMode(texBloomStage2);
+    BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE});
     pass = 2;
     SetShaderValue(shaderBloom, shaderBloomPassLoc, &pass, SHADER_UNIFORM_INT);
     BeginShaderMode(shaderBloom);
@@ -706,6 +707,7 @@ public:
         (Rectangle){0, 0, W, H},
         (Vector2){0, 0}, 0, WHITE);
     EndShaderMode();
+    EndMode2D();
     EndTextureMode();
 
     EndBlendMode();
@@ -717,7 +719,7 @@ public:
       (Rectangle){0, 0, W, H},
       (Vector2){0, 0}, 0, (Color){255, 255, 255, 160});
     DrawTexturePro(texBloomStage2.texture,
-      (Rectangle){0, 0, W, -H},
+      (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
       (Rectangle){0, 0, W, H},
       (Vector2){0, 0}, 0, WHITE);
 
