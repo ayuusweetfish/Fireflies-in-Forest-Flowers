@@ -4,13 +4,6 @@
 #include <utility>
 #include <vector>
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-#ifndef M_TAU
-#define M_TAU 6.28318530717958647692
-#endif
-
 static inline bool seg_intxn(
   const vec2 a, const vec2 b,
   const vec2 c, const vec2 d
@@ -631,6 +624,7 @@ public:
       for (auto b : bellflowers) b->update(fireflies);
       trail_m.step();
     }
+    // if (T == 480 && level_title[0] == 'T') replace_scene(new scene_game(12));
   }
 
   void draw() {

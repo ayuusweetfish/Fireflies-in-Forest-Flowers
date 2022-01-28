@@ -21,6 +21,12 @@ public:
 scene *scene_startup();
 scene *scene_game(int level_id);
 
+void replace_scene(scene *s);
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 struct vec2 {
   float x, y;
   vec2(float x = 0, float y = 0) : x(x), y(y) { }
