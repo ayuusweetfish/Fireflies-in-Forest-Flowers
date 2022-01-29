@@ -451,7 +451,7 @@ public:
   // ==== Scene ====
   int T;  // Update counter. Overflows after 51 days but whatever
 
-  const char *level_title;
+  const char *title;
   std::vector<track *> tracks;
   std::vector<firefly> fireflies, fireflies_init;
   std::vector<bellflower *> bellflowers;
@@ -524,7 +524,7 @@ public:
     shaderBloomPassLoc = rl::GetShaderLocation(shaderBloom, "pass");
 
     unsigned seed = 20220128;
-    for (const char *s = level_title; *s != '\0'; s++)
+    for (const char *s = title; *s != '\0'; s++)
       seed = (seed * 997 + *s);
     for (int i = 0; i < BG_TREES_N; i++) {
       unsigned rands[5];
@@ -722,7 +722,7 @@ public:
         }
       }
     }
-    // if (T == 480 && level_title[0] == 'T') replace_scene(new scene_game(12));
+    // if (T == 480 && title[0] == 'T') replace_scene(new scene_game(12));
   }
 
   void draw() {
@@ -824,12 +824,12 @@ public:
     buttons.draw();
 
     // Title
-    painter::text(level_title, 36,
+    painter::text(title, 36,
       vec2(20, H - 20),
       vec2(0, 1), tint4(0.9, 0.9, 0.9, 1));
   }
 };
 
-scene *scene_game(int level_id) {
-  return new class scene_game(level_id);
+scene *scene_game(int puzzle_id) {
+  return new class scene_game(puzzle_id);
 }

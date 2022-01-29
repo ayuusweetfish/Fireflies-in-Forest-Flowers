@@ -1,5 +1,5 @@
 case 0:
-  level_title = "Firefly";
+  title = "Firefly";
   tracks = {
     T_cir(vec2(-3, 0), 3),
   };
@@ -12,7 +12,7 @@ case 0:
   break;
 
 case 1:
-  level_title = "Message";
+  title = "Message";
   tracks = {
     T_cir(vec2(0, 0), 4),
   };
@@ -26,7 +26,7 @@ case 1:
   break;
 
 case 5:
-  level_title = "Joined Together";
+  title = "Joined Together";
   tracks = {
     T_cir(vec2(0, 0), 4),
   };
@@ -44,7 +44,7 @@ case 5:
   break;
 
 case 6:
-  level_title = "Ebb and Flow";
+  title = "Ebb and Flow";
   tracks = {
     T_cir(vec2(0, 0), 4, track::FIXED, M_PI / 2),
   };
@@ -62,7 +62,7 @@ case 6:
   break;
 
 case 10:
-  level_title = "Twin Paradox";
+  title = "Twin Paradox";
   tracks = {
     T_cir(vec2(2, -1), 3, track::FIXED, 1),
     T_cir(vec2(-2, 1), 3, track::FIXED, 1),
@@ -82,7 +82,7 @@ case 10:
   break;
 
 case 11:
-  level_title = "Comet";
+  title = "Comet";
   tracks = {
     T_cir(vec2(-3, 0), sqrtf(5), track::FIXED, M_PI / 2),
     T_cir(vec2(-3, 0), 4, track::ATTRACT | track::FIXED, M_PI / 2),
@@ -100,7 +100,7 @@ case 11:
   break;
 
 case 12:
-  level_title = "Olympiad";
+  title = "Olympiad";
   tracks = {
     T_cir(vec2(-6, -1), 2, track::FIXED, 4, true),
     T_cir(vec2(-3, 1), 2, track::FIXED, 2, true),
@@ -129,7 +129,7 @@ case 12:
   break;
 
 case 13:
-  level_title = "Linger";
+  title = "Linger";
   tracks = {
     T_cir(vec2(0, -2), 3),
     T_cir(vec2(0, 0), 3, track::ATTRACT | track::FIXED, 1),
@@ -145,7 +145,7 @@ case 13:
   break;
 
 case 14:
-  level_title = "Accompany";
+  title = "Accompany";
   tracks = {
     T_seg(vec2(0, -1), vec2(5, 0), track::FIXED),
     T_seg(vec2(0, 1), vec2(5, 0), track::FIXED),
@@ -162,7 +162,7 @@ case 14:
   break;
 
 case 15:
-  level_title = "Circulation";
+  title = "Circulation";
   tracks = {
     T_cir(vec2(0, 0.5), 4.5, track::FIXED | track::ATTRACT),
     T_cir(vec2(0, 0.5), 2.5),
@@ -179,7 +179,7 @@ case 15:
   break;
 
 case 16:
-  level_title = "Chords";
+  title = "Chords";
   tracks = {
     T_cir(vec2(0, 0), 5, track::FIXED | track::ATTRACT, 1.35),
     T_seg(vec2(-0.5, -0.25), vec2(3, -6), track::ATTRACT),
@@ -203,7 +203,7 @@ case 16:
   break;
 
 case 17:
-  level_title = "Intertwined";
+  title = "Intertwined";
   tracks = {
     T_cir(vec2(-1, 0), 2.5, track::ATTRACT),
     T_cir(vec2(0, 0), 2.5, track::ATTRACT),
@@ -219,7 +219,7 @@ case 17:
   break;
 
 case 96:
-  level_title = "";
+  title = "";
   tracks = {
     T_cir(vec2(0, 0), 5, track::FIXED, M_PI / 2),
     T_cir(vec2(-6, 0), 3, track::FIXED | track::RETURN, M_PI, 1),
@@ -242,7 +242,7 @@ case 96:
   break;
 
 case 99:
-  level_title = "Testbed";
+  title = "Testbed";
   tracks = {
     T_cir(vec2(-6, -3), 2),
     T_cir(vec2(-4, -1), 3),
