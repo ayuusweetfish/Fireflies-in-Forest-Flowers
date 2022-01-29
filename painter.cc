@@ -58,6 +58,10 @@ void painter::init()
   load_tex("bellflower_ord", "res/bellflower_ord.png");
   load_tex("bellflower_call", "res/bellflower_call.png");
   load_tex("board_bg", "res/board_bg.png");
+  load_tex("btn_play", "res/btn_play.png");
+  load_tex("btn_stop", "res/btn_stop.png");
+  load_tex("btn_1x", "res/btn_1x.png");
+  load_tex("btn_2x", "res/btn_2x.png");
 }
 
 static inline unsigned char to_u8(float x) { return (unsigned char)(255.0f * x); }

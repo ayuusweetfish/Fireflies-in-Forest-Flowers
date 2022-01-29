@@ -1,4 +1,5 @@
 #include "main.hh"
+#include "utils.hh"
 
 #include <cstdio>
 #include <utility>
@@ -461,7 +462,7 @@ public:
   firefly *sel_ff;
   track *sel_track;
   vec2 sel_offs;
-  int run_state = 0;
+  int run_state = (4 << 1); // Initial speed 4 steps/update
   int finish_timer = -1;
 
   const float RT_SCALE = 2; // Scaling factor for render targets
@@ -476,11 +477,25 @@ public:
     float tint;
   } trees[BG_TREES_N];
 
+  button_group buttons;
+
   scene_game(int puzzle_id)
     : T(0),
       sel_ff(nullptr), sel_track(nullptr),
       trail_m(fireflies)
   {
+    using button = button_group::button;
+    buttons.buttons = {(button){
+      vec2(10, 10), vec2(60, 60),
+      nullptr,  // Will be filled later
+      [this]() { this->btn_play(); }
+    }, (button){
+      vec2(10, 80), vec2(60, 60),
+      nullptr,
+      [this]() { this->btn_speed(); }
+    }};
+    update_buttons_images();
+
     std::vector<std::vector<int>> links;
     switch (puzzle_id) {
       #define T_cir   new track_cir
@@ -583,7 +598,9 @@ public:
   }
 
   void pton(float x, float y) {
+    if (buttons.pton(x, y)) return;
     if (run_state & 1) return;
+
     vec2 p = board(x, y);
 
     auto near = find(p);
@@ -600,6 +617,8 @@ public:
   }
 
   void ptmove(float x, float y) {
+    if (buttons.ptmove(x, y)) return;
+
     vec2 p = board(x, y);
     if (sel_ff != nullptr) {
       sel_ff->t = sel_ff->tr->nearest(p + sel_offs).first;
@@ -617,6 +636,8 @@ public:
   }
 
   void ptoff(float x, float y) {
+    if (buttons.ptoff(x, y)) return;
+
     if (sel_ff != nullptr) {
       sel_ff->sel = false;
       sel_ff = nullptr;
@@ -627,17 +648,39 @@ public:
     }
   }
 
+  // Button callbacks
+  void btn_play() {
+    if (finish_timer >= 0) return;
+    run_state ^= 1;
+    if (run_state & 1) start_run(); else stop_run();
+  }
+  void btn_speed() {
+    if (finish_timer >= 0) return;
+    if ((run_state >> 1) == 4)
+      run_state = (16 << 1) | (run_state & 1);
+    else
+      run_state = (4 << 1) | (run_state & 1);
+    update_buttons_images();
+  }
+  inline void update_buttons_images() {
+    buttons.buttons[0].image = ((run_state & 1) ? "btn_stop" : "btn_play");
+    buttons.buttons[1].image = ((run_state >> 1) == 4 ? "btn_1x" : "btn_2x");
+  }
+
   inline void start_run() {
     // Save
     fireflies_init = fireflies;
+    update_buttons_images();
   }
   inline void stop_run() {
     fireflies = fireflies_init;
     for (auto b : bellflowers) b->reset();
     trail_m.reset();
+    update_buttons_images();
   }
 
   bool last_space_down = false;
+  bool last_tab_down = false;
   void update() {
     T++;
     if (finish_timer >= 0) finish_timer++;
@@ -650,10 +693,14 @@ public:
       if (run_state & 1) start_run(); else stop_run();
     }
     last_space_down = space_down;
-    if (finish_timer == -1)
-      run_state = (run_state & 1) |
-        ((rl::IsKeyDown(rl::KEY_GRAVE) ? 1 :
-          rl::IsKeyDown(rl::KEY_ONE) ? 48 : 4) << 1);
+
+    bool tab_down = rl::IsKeyDown(rl::KEY_TAB);
+    if (finish_timer == -1 &&
+        !last_tab_down && tab_down) {
+      btn_speed();
+    }
+    last_tab_down = tab_down;
+
     if (run_state & 1) for (int i = 0; i < (run_state >> 1); i++) {
       for (auto &f : fireflies) f.update(tracks);
       trail_m.step();
@@ -772,6 +819,11 @@ public:
       (Vector2){0, 0}, 0, WHITE);
 
     for (const auto b : bellflowers) b->draw2(finish_anim);
+
+    // Buttons
+    buttons.draw();
+
+    // Title
     painter::text(level_title, 36,
       vec2(20, H - 20),
       vec2(0, 1), tint4(0.9, 0.9, 0.9, 1));
