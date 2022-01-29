@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
   cur_scene = scene_game(1);
   //cur_scene = scene_startup();
   cur_scene = scene_text(5);
-  cur_scene = scene_game(1);
+  cur_scene = scene_game(13);
 
 #ifdef PLATFORM_WEB
   emscripten_set_main_loop(update_draw_frame, 0, 1);

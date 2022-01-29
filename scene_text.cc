@@ -31,8 +31,8 @@ static entry script[] = {
   entry(-1),
 
   // 10
-  entry("Nana? Can you see me?"),
-  entry(3),
+  entry("Nana! It's me!"),
+  entry(4),
 
   entry("A"),
   entry("B"),
