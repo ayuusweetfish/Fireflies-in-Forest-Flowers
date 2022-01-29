@@ -9,6 +9,8 @@ namespace rl {
 static const int W = 800;
 static const int H = 500;
 
+// Scenes
+
 class scene {
 public:
   virtual void update() {}
@@ -16,6 +18,7 @@ public:
   virtual void pton(float, float) {}
   virtual void ptmove(float, float) {}
   virtual void ptoff(float, float) {}
+  virtual ~scene() { }
 };
 
 scene *scene_startup();
@@ -23,6 +26,8 @@ scene *scene_text(int text_id);
 scene *scene_game(int level_id);
 
 void replace_scene(scene *s);
+
+// Maths
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -51,6 +56,8 @@ struct tint4 {
     : r(r), g(g), b(b), a(a) { }
 };
 
+// Painter
+
 class painter {
 public:
   static void init();
@@ -68,6 +75,47 @@ public:
     vec2 src_pos, vec2 src_dims,
     vec2 anchor, float rot,
     tint4 tint);
+};
+
+// Particle system
+
+struct psys {
+  int num, cap;
+  int spawn_intv;
+  int dur_min, dur_max;
+  float off_min, off_max;
+  float vel_min, vel_max;
+  float fre_min, fre_max; // Period
+  float amp_min, amp_max;
+  unsigned seed;
+
+  struct particle {
+    int dur, age;
+    float off, phs, vel, fre, amp;
+    inline vec2 pos() const {
+      return vec2(vel * age, off + sinf((phs + age / fre) * (2 * M_PI)) * amp);
+    }
+    inline float faint() const { return (float)(dur - age) / dur; }
+    inline float faint(int fade_in) const {
+      float f = faint();
+      if (age >= fade_in) return f;
+      float x = (float)age / fade_in;
+      return f * (1 - (1 - x) * (1 - x) * (1 - x));
+    }
+  };
+  particle *particles;
+
+  psys(
+    int cap,
+    float spawn_intv,
+    float dur_min, float dur_max,
+    float off_min, float off_max,
+    float vel_min, float vel_max,
+    float fre_min, float fre_max,
+    float amp_min, float amp_max,
+    unsigned seed);
+  ~psys();
+  void update();
 };
 
 #endif
