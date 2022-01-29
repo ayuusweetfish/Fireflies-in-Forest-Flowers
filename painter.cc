@@ -51,6 +51,7 @@ void painter::init()
 {
   font = LoadFont("res/Imprima.ttf");
   load_tex("bellflower_ord", "res/bellflower_ord.png");
+  load_tex("bellflower_call", "res/bellflower_call.png");
   load_tex("board_bg", "res/board_bg.png");
 }
 

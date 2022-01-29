@@ -2,10 +2,10 @@ in decreasing order of importance:
 
 * scene transitions (1h)
 - start/text scene (1h)
-- puzzle clear animation (1h)
+* puzzle clear animation (1h)
 - puzzle organization (1h)
 - storyboard illustration (3h)
-- bellflower at zero call (1h)
+* bellflower at zero call (1h)
 - buttons for play/stop/speed control (1h)
 - bloom/particle effect for bellflowers (2h)
 - music/audio (4h)

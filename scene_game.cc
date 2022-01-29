@@ -334,7 +334,7 @@ public:
       since_off++;
     }
     virtual void update(const std::vector<firefly> &fireflies) = 0;
-    virtual void draw1() const { }
+    virtual void draw1(int finish_anim) const { }
     virtual void draw2(int finish_anim) const { }
 
     inline bool fireflies_within(const std::vector<firefly> &fireflies) {
@@ -364,15 +364,20 @@ public:
       bool on = fireflies_within(fireflies);
       bellflower::update(on);
     }
-    void draw1() const {
+    void draw1(int finish_anim) const {
       using namespace rl;
       Vector2 cen = scr(o);
+      float t = tint();
+      if (finish_anim >= 0) {
+        float tf = finish_anim / 480.0f;
+        t *= (tf > 0.5 ? 0 : 1 - sqrtf(tf * 2));
+      }
       Color off = (Color){32, 60, 96, 128};
       Color on = (Color){96, 96, 64, 128};
       DrawCircleV(cen, r * SCALE, (Color){
-        (unsigned char)(off.r + (float)(on.r - off.r) * tint()),
-        (unsigned char)(off.g + (float)(on.g - off.g) * tint()),
-        (unsigned char)(off.b + (float)(on.b - off.b) * tint()),
+        (unsigned char)(off.r + (float)(on.r - off.r) * t),
+        (unsigned char)(off.g + (float)(on.g - off.g) * t),
+        (unsigned char)(off.b + (float)(on.b - off.b) * t),
         128
       });
     }
@@ -385,21 +390,24 @@ public:
       float scale = 1;
       if (t < 2) scale = 1 + 0.15 * expf(-t) * sinf(t * 8) * (2 - t);
       float alpha = 0.75 + (0.25 * tint());
+      if (c == 0) alpha = 1 - (1 - alpha) * 0.3;
 
       if (finish_anim >= 0) {
         float tf = finish_anim / 480.0f;
         alpha = alpha + (1 - alpha) * (tf > 0.5 ? 1 : sqrtf(tf * 2));
         const float A = 0.3;
-        const float B = A + 0.15;
+        const float B = A + 0.3;
         const float C = B + 2;
         if (tf >= A && tf < B) {
-          scale *= 0.6 + 0.4 * expf(-(tf - A) / (B - A)) * ((B - tf) / (B - A));
+          scale *= 0.7 + 0.3 * expf(-(tf - A) * 25) * ((B - tf) / (B - A));
         } else if (tf >= B && tf < C) {
-          scale *= 1 + 0.4 * expf(-(tf - B) * 2) * -cosf(-(tf - B) * 24) * ((C - tf) / (C - B));
+          float t = tf - B;
+          scale *= 1.0 - 0.3 * (expf(-20 * t) - expf(-5 * t) * sinf(24 * t)) * ((C - tf) / (C - B));
         }
       }
 
-      painter::image("bellflower_ord",
+      painter::image(
+        c == 0 ? "bellflower_call" : "bellflower_ord",
         vec2(cen.x - 42, cen.y - 66 * scale),
         vec2(80, 80 * scale),
         tint4(alpha, alpha, alpha, alpha));
@@ -428,7 +436,7 @@ public:
       }
       bellflower::update(d == 0);
     }
-    void draw1() const {
+    void draw1(int finish_anim) const {
       using namespace rl;
       DrawRing(scr(o), r * SCALE - 1, r * SCALE + 1, 0, 360, 48, (Color){64, 64, 64, 128});
       DrawCircleV(scr(o), 0.5 * SCALE, GRAY);
@@ -749,7 +757,10 @@ public:
 
     EndBlendMode();
 
-    for (const auto b : bellflowers) b->draw1();
+    int finish_anim = -1;
+    if (finish_timer >= 360)
+      finish_anim = finish_timer - 360;
+    for (const auto b : bellflowers) b->draw1(finish_anim);
 
     DrawTexturePro(texBloomBase.texture,
       (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
@@ -760,9 +771,6 @@ public:
       (Rectangle){0, 0, W, H},
       (Vector2){0, 0}, 0, WHITE);
 
-    int finish_anim = -1;
-    if (finish_timer >= 480)
-      finish_anim = finish_timer - 480;
     for (const auto b : bellflowers) b->draw2(finish_anim);
     painter::text(level_title, 36,
       vec2(20, H - 20),
