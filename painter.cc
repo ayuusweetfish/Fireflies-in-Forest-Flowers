@@ -55,17 +55,24 @@ void painter::init()
 }
 
 static inline unsigned char to_u8(float x) { return (unsigned char)(255.0f * x); }
+static inline Color to_rl(tint4 tint) {
+  return (Color){
+    to_u8(tint.r), to_u8(tint.g),
+    to_u8(tint.b), to_u8(tint.a)
+  };
+}
 
 void painter::text(
   const char *s, int size,
-  vec2 pos, vec2 anchor, float alpha)
+  vec2 pos, vec2 anchor,
+  tint4 tint)
 {
   Vector2 dims = MeasureTextEx(font, s, size, 0);
   DrawTextEx(
     font, s,
     (Vector2){pos.x - dims.x * anchor.x, pos.y - dims.y * anchor.y},
     size, 0,
-    (Color){255, 255, 255, to_u8(alpha)}
+    to_rl(tint)
   );
 }
 
@@ -94,9 +101,6 @@ void painter::image(
     (Rectangle){pos.x, pos.y, dims.x, dims.y},
     (Vector2){anchor.x, anchor.y},
     rot / M_PI * 180,
-    (Color){
-      to_u8(tint.r), to_u8(tint.g),
-      to_u8(tint.b), to_u8(tint.a)
-    }
+    to_rl(tint)
   );
 }

@@ -385,7 +385,8 @@ public:
         tint4(alpha, alpha, alpha, alpha));
       char s[8];
       snprintf(s, sizeof s, "%d", c);
-      painter::text(s, 32, vec2(cen.x, cen.y + 20), vec2(0.5, 0.5), 0.6);
+      painter::text(s, 32, vec2(cen.x, cen.y + 20), vec2(0.5, 0.5),
+        tint4(0.8, 0.8, 0.8, 0.6));
     }
   };
 
@@ -720,7 +721,7 @@ public:
     for (const auto b : bellflowers) b->draw2();
     painter::text(level_title, 36,
       vec2(20, H - 20),
-      vec2(0, 1), 1);
+      vec2(0, 1), tint4(0.9, 0.9, 0.9, 1));
   }
 };
 

@@ -19,6 +19,7 @@ public:
 };
 
 scene *scene_startup();
+scene *scene_text(int text_id);
 scene *scene_game(int level_id);
 
 void replace_scene(scene *s);
@@ -55,7 +56,8 @@ public:
   static void init();
   static void text(
     const char *s, int size,
-    vec2 pos, vec2 anchor, float alpha);
+    vec2 pos, vec2 anchor,
+    tint4 tint);
   static void image(
     const char *name,
     vec2 pos, vec2 dims,
