@@ -1,4 +1,4 @@
-case 0:
+case 1:
   title = "Firefly";
   tracks = {
     T_cir(vec2(-3, 0), 3),
@@ -9,9 +9,15 @@ case 0:
   bellflowers = {
     B_ord(vec2(4, 0), 2, 3),
   };
+  tutorials = {
+    {vec2(0, 4.5), "Drag the track to touch the bellflower"},
+    {vec2(1, 0), ">"},
+    {vec2(-5, -6), "Press the button to start"},
+  };
+  to_text = 5;
   break;
 
-case 1:
+case 2:
   title = "Message";
   tracks = {
     T_cir(vec2(0, 0), 4),
@@ -22,6 +28,18 @@ case 1:
   bellflowers = {
     B_ord(vec2(-5, 0), 2, 2),
     B_ord(vec2(5, 0), 2, 1),
+  };
+  tutorials = {
+    {vec2(0, -5), "Drag the firefly"},
+    {vec2(0, 5), "So that both bellflowers count down to zero"},
+  };
+  break;
+
+case 3:
+  title = "Plan";
+  tracks = {
+    T_cir(vec2(0, 0), 4),
+    T_cir(vec2(0, 0), 3),
   };
   break;
 

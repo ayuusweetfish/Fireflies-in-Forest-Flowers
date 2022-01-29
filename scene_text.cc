@@ -16,9 +16,24 @@ struct entry {
     { }
 };
 static entry script[] = {
-  entry("Here we are, the Magical Forest of Yonder.", "avatar_up"),
-  entry("Lorem ipsum\ndolor"),
-  entry(12),
+  // 0
+  entry("Here we are,\nthe Magical Forest of Yonder.", "avatar_up"),
+  entry("Where is Nana?", "avatar_up"),
+  entry("We don't see her, but we can\nlet her know that we care."),
+  entry("Come, meet the fireflies."),
+  entry(1),
+
+  // 5
+  entry("When a bellflower opens its petals,\na light can be seen from Nana's world as well."),
+  entry("Let's light up all of them! She can't miss it!"),
+  entry(2),
+  entry(-1),
+  entry(-1),
+
+  // 10
+  entry("Nana? Can you see me?"),
+  entry(3),
+
   entry("A"),
   entry("B"),
   entry("C"),
@@ -75,12 +90,12 @@ public:
       if (script[entry_id - 1].image != NULL)
         painter::image(
           script[entry_id - 1].image,
-          vec2(W * 0.5, H * 0.54), vec2(0.5, 1), vec2(1, 1),
+          vec2(W * 0.5, H * 0.47), vec2(0.5, 1), vec2(1, 1),
           tint4(1, 1, 1, last_alpha)
         );
       painter::text(
         script[entry_id - 1].text, 32,
-        vec2(W * 0.5, H * 0.6 + (-1 + displacement) * MOVE_Y), vec2(0.5, 0),
+        vec2(W * 0.5, H * 0.53 + (-1 + displacement) * MOVE_Y), vec2(0.5, 0),
         tint4(0.9, 0.9, 0.9, last_alpha)
       );
     }
@@ -88,12 +103,12 @@ public:
       if (script[entry_id].image != NULL)
         painter::image(
           script[entry_id].image,
-          vec2(W * 0.5, H * 0.54), vec2(0.5, 1), vec2(1, 1),
+          vec2(W * 0.5, H * 0.47), vec2(0.5, 1), vec2(1, 1),
           tint4(1, 1, 1, cur_alpha)
         );
       painter::text(
         script[entry_id].text, 32,
-        vec2(W * 0.5, H * 0.6 + displacement * MOVE_Y), vec2(0.5, 0),
+        vec2(W * 0.5, H * 0.53 + displacement * MOVE_Y), vec2(0.5, 0),
         tint4(0.9, 0.9, 0.9, cur_alpha)
       );
     }

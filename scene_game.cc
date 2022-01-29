@@ -451,11 +451,19 @@ public:
   // ==== Scene ====
   int T;  // Update counter. Overflows after 51 days but whatever
 
+  struct tutorial {
+    vec2 pos;
+    const char *text;
+  };
+
+  int puzzle_id;
   const char *title;
   std::vector<track *> tracks;
   std::vector<firefly> fireflies, fireflies_init;
   std::vector<bellflower *> bellflowers;
   std::vector<std::vector<std::pair<firefly *, float>>> ff_links;
+  std::vector<tutorial> tutorials;
+  int to_text;
 
   firefly::trail_manager trail_m;
 
@@ -481,6 +489,7 @@ public:
 
   scene_game(int puzzle_id)
     : T(0),
+      puzzle_id(puzzle_id),
       sel_ff(nullptr), sel_track(nullptr),
       trail_m(fireflies)
   {
@@ -495,6 +504,8 @@ public:
       [this]() { this->btn_speed(); }
     }};
     update_buttons_images();
+
+    to_text = -1;
 
     std::vector<std::vector<int>> links;
     switch (puzzle_id) {
@@ -722,7 +733,12 @@ public:
         }
       }
     }
-    // if (T == 480 && title[0] == 'T') replace_scene(new scene_game(12));
+    if (finish_timer == 960) {
+      if (to_text != -1)
+        replace_scene(scene_text(to_text));
+      else
+        replace_scene(new scene_game(puzzle_id + 1));
+    }
   }
 
   void draw() {
@@ -820,11 +836,21 @@ public:
 
     for (const auto b : bellflowers) b->draw2(finish_anim);
 
+    // Tutorials
+    for (const auto &t : tutorials) {
+      painter::text(t.text, 32,
+        vec2(scr(t.pos).x, scr(t.pos).y),
+        vec2(0.5, 0.5), tint4(0.6, 0.6, 0.6, 1));
+    }
+
     // Buttons
     buttons.draw();
 
     // Title
-    painter::text(title, 36,
+    char title_text[64];
+    snprintf(title_text, sizeof title_text,
+      "%02d. %s", puzzle_id, title);
+    painter::text(title_text, 36,
       vec2(20, H - 20),
       vec2(0, 1), tint4(0.9, 0.9, 0.9, 1));
   }
