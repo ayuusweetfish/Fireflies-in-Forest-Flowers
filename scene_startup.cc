@@ -43,9 +43,12 @@ public:
   void draw() {
     using namespace rl;
     painter::image("intro_bg", vec2(0, 0), tint4(1, 1, 1, 1));
-    painter::text("Fireflies, Flowers", 60,
-      vec2(40, 40), vec2(0, 0),
+    painter::text("Fireflies and Forest Flowers", 60,
+      vec2(40, 60), vec2(0, 0),
       tint4(0.9, 0.9, 0.9, 1));
+    painter::text("Press anywhere to start", 32,
+      vec2(40, 130), vec2(0, 0),
+      tint4(0.9, 0.9, 0.9, 0.4));
 
     for (int i = 0; i < ps_fireflies.num; i++) {
       auto p = ps_fireflies.particles[i];

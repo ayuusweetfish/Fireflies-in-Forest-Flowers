@@ -15,7 +15,7 @@ case 1:
     {vec2(1, -1), "drag"},
     {vec2(-4, -6), "Press the button to start flying"},
   };
-  to_text = 5;
+  to_text = 6;
   break;
 
 case 2:
@@ -390,6 +390,7 @@ case 20:
     B_ord(vec2(-6, 1), 4, 1),
     B_ord(vec2(6, -1), 4, 6),
   };
+  to_text = 15;
   break;
 
 /*

@@ -54,10 +54,17 @@ void painter::init()
     font[size] = LoadFontEx("res/Imprima.ttf", size, NULL, 95);
   }
   load_tex("intro_bg", "res/intro_bg.png");
-  load_tex("avatar_up", "res/avatar_up.png");
+  load_tex("avatar_intro", "res/avatar_intro.png");
+  load_tex("avatar_question", "res/avatar_question.png");
+  load_tex("avatar_bellflowers", "res/avatar_bellflowers.png");
+  load_tex("avatar_lightall", "res/avatar_lightall.png");
+  load_tex("avatar_lantern", "res/avatar_lantern.png");
+  load_tex("avatar_cat", "res/avatar_cat.png");
+
   load_tex("bellflower_ord", "res/bellflower_ord.png");
   load_tex("bellflower_call", "res/bellflower_call.png");
   load_tex("board_bg", "res/board_bg.png");
+
   load_tex("btn_play", "res/btn_play.png");
   load_tex("btn_stop", "res/btn_stop.png");
   load_tex("btn_1x", "res/btn_1x.png");

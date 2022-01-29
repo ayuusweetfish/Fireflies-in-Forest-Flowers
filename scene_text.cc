@@ -17,27 +17,34 @@ struct entry {
 };
 static entry script[] = {
   // 0
-  entry("Here we are,\nthe Magical Forest of Yonder.", "avatar_up"),
-  entry("Where is Nana?", "avatar_up"),
-  entry("We don't see her, but we can\nlet her know that we care."),
-  entry("Come, meet the fireflies."),
+  entry("Here we are,\nthe Magical Forest of Yonder.", "avatar_intro"),
+  entry("Where is Nana?\nIs she in this forest?", "avatar_question"),
+  entry("We won't see her, but we can\nlet her know that we care.", "avatar_intro"),
+  entry("...", "avatar_question"),
+  entry("Come, let the fireflies tell you.", "avatar_intro"),
+  // 5
   entry(1),
 
-  // 5
-  entry("When a bellflower opens its petals,\na light can be seen from Nana's world as well."),
-  entry("Let's light up all of them! She can't miss it!"),
+  // 6
+  entry("When a bellflower opens its petals,\na light can be seen from Nana's world as well.",
+    "avatar_bellflowers"),
+  entry("She will know it.", "avatar_intro"),
+  entry("Let's light up all of them! She can't miss it!", "avatar_lightall"),
   entry(2),
-  entry(-1),
-  entry(-1),
 
   // 10
-  entry("Nana! It's me!"),
+  entry("Nana! It's me!", "avatar_lantern"),
+  entry("How is your life there?", "avatar_bellflowers"),
+  entry("We miss you so much!", "avatar_lantern"),
   entry(4),
-
-  entry("A"),
-  entry("B"),
-  entry("C"),
   entry(-1),
+
+  // 15
+  entry("...?!", "avatar_cat"),
+  entry("Nana, we can't give you treats any more...\nYou must take care of yourself now!", "avatar_lantern"),
+  entry("Alice?! Is that you, Alice?!", "avatar_cat"),
+  entry("Fireflies and Forest Flowers\n- The End -"),
+  entry(-2),
 };
 
 class scene_text : public scene {
@@ -51,7 +58,8 @@ public:
   }
 
   void ptoff(float x, float y) {
-    if (script[entry_id].text != NULL && since_change >= 180) {
+    if (script[entry_id].text != NULL && since_change >= 180
+        && script[entry_id + 1].puzzle != -2) {
       entry_id++;
       since_change = 0;
     }
