@@ -373,13 +373,13 @@ public:
         float tf = finish_anim / 480.0f;
         t *= (tf > 0.5 ? 0 : 1 - sqrtf(tf * 2));
       }
-      Color off = (Color){32, 60, 96, 128};
-      Color on = (Color){96, 96, 64, 128};
+      Color off = (Color){32, 60, 96, 80};
+      Color on = (Color){96, 96, 64, 80};
       DrawCircleV(cen, r * SCALE, (Color){
         (unsigned char)(off.r + (float)(on.r - off.r) * t),
         (unsigned char)(off.g + (float)(on.g - off.g) * t),
         (unsigned char)(off.b + (float)(on.b - off.b) * t),
-        128
+        80
       });
     }
     void draw2(int finish_anim) const {
@@ -387,10 +387,10 @@ public:
 
       Vector2 cen = scr(o);
 
-      float t = since_on / 480.0f;
+      float t = since_on / 960.0f;
       float scale = 1;
       if (t < 2) scale = 1 + 0.15 * expf(-t) * sinf(t * 8) * (2 - t);
-      float alpha = 0.75 + (0.25 * tint());
+      float alpha = 0.85 + (0.15 * tint());
       if (c == 0) alpha = 1 - (1 - alpha) * 0.3;
 
       if (finish_anim >= 0) {
@@ -470,7 +470,7 @@ public:
   firefly *sel_ff;
   track *sel_track;
   vec2 sel_offs;
-  int run_state = (4 << 1); // Initial speed 4 steps/update
+  int run_state = (8 << 1); // Initial speed 8 steps/update
   int finish_timer = -1;
 
   const float RT_SCALE = 2; // Scaling factor for render targets
@@ -667,15 +667,15 @@ public:
   }
   void btn_speed() {
     if (finish_timer >= 0) return;
-    if ((run_state >> 1) == 4)
-      run_state = (16 << 1) | (run_state & 1);
+    if ((run_state >> 1) == 8)
+      run_state = (32 << 1) | (run_state & 1);
     else
-      run_state = (4 << 1) | (run_state & 1);
+      run_state = (8 << 1) | (run_state & 1);
     update_buttons_images();
   }
   inline void update_buttons_images() {
     buttons.buttons[0].image = ((run_state & 1) ? "btn_stop" : "btn_play");
-    buttons.buttons[1].image = ((run_state >> 1) == 4 ? "btn_1x" : "btn_2x");
+    buttons.buttons[1].image = ((run_state >> 1) == 8 ? "btn_1x" : "btn_2x");
   }
 
   inline void start_run() {
@@ -729,7 +729,7 @@ public:
           if (b->c != 0) { finish = false; break; }
         if (finish) {
           finish_timer = 0;
-          run_state = (4 << 1) | 1; // Back to normal speed
+          run_state = (8 << 1) | 1; // Back to normal speed
         }
       }
     }

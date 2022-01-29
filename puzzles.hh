@@ -1,18 +1,19 @@
 case 1:
   title = "Firefly";
   tracks = {
-    T_cir(vec2(-3, 0), 3),
+    T_cir(vec2(-4, 0), 3),
   };
   fireflies = {
     F(0, 0.5, 1),
   };
   bellflowers = {
-    B_ord(vec2(4, 0), 2, 3),
+    B_ord(vec2(5, 0), 2, 3),
   };
   tutorials = {
-    {vec2(0, 4.5), "Drag the track to touch the bellflower"},
+    {vec2(0, 4.5), "Get close to the bellflower to light it up"},
     {vec2(1, 0), ">"},
-    {vec2(-5, -6), "Press the button to start"},
+    {vec2(1, -1), "drag"},
+    {vec2(-4, -6), "Press the button to start flying"},
   };
   to_text = 5;
   break;
