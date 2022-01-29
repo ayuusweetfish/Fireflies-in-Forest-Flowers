@@ -49,6 +49,7 @@ public:
         flags(flags),
         sel(false)
       { }
+    virtual ~track() { }
     // Local position at given phase
     virtual vec2 local_at(float t) const = 0;
     vec2 at(float t) const { return local_at(t) + o; }
@@ -315,6 +316,7 @@ public:
     {
       reset();
     }
+    virtual ~bellflower() { }
 
     bool last_on;
     int since_on, since_off;
@@ -566,6 +568,15 @@ public:
         if (trees[i].pos.y > H) trees[i].pos.y -= (trees[i].pos.y - H) / 2;
       }
     }
+  }
+
+  ~scene_game() {
+    rl::UnloadRenderTexture(texBloomBase);
+    rl::UnloadRenderTexture(texBloomStage1);
+    rl::UnloadRenderTexture(texBloomStage2);
+    rl::UnloadShader(shaderBloom);
+    for (auto t : tracks) delete t;
+    for (auto b : bellflowers) delete b;
   }
 
   inline void build_links(std::vector<std::vector<int>> links) {
