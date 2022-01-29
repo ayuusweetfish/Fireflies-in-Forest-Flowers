@@ -329,9 +329,13 @@ public:
       if (last_on && !on) since_off = 0;
       last_on = on;
     }
+    void update_anim_only() {
+      since_on++;
+      since_off++;
+    }
     virtual void update(const std::vector<firefly> &fireflies) = 0;
     virtual void draw1() const { }
-    virtual void draw2() const { }
+    virtual void draw2(int finish_anim) const { }
 
     inline bool fireflies_within(const std::vector<firefly> &fireflies) {
       for (const auto f : fireflies)
@@ -372,13 +376,29 @@ public:
         128
       });
     }
-    void draw2() const {
+    void draw2(int finish_anim) const {
       using namespace rl;
+
       Vector2 cen = scr(o);
+
       float t = since_on / 480.0f;
       float scale = 1;
       if (t < 2) scale = 1 + 0.15 * expf(-t) * sinf(t * 8) * (2 - t);
       float alpha = 0.75 + (0.25 * tint());
+
+      if (finish_anim >= 0) {
+        float tf = finish_anim / 480.0f;
+        alpha = alpha + (1 - alpha) * (tf > 0.5 ? 1 : sqrtf(tf * 2));
+        const float A = 0.3;
+        const float B = A + 0.15;
+        const float C = B + 2;
+        if (tf >= A && tf < B) {
+          scale *= 0.6 + 0.4 * expf(-(tf - A) / (B - A)) * ((B - tf) / (B - A));
+        } else if (tf >= B && tf < C) {
+          scale *= 1 + 0.4 * expf(-(tf - B) * 2) * -cosf(-(tf - B) * 24) * ((C - tf) / (C - B));
+        }
+      }
+
       painter::image("bellflower_ord",
         vec2(cen.x - 42, cen.y - 66 * scale),
         vec2(80, 80 * scale),
@@ -434,6 +454,7 @@ public:
   track *sel_track;
   vec2 sel_offs;
   int run_state = 0;
+  int finish_timer = -1;
 
   const float RT_SCALE = 2; // Scaling factor for render targets
   rl::RenderTexture2D texBloomBase, texBloomStage1, texBloomStage2;
@@ -611,19 +632,40 @@ public:
   bool last_space_down = false;
   void update() {
     T++;
+    if (finish_timer >= 0) finish_timer++;
+
     bool space_down = rl::IsKeyDown(rl::KEY_SPACE);
-    if (sel_track == nullptr && !last_space_down && space_down) {
+    if (sel_track == nullptr &&
+        finish_timer == -1 &&
+        !last_space_down && space_down) {
       run_state ^= 1;
       if (run_state & 1) start_run(); else stop_run();
     }
     last_space_down = space_down;
-    run_state = (run_state & 1) |
-      ((rl::IsKeyDown(rl::KEY_GRAVE) ? 1 :
-        rl::IsKeyDown(rl::KEY_ONE) ? 16 : 4) << 1);
+    if (finish_timer == -1)
+      run_state = (run_state & 1) |
+        ((rl::IsKeyDown(rl::KEY_GRAVE) ? 1 :
+          rl::IsKeyDown(rl::KEY_ONE) ? 48 : 4) << 1);
     if (run_state & 1) for (int i = 0; i < (run_state >> 1); i++) {
       for (auto &f : fireflies) f.update(tracks);
-      for (auto b : bellflowers) b->update(fireflies);
       trail_m.step();
+
+      // No bellflowers are changed after finish
+      if (finish_timer == -1)
+        for (auto b : bellflowers) b->update(fireflies);
+      else
+        for (auto b : bellflowers) b->update_anim_only();
+
+      // Check for finish
+      if (finish_timer == -1) {
+        bool finish = true;
+        for (auto b : bellflowers)
+          if (b->c != 0) { finish = false; break; }
+        if (finish) {
+          finish_timer = 0;
+          run_state = (4 << 1) | 1; // Back to normal speed
+        }
+      }
     }
     // if (T == 480 && level_title[0] == 'T') replace_scene(new scene_game(12));
   }
@@ -718,7 +760,10 @@ public:
       (Rectangle){0, 0, W, H},
       (Vector2){0, 0}, 0, WHITE);
 
-    for (const auto b : bellflowers) b->draw2();
+    int finish_anim = -1;
+    if (finish_timer >= 480)
+      finish_anim = finish_timer - 480;
+    for (const auto b : bellflowers) b->draw2(finish_anim);
     painter::text(level_title, 36,
       vec2(20, H - 20),
       vec2(0, 1), tint4(0.9, 0.9, 0.9, 1));
