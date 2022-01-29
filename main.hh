@@ -43,6 +43,7 @@ struct vec2 {
   inline vec2 operator / (const float k) const { return vec2(x / k, y / k); }
   inline float dot(const vec2 &b) const { return x * b.x + y * b.y; }
   inline float det(const vec2 &b) const { return x * b.y - y * b.x; }
+  inline vec2 operator * (const vec2 &b) const { return vec2(x * b.x, y * b.y); }
   inline vec2 rot(const float a) const {
     float sin_a = sinf(a), cos_a = cosf(a);
     return vec2(x * cos_a - y * sin_a, x * sin_a + y * cos_a);
@@ -67,7 +68,15 @@ public:
     tint4 tint);
   static void image(
     const char *name,
+    vec2 pos,
+    tint4 tint);
+  static void image(
+    const char *name,
     vec2 pos, vec2 dims,
+    tint4 tint);
+  static void image(
+    const char *name,
+    vec2 pos, vec2 anchor, vec2 scale,
     tint4 tint);
   static void image(
     const char *name,

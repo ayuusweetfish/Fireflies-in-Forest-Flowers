@@ -54,6 +54,7 @@ void painter::init()
     font[size] = LoadFontEx("res/Imprima.ttf", size, NULL, 95);
   }
   load_tex("intro_bg", "res/intro_bg.png");
+  load_tex("avatar_up", "res/avatar_up.png");
   load_tex("bellflower_ord", "res/bellflower_ord.png");
   load_tex("bellflower_call", "res/bellflower_call.png");
   load_tex("board_bg", "res/board_bg.png");
@@ -83,6 +84,15 @@ void painter::text(
 
 void painter::image(
   const char *name,
+  vec2 pos,
+  tint4 tint)
+{
+  auto rec = tex(name);
+  image(name, pos, vec2(rec.width, rec.height), tint);
+}
+
+void painter::image(
+  const char *name,
   vec2 pos, vec2 dims,
   tint4 tint)
 {
@@ -90,6 +100,21 @@ void painter::image(
   image(name, pos, dims,
     vec2(0, 0), vec2(rec.width, rec.height),
     vec2(0, 0), 0,
+    tint);
+}
+
+void painter::image(
+  const char *name,
+  vec2 pos, vec2 anchor, vec2 scale,
+  tint4 tint)
+{
+  auto rec = tex(name);
+  auto dims = vec2(rec.width, rec.height);
+  image(name,
+    pos + (vec2(1, 1) - scale) * dims * anchor,
+    dims * scale,
+    vec2(0, 0), dims,
+    anchor * dims, 0,
     tint);
 }
 

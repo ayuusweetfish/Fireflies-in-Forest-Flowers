@@ -4,16 +4,25 @@
 
 struct entry {
   const char *text;
-  int puzzle;
+  union {
+    const char *image;
+    int puzzle;
+  };
+  entry(const char *text, const char *image = NULL)
+    : text(text), image(image)
+    { }
+  entry(int puzzle)
+    : text(NULL), puzzle(puzzle)
+    { }
 };
 static entry script[] = {
-  {"Here we are, the Magical Forest of Yonder.", -1},
-  {"Lorem ipsum\ndolor", -1},
-  {NULL, 12},
-  {"A", -1},
-  {"B", -1},
-  {"C", -1},
-  {NULL, -1},
+  entry("Here we are, the Magical Forest of Yonder.", "avatar_up"),
+  entry("Lorem ipsum\ndolor"),
+  entry(12),
+  entry("A"),
+  entry("B"),
+  entry("C"),
+  entry(-1),
 };
 
 class scene_text : public scene {
@@ -46,7 +55,7 @@ public:
     using namespace rl;
 
     ClearBackground((Color){5, 10, 1, 255});
-    painter::image("intro_bg", vec2(0, 0), vec2(W, H), tint4(1, 1, 1, 0.5));
+    painter::image("intro_bg", vec2(0, 0), tint4(1, 1, 1, 0.5));
 
     float cur_alpha = 1, last_alpha = 0;
     float displacement = 0;
@@ -62,18 +71,32 @@ public:
       displacement = exp(-2.5 * x) * (1 - x);
     }
 
-    if (last_alpha > 0)
+    if (last_alpha > 0) {
+      if (script[entry_id - 1].image != NULL)
+        painter::image(
+          script[entry_id - 1].image,
+          vec2(W * 0.5, H * 0.54), vec2(0.5, 1), vec2(1, 1),
+          tint4(1, 1, 1, last_alpha)
+        );
       painter::text(
         script[entry_id - 1].text, 32,
         vec2(W * 0.5, H * 0.6 + (-1 + displacement) * MOVE_Y), vec2(0.5, 0),
         tint4(0.9, 0.9, 0.9, last_alpha)
       );
-    if (script[entry_id].text != NULL)
+    }
+    if (script[entry_id].text != NULL) {
+      if (script[entry_id].image != NULL)
+        painter::image(
+          script[entry_id].image,
+          vec2(W * 0.5, H * 0.54), vec2(0.5, 1), vec2(1, 1),
+          tint4(1, 1, 1, cur_alpha)
+        );
       painter::text(
         script[entry_id].text, 32,
         vec2(W * 0.5, H * 0.6 + displacement * MOVE_Y), vec2(0.5, 0),
         tint4(0.9, 0.9, 0.9, cur_alpha)
       );
+    }
   }
 };
 
