@@ -548,7 +548,7 @@ public:
         .rot_cen = (float)rands[2] / 0x7fffffff * (float)M_PI * 2,
         .rot_amp = 0.05f + (float)rands[3] / 0x7fffffff * 0.05f,
         .rot_period = 1200 + 1200 * (float)((rands[4] >> 8) % 256) / 256,
-        .tint = (180 + ((rands[4] >> 16) % 32)) / 255.0f,
+        .tint = (192 + ((rands[4] >> 16) % 32)) / 255.0f,
       };
     }
     for (int it = 0; it < 1000; it++) {
@@ -752,6 +752,11 @@ public:
       float rot = trees[i].rot_cen + trees[i].rot_amp *
         sinf((float)T / trees[i].rot_period * M_PI * 2);
       float tint = trees[i].tint;
+      if (finish_timer >= 360 + 1.2 * 240) {
+        float x = (finish_timer - (360 + 1.2 * 240)) / (0.5 * 240.0f);
+        if (x > 1) x = 1; else x = 1 - (1 - x) * (1 - x);
+        tint = tint + (1 - tint) * x * 0.95;
+      }
       painter::image("board_bg",
         trees[i].pos,
         vec2(240, 240),
@@ -783,10 +788,8 @@ public:
       ClearBackground(bg);
       for (const auto t : tracks) t->draw(T);
       for (const auto &f : fireflies) f.draw(trail_m.pointer);
-      // DrawRectangle(0, 0, 100, 100, (Color){255, 255, 255, 128});
     EndMode2D();
     EndTextureMode();
-    //GenTextureMipmaps(&texBloomBase.texture);
 
     int pass;
     BeginTextureMode(texBloomStage1);
@@ -802,7 +805,6 @@ public:
     EndShaderMode();
     EndMode2D();
     EndTextureMode();
-    //GenTextureMipmaps(&texBloomStage1.texture);
 
     BeginTextureMode(texBloomStage2);
     BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE});
