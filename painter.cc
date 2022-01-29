@@ -6,7 +6,7 @@ using namespace rl;
 
 typedef unsigned long hash_t;
 
-static Font font;
+static std::map<int, Font> font;
 
 struct tex_record {
   Texture2D tex;
@@ -49,7 +49,11 @@ static inline tex_record tex(const char *name)
 
 void painter::init()
 {
-  font = LoadFont("res/Imprima.ttf");
+  for (int size : {32, 36, 60}) {
+    // 95 = ASCII range (32 ~ 126)
+    font[size] = LoadFontEx("res/Imprima.ttf", size, NULL, 95);
+  }
+  load_tex("intro_bg", "res/intro_bg.png");
   load_tex("bellflower_ord", "res/bellflower_ord.png");
   load_tex("bellflower_call", "res/bellflower_call.png");
   load_tex("board_bg", "res/board_bg.png");
@@ -68,9 +72,9 @@ void painter::text(
   vec2 pos, vec2 anchor,
   tint4 tint)
 {
-  Vector2 dims = MeasureTextEx(font, s, size, 0);
+  Vector2 dims = MeasureTextEx(font[size], s, size, 0);
   DrawTextEx(
-    font, s,
+    font[size], s,
     (Vector2){pos.x - dims.x * anchor.x, pos.y - dims.y * anchor.y},
     size, 0,
     to_rl(tint)

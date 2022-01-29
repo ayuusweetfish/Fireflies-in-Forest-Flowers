@@ -4,35 +4,22 @@
 
 class scene_startup : public scene {
 public:
-  int count;
-  float p[2];
-
   scene_startup() {
-    count = 100;
-    p[0] = -1;
-    p[1] = -1;
-  }
-
-  void ptmove(float x, float y) {
-    p[0] = x;
-    p[1] = y;
   }
 
   void ptoff(float x, float y) {
-    p[0] = -1;
+    replace_scene(scene_text(0));
   }
 
   void update() {
-    count++;
   }
 
   void draw() {
     using namespace rl;
-
-    ClearBackground(WHITE);
-    char s[32];
-    snprintf(s, sizeof s, "%f %f | %d", p[0], p[1], count);
-    DrawText(s, 10, H / 2, 30, BLACK);
+    painter::image("intro_bg", vec2(0, 0), vec2(W, H), tint4(1, 1, 1, 1));
+    painter::text("Fireflies, Flowers", 60,
+      vec2(40, 40), vec2(0, 0),
+      tint4(0.9, 0.9, 0.9, 1));
   }
 };
 

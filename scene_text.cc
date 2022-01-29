@@ -46,6 +46,7 @@ public:
     using namespace rl;
 
     ClearBackground((Color){5, 8, 1, 255});
+    painter::image("intro_bg", vec2(0, 0), vec2(W, H), tint4(1, 1, 1, 0.5));
 
     float cur_alpha = 1, last_alpha = 0;
     float displacement = 0;
