@@ -266,7 +266,64 @@ case 14:
   };
   break;
 
-case 102:
+case 15:
+  title = "Return";
+  tracks = {
+    T_cir(vec2(0, 1), 4, track::FIXED, M_PI / 2),
+    T_cir(vec2(-5, 1), 4, track::FIXED | track::RETURN, M_PI / 2),
+    T_cir(vec2(5, 1), 4, track::FIXED | track::RETURN, M_PI / 2),
+  };
+  fireflies = {
+    F(0, 0.75 - 0./3, 1),
+    F(0, 0.75 - 1./3, 1),
+    F(0, 0.75 - 2./3, 1),
+  };
+  links = {
+    {0, 1, 2},
+  };
+  bellflowers = {
+    B_ord(vec2(-5, -1), 2, 4),
+    B_ord(vec2(5, 3), 2, 2),
+  };
+  tutorials = {
+    {vec2(0, -4.5), "Repelling objects make fireflies turn around"},
+  };
+  break;
+
+case 16:
+  title = "Accompany";
+  tracks = {
+    T_seg(vec2(0, -1), vec2(5, 0), track::FIXED),
+    T_seg(vec2(0, 1), vec2(5, 0), track::FIXED),
+    T_seg(vec2(0, 3), vec2(0, 0.5), track::RETURN),
+  };
+  fireflies = {
+    F(0, 0.2, 1),
+    F(1, 0.3, 1),
+  };
+  bellflowers = {
+    B_ord(vec2(-6, 0), 2, 3),
+    B_ord(vec2(6, 0), 2, 1),
+  };
+  break;
+
+case 17:
+  title = "Linger";
+  tracks = {
+    T_cir(vec2(0, -2), 3),
+    T_cir(vec2(0, 0), 3, track::ATTRACT | track::FIXED, 1),
+    T_seg(vec2(4, 0), vec2(1.8, 0), track::RETURN | track::FIXED),
+  };
+  fireflies = {
+    F(0, 0.75, 1),
+  };
+  bellflowers = {
+    B_ord(vec2(-4, 0), 2, 1),
+    B_ord(vec2(4, 0), 2, 3),
+  };
+  break;
+
+case 18:
   title = "Olympiad";
   tracks = {
     T_cir(vec2(-6, -1), 2, track::FIXED, 4, true),
@@ -295,40 +352,7 @@ case 102:
   };
   break;
 
-case 103:
-  title = "Linger";
-  tracks = {
-    T_cir(vec2(0, -2), 3),
-    T_cir(vec2(0, 0), 3, track::ATTRACT | track::FIXED, 1),
-    T_seg(vec2(4, 0), vec2(1.8, 0), track::RETURN | track::FIXED),
-  };
-  fireflies = {
-    F(0, 0.75, 1),
-  };
-  bellflowers = {
-    B_ord(vec2(-4, 0), 2, 1),
-    B_ord(vec2(4, 0), 2, 3),
-  };
-  break;
-
-case 104:
-  title = "Accompany";
-  tracks = {
-    T_seg(vec2(0, -1), vec2(5, 0), track::FIXED),
-    T_seg(vec2(0, 1), vec2(5, 0), track::FIXED),
-    T_seg(vec2(0, 3), vec2(0, 0.5), track::RETURN),
-  };
-  fireflies = {
-    F(0, 0.2, 1),
-    F(1, 0.3, 1),
-  };
-  bellflowers = {
-    B_ord(vec2(-6, 0), 2, 3),
-    B_ord(vec2(6, 0), 2, 1),
-  };
-  break;
-
-case 16:
+case 19:
   title = "Chords";
   tracks = {
     T_cir(vec2(0, 0), 5, track::FIXED | track::ATTRACT, 1.35),
@@ -352,7 +376,7 @@ case 16:
   };
   break;
 
-case 17:
+case 20:
   title = "Intertwined";
   tracks = {
     T_cir(vec2(-1, 0), 2.5, track::ATTRACT),
@@ -368,8 +392,9 @@ case 17:
   };
   break;
 
+/*
 case 96:
-  title = "";
+  title = "Embellishment";
   tracks = {
     T_cir(vec2(0, 0), 5, track::FIXED, M_PI / 2),
     T_cir(vec2(-6, 0), 3, track::FIXED | track::RETURN, M_PI, 1),
@@ -386,8 +411,8 @@ case 96:
     {0, 1, 2, 3, 4},
   };
   bellflowers = {
-    B_ord(vec2(-5, -4), 2, 0),
-    B_ord(vec2(5, 4), 2, 0),
+    B_ord(vec2(-5, -4), 2, 7),
+    B_ord(vec2(5, 4), 2, 10),
   };
   break;
 
@@ -416,3 +441,4 @@ case 99:
     B_ord(vec2(1, 1), 2, 4),
   };
   break;
+*/

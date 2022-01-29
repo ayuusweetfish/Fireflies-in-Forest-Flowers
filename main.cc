@@ -90,11 +90,7 @@ int main(int argc, char *argv[])
   SetTargetFPS(60);
 
   painter::init();
-  cur_scene = scene_game(99);
-  cur_scene = scene_text(0);
-  cur_scene = scene_game(1);
   //cur_scene = scene_startup();
-  cur_scene = scene_text(5);
   cur_scene = scene_game(1);
 
 #ifdef PLATFORM_WEB
