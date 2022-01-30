@@ -19,7 +19,6 @@ RAYLIB_LIB ?= ./deps/raylib/build/raylib/libraylib.a
 RAYLIB_INC ?= ./deps/raylib/src
 RM ?= rm
 MD ?= mkdir
-DENO ?= deno
 
 CXXFLAGS := -I$(RAYLIB_INC) -I. -std=c++11
 LDFLAGS := $(RAYLIB_LIB)
