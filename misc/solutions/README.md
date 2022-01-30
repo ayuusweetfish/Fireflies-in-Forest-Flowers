@@ -1,6 +1,6 @@
 # Solutions to Fireflies and Forest Flowers
 
-**How to use**: There is a text hint and an image of the full solution.
+**How to use**: For each puzzle, there is a text hint and an image of the full solution.
 
 Text is encoded to avoid spoilers. To read the text —
 > paste whatever in this blockquote into the browser's address bar.
@@ -92,10 +92,10 @@ No text hint
 
 ### 18. Olympiad
 (1)
-> data:text/plain;base64,VGhlcmUgaXMgb25seSBvbmUgcmluZyBvbiB3aGljaCB0aGUgcmVwZWxsaW5nIGl0ZW0gaXMgcGxhY2VkLg==
+> data:text/plain;base64,VGhlcmUgaXMgb25seSBvbmUgcmluZyBvbiB3aGljaCB0aGUgcmVwZWxsaW5nIHJpbmcgY2FuIGJlIHBsYWNlZC4=
 
 (2)
-> data:text/plain;base64,TWFueSBsb2Nrc3RlcHMgaGFwcGVuLCBidXQgdGhlIHJlcGVsbGluZyBpdGVtIGRlc3luY2hyb25pc2VzIHRoZW0u
+> data:text/plain;base64,TWFueSBsb2Nrc3RlcHMgaGFwcGVuLCBidXQgdGhlIHJlcGVsbGluZyByaW5nIGRlc3luY2hyb25pc2VzIHRoZW0u
 
 [Image](img/18.png?raw=1)
 

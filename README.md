@@ -6,5 +6,7 @@ A puzzle game about fireflies and bellflowers.
 
 ![Screenshot](misc/screenshot.png)
 
+[Hints and solutions](misc/solutions/REAEDME.md)
+
 Source code is provided under [Mulan PSL v2](https://opensource.org/licenses/MulanPSL-2.0), a BSD-like permissive license.  
 Assets are provided under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
