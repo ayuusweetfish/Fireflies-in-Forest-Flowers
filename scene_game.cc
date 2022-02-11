@@ -771,7 +771,7 @@ public:
       painter::image("board_bg",
         trees[i].pos,
         vec2(240, 240),
-        vec2(i * 240, 0),
+        vec2(i % 4 * 240, 0),
         vec2(240, 240),
         vec2(120, 120),
         rot,
