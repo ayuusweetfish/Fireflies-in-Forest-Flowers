@@ -587,8 +587,11 @@ public:
         auto &list = ff_links[indep];
         float t = fireflies[indep].t;
         list.reserve(group.size() - 1);
-        for (const auto dep : group) if (dep != indep)
-          list.push_back({&fireflies[dep], fireflies[dep].t - t});
+        for (const auto dep : group) if (dep != indep) {
+          bool is_reverse = (fireflies[indep].v * fireflies[dep].v < 0);
+          float diff = (is_reverse ? fireflies[dep].t + t : fireflies[dep].t - t);
+          list.push_back({&fireflies[dep], diff});
+        }
       }
     }
   }
@@ -647,7 +650,10 @@ public:
       // Move linked fireflies
       int index = sel_ff - &fireflies[0];
       for (const auto link : ff_links[index]) {
-        link.first->t = sel_ff->t + link.second;
+        link.first->t =
+          (link.first->v * sel_ff->v < 0) ?
+            link.second - sel_ff->t :
+            link.second + sel_ff->t;
       }
       trail_m.recalc_init();
     }

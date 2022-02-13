@@ -1,5 +1,25 @@
-case 1:
+case 0:
   title = "Firefly";
+  tracks = {
+    T_cir(vec2(-1, 0), 3),
+  };
+  fireflies = {
+    F(0, 0.6, 1),
+  };
+  bellflowers = {
+    B_ord(vec2(3, 0), 2, 3),
+  };
+  tutorials = {
+    {vec2(-7, -2), "This is the firefly"},
+    {vec2(-1, 4), "This is its track"},
+    {vec2(6, 3), "Bellflowers are lit up"},
+    {vec2(6, 4), "by fireflies"},
+    {vec2(-4, -6), "Press the button to start flying"},
+  };
+  break;
+
+case 1:
+  title = "Closer";
   tracks = {
     T_cir(vec2(-4, 0), 3),
   };
@@ -10,10 +30,8 @@ case 1:
     B_ord(vec2(5, 0), 2, 3),
   };
   tutorials = {
-    {vec2(0, 4.5), "Get close to the bellflower to light it up"},
     {vec2(1, 0), ">"},
-    {vec2(1, -1), "drag"},
-    {vec2(-4, -6), "Press the button to start flying"},
+    {vec2(-4, 4), "Drag the track to move it"},
   };
   to_text = 6;
   break;
@@ -37,7 +55,7 @@ case 2:
   break;
 
 case 3:
-  title = "Plan";
+  title = "Arrangement";
   tracks = {
     T_cir(vec2(0, 0), 3),
     T_cir(vec2(0, 0), 2),
@@ -87,28 +105,7 @@ case 5:
   break;
 
 case 6:
-  title = "Ebb and Flow";
-  tracks = {
-    T_cir(vec2(0, 0), 4),
-  };
-  fireflies = {
-    F(0, 0.125, 0.5),
-    F(0, 0.875, 2),
-  };
-  links = {
-    {0, 1},
-  };
-  bellflowers = {
-    B_ord(vec2(-5, 0), 2, 6),
-    B_ord(vec2(5, 0), 2, 3),
-  };
-  tutorials = {
-    {vec2(0, -5), "Fireflies may travel at different speeds"},
-  };
-  break;
-
-case 7:
-  title = "Constraint";
+  title = "Fate";
   tracks = {
     T_cir(vec2(-6, -1), 2),
     T_cir(vec2(0, -1), 2, track::FIXED),
@@ -131,24 +128,48 @@ case 7:
   };
   break;
 
-case 8:
-  title = "Comrade";
+case 7:
+  title = "Encounter";
   tracks = {
     T_cir(vec2(-4, 1), 3, track::FIXED, M_PI / 2),
     T_cir(vec2(4, 1), 3, track::FIXED, M_PI / 2),
   };
   fireflies = {
-    F(0, 0.625, 1),
-    F(1, 0.125, -1),
+    F(0, 0.75, 1),
+    F(1, 0.825, -1),
   };
   bellflowers = {
     B_ord(vec2(0, 0), 2, 1),
-    B_ord(vec2(-8, 1), 2, 2),
+    B_ord(vec2(-8, 1), 2, 1),
     B_ord(vec2(8, 1), 2, 2),
+  };
+  links = {
+    {0, 1},
   };
   tutorials = {
     {vec2(0, -4.5), "The bellflower is lit up"},
     {vec2(0, -3.5), "as long as any firefly is close"},
+  };
+  break;
+
+case 8:
+  title = "Ebb and Flow";
+  tracks = {
+    T_cir(vec2(0, 0), 4, track::FIXED, M_PI / 2),
+  };
+  fireflies = {
+    F(0, 0.125, 0.5),
+    F(0, 0.875, 1.9),
+  };
+  links = {
+    {0, 1},
+  };
+  bellflowers = {
+    B_ord(vec2(-5, 0), 2, 6),
+    B_ord(vec2(5, 0), 2, 3),
+  };
+  tutorials = {
+    {vec2(0, -5), "Fireflies may travel at different speeds"},
   };
   break;
 
