@@ -10,11 +10,11 @@ case 0:
     B_ord(vec2(3, 0), 2, 3),
   };
   tutorials = {
-    {vec2(-7, -2), "This is the firefly"},
-    {vec2(-1, 4), "This is its track"},
-    {vec2(6, 3), "Bellflowers are lit up"},
-    {vec2(6, 4), "by fireflies"},
-    {vec2(-4, -6), "Press the button to start flying"},
+    {vec2(-1, -2) + vec2(3, 0).rot(1.2 * M_PI),
+      "This is the firefly", vec2(-1, 0) + vec2(3, 0).rot(1.2 * M_PI), 1},
+    {vec2(-1, 4.5), "This is its track", vec2(-1, 0), 3.5},
+    {vec2(6, 3.5), "This is the bellflower", vec2(3, 0), 2.5},
+    {vec2(-3.25, -6), "Now press the button to start flying"},
   };
   break;
 

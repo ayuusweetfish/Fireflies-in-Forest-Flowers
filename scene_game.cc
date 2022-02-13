@@ -456,6 +456,8 @@ public:
   struct tutorial {
     vec2 pos;
     const char *text;
+    vec2 cir;
+    float cir_radius;
   };
 
   int puzzle_id;
@@ -469,6 +471,9 @@ public:
 
   firefly::trail_manager trail_m;
 
+  int tut_show_start, tut_show_end;
+  int tut_show_time, tut_hide_time;
+
   firefly *sel_ff;
   track *sel_track;
   vec2 sel_offs;
@@ -479,6 +484,9 @@ public:
   rl::RenderTexture2D texBloomBase, texBloomStage1, texBloomStage2;
   rl::Shader shaderBloom;
   int shaderBloomPassLoc;
+
+  rl::Shader shaderSpotlight;
+  int shaderSpotlightCenLoc, shaderSpotlightRadLoc;
 
   static const int BG_TREES_N = 25;
   struct {
@@ -523,6 +531,10 @@ public:
 
     trail_m.recalc_init();
 
+    tut_show_start = 0;
+    update_tut_show_range(true);
+    tut_hide_time = -1;
+
     texBloomBase = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
     rl::SetTextureFilter(texBloomBase.texture, rl::TEXTURE_FILTER_BILINEAR);
     texBloomStage1 = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
@@ -531,10 +543,14 @@ public:
     rl::SetTextureFilter(texBloomStage2.texture, rl::TEXTURE_FILTER_BILINEAR);
   #ifdef PLATFORM_WEB
     shaderBloom = rl::LoadShader("res/bloom_web.vert", "res/bloom_web.frag");
+    shaderSpotlight = rl::LoadShader("res/spotlight_web.vert", "res/spotlight_web.frag");
   #else
     shaderBloom = rl::LoadShader("res/bloom.vert", "res/bloom.frag");
+    shaderSpotlight = rl::LoadShader("res/spotlight.vert", "res/spotlight.frag");
   #endif
     shaderBloomPassLoc = rl::GetShaderLocation(shaderBloom, "pass");
+    shaderSpotlightCenLoc = rl::GetShaderLocation(shaderSpotlight, "spotCen");
+    shaderSpotlightRadLoc = rl::GetShaderLocation(shaderSpotlight, "spotRadius");
 
     unsigned seed = 20220128;
     for (const char *s = title; *s != '\0'; s++)
@@ -596,6 +612,21 @@ public:
     }
   }
 
+  inline bool tut_has_next() const {
+    return (tut_show_start < tutorials.size() &&
+      tutorials[tut_show_end - 1].cir_radius != 0);
+  }
+  inline void update_tut_show_range(bool always = false) {
+    if (!always && !tut_has_next()) return;
+    for (tut_show_end = tut_show_start;
+         tut_show_end < tutorials.size(); tut_show_end++)
+      if (tutorials[tut_show_end].cir_radius != 0) {
+        tut_show_end++;
+        break;
+      }
+    tut_show_time = T;
+  }
+
   inline std::pair<firefly *, track *> find(const vec2 p) {
     // Find the nearest firefly
     firefly *best_ff = nullptr;
@@ -623,6 +654,7 @@ public:
   }
 
   void pton(float x, float y) {
+    if (tut_has_next()) return;
     if (buttons.pton(x, y)) return;
     if (run_state & 1) return;
 
@@ -642,6 +674,7 @@ public:
   }
 
   void ptmove(float x, float y) {
+    if (tut_has_next()) return;
     if (buttons.ptmove(x, y)) return;
 
     vec2 p = board(x, y);
@@ -664,6 +697,9 @@ public:
   }
 
   void ptoff(float x, float y) {
+    if (tut_has_next()) {
+      if (tut_hide_time == -1) tut_hide_time = T;
+    }
     if (buttons.ptoff(x, y)) return;
 
     if (sel_ff != nullptr) {
@@ -712,6 +748,11 @@ public:
   void update() {
     T++;
     if (finish_timer >= 0) finish_timer++;
+    if (tut_hide_time >= 0 && T == tut_hide_time + 60) {
+      tut_hide_time = -1;
+      tut_show_start = tut_show_end;
+      update_tut_show_range();
+    }
 
     bool space_down = rl::IsKeyDown(rl::KEY_SPACE);
     if (sel_track == nullptr &&
@@ -856,10 +897,33 @@ public:
     for (const auto b : bellflowers) b->draw2(finish_anim);
 
     // Tutorials
-    for (const auto &t : tutorials) {
+    float tut_alpha = 1;
+    if (tut_hide_time >= 0) {
+      tut_alpha = 1 - (float)(T - tut_hide_time) / 60;
+    } else if (T - tut_show_time < 60) {
+      tut_alpha = (float)(T - tut_show_time) / 60;
+    }
+
+    if (tut_has_next()) {
+      const auto &t = tutorials[tut_show_end - 1];
+      float spotlightCen[2] = {scr(t.cir).x, scr(t.cir).y};
+      float spotlightRadius = t.cir_radius * SCALE
+        - 20 * (1 - tut_alpha) * (1 - tut_alpha);
+      SetShaderValue(shaderSpotlight, shaderSpotlightCenLoc,
+        spotlightCen, SHADER_UNIFORM_VEC2);
+      SetShaderValue(shaderSpotlight, shaderSpotlightRadLoc,
+        &spotlightRadius, SHADER_UNIFORM_FLOAT);
+      BeginShaderMode(shaderSpotlight);
+      DrawRectangle(0, 0, W, H,
+        (Color){255, 255, 255, (unsigned char)(255 * tut_alpha)});
+      EndShaderMode();
+    }
+
+    for (int i = tut_show_start; i < tut_show_end; i++) {
+      const auto &t = tutorials[i];
       painter::text(t.text, 32,
         vec2(scr(t.pos).x, scr(t.pos).y),
-        vec2(0.5, 0.5), tint4(0.6, 0.6, 0.6, 1));
+        vec2(0.5, 0.5), tint4(0.6, 0.6, 0.6, tut_alpha));
     }
 
     // Buttons
