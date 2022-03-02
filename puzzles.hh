@@ -188,6 +188,7 @@ case 9:
     B_ord(vec2(-6, 1), 2, 2),
     B_ord(vec2(6, 1), 2, 1),
   };
+  to_text = 15;
   break;
 
 case 10:
@@ -285,6 +286,7 @@ case 14:
     B_ord(vec2(-5, 3), 2, 4),
     B_ord(vec2(5, 3), 2, 1),
   };
+  to_text = 20;
   break;
 
 case 15:
@@ -411,7 +413,7 @@ case 20:
     B_ord(vec2(-6, 1), 4, 1),
     B_ord(vec2(6, -1), 4, 6),
   };
-  to_text = 15;
+  to_text = 25;
   break;
 
 /*

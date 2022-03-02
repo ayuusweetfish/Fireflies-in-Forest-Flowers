@@ -91,9 +91,9 @@ int main(int argc, char *argv[])
 
   painter::init();
   cur_scene = scene_startup();
-  //cur_scene = scene_game(0);
+  //cur_scene = scene_game(9);
   //cur_scene = scene_game(20);
-  //cur_scene = scene_text(15);
+  cur_scene = scene_text(15);
 
 #ifdef PLATFORM_WEB
   emscripten_set_main_loop(update_draw_frame, 0, 1);

@@ -40,6 +40,20 @@ static entry script[] = {
   entry(-1),
 
   // 15
+  entry("Nana does not want you to be sad."),
+  entry("You might see her in the dreams.", "avatar_intro"),
+  entry("Nighty-night."),
+  entry(10),
+  entry(-1),
+
+  // 20
+  entry("Nana, if you can hear me..."),
+  entry("... please let a wild cat tell me."),
+  entry("..."),
+  entry("..."),
+  entry(15),
+
+  // 25
   entry("...?!", "avatar_cat"),
   entry("Nana, we can't give you treats any more...\nYou must take care of yourself now!", "avatar_lantern"),
   entry("Alice?! Is that you, Alice?!", "avatar_cat"),
