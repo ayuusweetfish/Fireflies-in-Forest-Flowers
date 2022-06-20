@@ -48,14 +48,15 @@ static entry script[] = {
 
   // 20
   entry("Nana, if you can hear me..."),
-  entry("... please let a wild cat tell me."),
+  entry("... please let your wild friend tell me."),
   entry("..."),
   entry("..."),
   entry(15),
 
   // 25
   entry("...?!", "avatar_cat"),
-  entry("Nana, we can't give you treats any more...\nYou must take care of yourself now!", "avatar_lantern"),
+  entry("Nana, we can't give you treats any more...", "avatar_lantern"),
+  entry("You must take care of yourself!", "avatar_lantern"),
   entry("Alice?! Is that you, Alice?!", "avatar_cat"),
   entry("Fireflies and Forest Flowers\n- The End -"),
   entry(-2),
