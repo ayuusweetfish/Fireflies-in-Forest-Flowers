@@ -21,7 +21,7 @@ case 0:
 case 1:
   title = "Closer";
   tracks = {
-    T_cir(vec2(-4, 0), 3),
+    T_cir(vec2(-5, 0), 2.5),
   };
   fireflies = {
     F(0, 0.5, 1),
@@ -30,8 +30,12 @@ case 1:
     B_ord(vec2(5, 0), 2, 3),
   };
   tutorials = {
-    {vec2(1, 0), ">"},
-    {vec2(-4, 4), "Drag the track to move it"},
+    {vec2(-1, 0), ">"},
+    {vec2(-5, 4), "Drag the track to move it",
+      vec2(-5, 0), 3,
+      vec2(3, 0), 3},
+    {vec2(-7.8, -6), "(Space)"},
+    {vec2(-8.18, -4.25), "(Tab)"},
   };
   to_text = 6;
   break;
@@ -122,7 +126,12 @@ case 6:
     B_ord(vec2(6, 0), 2, 2),
   };
   tutorials = {
-    {vec2(0, -5.5), "Tracks with marks"},
+    {vec2(0, -5.5), "Tracks with fix marks"},
+    {vec2(0, -4.5), "cannot be moved", vec2(-2, -1), 1, vec2(2, 3), 1},
+    {vec2(0, 4.5), "...but fireflies still can",
+      vec2(0, -3), 1,
+      vec2(0, 2.5) - vec2(2, 0.5) * 0.4, 1},
+    {vec2(0, -5.5), "Tracks with fix marks"},
     {vec2(0, -4.5), "cannot be moved"},
     {vec2(0, 4.5), "...but fireflies still can"},
   };

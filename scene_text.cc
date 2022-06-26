@@ -19,11 +19,11 @@ static entry script[] = {
   // 0
   entry("Here we are,\nthe Magical Forest of Yonder.", "avatar_intro"),
   entry("Where is Nana?\nIs she in this forest?", "avatar_question"),
-  entry("We won't see her, but we can\nlet her know that we care.", "avatar_intro"),
+  entry("We won't see her, but we can\nlet her know that we've come.", "avatar_intro"),
   entry("...", "avatar_question"),
-  entry("Come, let the fireflies tell you.", "avatar_intro"),
+  entry("Here, let the fireflies tell you.", "avatar_intro"),
   // 5
-  entry(1),
+  entry(0),
 
   // 6
   entry("When a bellflower opens its petals,\na light can be seen from Nana's world as well.",
@@ -40,17 +40,17 @@ static entry script[] = {
   entry(-1),
 
   // 15
-  entry("Nana does not want you to be sad."),
-  entry("You might see her in the dreams.", "avatar_intro"),
-  entry("Nighty-night."),
+  entry("Nana does not want to see you sad.", "avatar_bedside"),
+  entry("You might meet her in the dreams.", "avatar_intro"),
+  entry("Nighty-night.", "avatar_night"),
   entry(10),
   entry(-1),
 
   // 20
-  entry("Nana, if you can hear me..."),
-  entry("... please let your wild friend tell me."),
-  entry("..."),
-  entry("..."),
+  entry("Nana, if you can hear me...", "avatar_bush"),
+  entry("... please let your wild friend appear.", "avatar_oracle"),
+  entry("...", "avatar_bush"),
+  entry("...", "avatar_oracle"),
   entry(15),
 
   // 25
@@ -58,7 +58,6 @@ static entry script[] = {
   entry("Nana, we can't give you treats any more...", "avatar_lantern"),
   entry("You must take care of yourself!", "avatar_lantern"),
   entry("Alice?! Is that you, Alice?!", "avatar_cat"),
-  entry("Fireflies and Forest Flowers\n- The End -"),
   entry(-2),
 };
 
@@ -73,8 +72,7 @@ public:
   }
 
   void ptoff(float x, float y) {
-    if (script[entry_id].text != NULL && since_change >= 180
-        && script[entry_id + 1].puzzle != -2) {
+    if (script[entry_id].puzzle != -2 && since_change >= 180) {
       entry_id++;
       since_change = 0;
     }
@@ -83,7 +81,7 @@ public:
   void update() {
     since_change++;
     if (script[entry_id].text == NULL &&
-        script[entry_id].puzzle != -1 &&
+        script[entry_id].puzzle >= 0 &&
         since_change == 300) {
       replace_scene(scene_game(script[entry_id].puzzle));
     }
@@ -132,6 +130,17 @@ public:
       painter::text(
         script[entry_id].text, 32,
         vec2(W * 0.5, H * 0.53 + displacement * MOVE_Y), vec2(0.5, 0),
+        tint4(0.9, 0.9, 0.9, cur_alpha)
+      );
+    } else if (script[entry_id].puzzle == -2) {
+      painter::text(
+        "Fireflies and Forest Flowers", 32,
+        vec2(W * 0.5, H * 0.49 + displacement * MOVE_Y - 24), vec2(0.5, 0),
+        tint4(0.9, 0.9, 0.9, cur_alpha)
+      );
+      painter::text(
+        "-   The End   -", 32,
+        vec2(W * 0.5, H * 0.49 + displacement * MOVE_Y + 24), vec2(0.5, 0),
         tint4(0.9, 0.9, 0.9, cur_alpha)
       );
     }

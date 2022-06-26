@@ -456,8 +456,10 @@ public:
   struct tutorial {
     vec2 pos;
     const char *text;
-    vec2 cir;
-    float cir_radius;
+    vec2 cir0;
+    float cir0_radius;
+    vec2 cir1;
+    float cir1_radius;
   };
 
   int puzzle_id;
@@ -591,6 +593,7 @@ public:
     rl::UnloadRenderTexture(texBloomStage1);
     rl::UnloadRenderTexture(texBloomStage2);
     rl::UnloadShader(shaderBloom);
+    rl::UnloadShader(shaderSpotlight);
     for (auto t : tracks) delete t;
     for (auto b : bellflowers) delete b;
   }
@@ -614,13 +617,13 @@ public:
 
   inline bool tut_has_next() const {
     return (tut_show_start < tutorials.size() &&
-      tutorials[tut_show_end - 1].cir_radius != 0);
+      tutorials[tut_show_end - 1].cir0_radius != 0);
   }
   inline void update_tut_show_range(bool always = false) {
     if (!always && !tut_has_next()) return;
     for (tut_show_end = tut_show_start;
          tut_show_end < tutorials.size(); tut_show_end++)
-      if (tutorials[tut_show_end].cir_radius != 0) {
+      if (tutorials[tut_show_end].cir0_radius != 0) {
         tut_show_end++;
         break;
       }
@@ -906,13 +909,18 @@ public:
 
     if (tut_has_next()) {
       const auto &t = tutorials[tut_show_end - 1];
-      float spotlightCen[2] = {scr(t.cir).x, scr(t.cir).y};
-      float spotlightRadius = t.cir_radius * SCALE
-        - 20 * (1 - tut_alpha) * (1 - tut_alpha);
-      SetShaderValue(shaderSpotlight, shaderSpotlightCenLoc,
-        spotlightCen, SHADER_UNIFORM_VEC2);
-      SetShaderValue(shaderSpotlight, shaderSpotlightRadLoc,
-        &spotlightRadius, SHADER_UNIFORM_FLOAT);
+      float spotlightCen[4] = {
+        scr(t.cir0).x, scr(t.cir0).y,
+        scr(t.cir1).x, scr(t.cir1).y,
+      };
+      float spotlightRadius[2] = {
+        t.cir0_radius * SCALE - 20 * (1 - tut_alpha) * (1 - tut_alpha),
+        t.cir1_radius * SCALE - 20 * (1 - tut_alpha) * (1 - tut_alpha),
+      };
+      SetShaderValueV(shaderSpotlight, shaderSpotlightCenLoc,
+        spotlightCen, SHADER_UNIFORM_VEC2, 2);
+      SetShaderValueV(shaderSpotlight, shaderSpotlightRadLoc,
+        &spotlightRadius, SHADER_UNIFORM_FLOAT, 2);
       BeginShaderMode(shaderSpotlight);
       DrawRectangle(0, 0, W, H,
         (Color){255, 255, 255, (unsigned char)(255 * tut_alpha)});
