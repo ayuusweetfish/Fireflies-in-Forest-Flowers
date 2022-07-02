@@ -95,7 +95,8 @@ int main(int argc, char *argv[])
   //cur_scene = scene_game(20);
   //cur_scene = scene_text(15);
 
-#ifdef PLATFORM_WEB
+#if defined(PLATFORM_WEB) && defined(NO_ASYNCIFY)
+  // Not using Asyncify might incur additional power consumption
   emscripten_set_main_loop(update_draw_frame, 0, 1);
 #else
   while (!WindowShouldClose())
