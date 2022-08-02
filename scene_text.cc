@@ -58,8 +58,11 @@ static entry script[] = {
   entry("Nana, we can't give you treats any more...", "avatar_lantern"),
   entry("You must take care of yourself!", "avatar_lantern"),
   entry("Alice?! Is that you, Alice?!", "avatar_cat"),
+  entry("", "avatar_night"),
   entry(-2),
 };
+
+static inline bool empty(const char *s) { return s != NULL && s[0] == '\0'; }
 
 class scene_text : public scene {
 public:
@@ -98,20 +101,24 @@ public:
     const float MOVE_Y = H * 0.05;
 
     #define cub(_x) ((_x) * (_x) * (_x))
+    #define prog_alpha(_x) ((_x) < 0.3 ? 0 : ((_x) > 0.7 ? 1 : (((_x) - 0.3) / 0.4)))
+    #define prog_displ(_x) exp(-2.5 * (_x)) * (1 - (_x))
     if (since_change < 180) {
       float x = (float)since_change / 180;
-      cur_alpha = (x < 0.3 ? 0 : (x > 0.7 ? 1 : ((x - 0.3) / 0.4)));
+      cur_alpha = prog_alpha(x);
       if (entry_id > 0 && script[entry_id - 1].text != NULL) {
         last_alpha = (x < 0.4 ? cub(1 - x / 0.4) : 0);
       }
-      displacement = exp(-2.5 * x) * (1 - x);
+      displacement = prog_displ(x);
     }
 
     if (last_alpha > 0) {
       if (script[entry_id - 1].image != NULL)
         painter::image(
           script[entry_id - 1].image,
-          vec2(W * 0.5, H * 0.47), vec2(0.5, 1), vec2(1, 1),
+          vec2(W * 0.5, H *
+            (empty(script[entry_id - 1].text) ? 0.57 : 0.47)),
+          vec2(0.5, 1), vec2(1, 1),
           tint4(1, 1, 1, last_alpha)
         );
       painter::text(
@@ -124,7 +131,9 @@ public:
       if (script[entry_id].image != NULL)
         painter::image(
           script[entry_id].image,
-          vec2(W * 0.5, H * 0.47), vec2(0.5, 1), vec2(1, 1),
+          vec2(W * 0.5, H *
+            (empty(script[entry_id].text) ? 0.57 : 0.47)),
+          vec2(0.5, 1), vec2(1, 1),
           tint4(1, 1, 1, cur_alpha)
         );
       painter::text(
@@ -142,6 +151,20 @@ public:
         "-   The End   -", 32,
         vec2(W * 0.5, H * 0.49 + displacement * MOVE_Y + 24), vec2(0.5, 0),
         tint4(0.9, 0.9, 0.9, cur_alpha)
+      );
+      float x1 = (float)(since_change - 480) / 240;
+      float x2 = (float)(since_change - 500) / 240;
+      x1 = (x1 > 1 ? 1 : x1 < 0 ? 0 : x1);
+      x2 = (x2 > 1 ? 1 : x2 < 0 ? 0 : x2);
+      painter::text(
+        "Thanks for playing!", 24,
+        vec2(W - 16, H - 44 + prog_displ(x1) * MOVE_Y), vec2(1, 1),
+        tint4(0.6, 0.6, 0.6, prog_alpha(x1))
+      );
+      painter::text(
+        "Ayu  2022.02-08", 24,
+        vec2(W - 16, H - 16 + prog_displ(x2) * MOVE_Y), vec2(1, 1),
+        tint4(0.4, 0.4, 0.4, prog_alpha(x2))
       );
     }
   }

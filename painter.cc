@@ -49,7 +49,7 @@ static inline tex_record tex(const char *name)
 
 void painter::init()
 {
-  for (int size : {32, 36, 60}) {
+  for (int size : {24, 32, 36, 60}) {
     // 95 = ASCII range (32 ~ 126)
     font[size] = LoadFontEx("res/Imprima.ttf", size, NULL, 95);
   }
