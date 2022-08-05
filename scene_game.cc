@@ -633,27 +633,31 @@ public:
   inline std::pair<firefly *, track *> find(const vec2 p) {
     // Find the nearest firefly
     firefly *best_ff = nullptr;
-    float best_dist = 2;
+    float best_ff_dist = 2;
     for (auto &f : fireflies) {
       float dist = (p - f.pos()).norm();
-      if (dist < best_dist) {
-        best_dist = dist;
+      if (dist < best_ff_dist) {
+        best_ff_dist = dist;
         best_ff = &f;
       }
     }
-    if (best_ff != nullptr) return {best_ff, nullptr};
 
     // Find the nearest firefly track
     track *best_track = nullptr;
-    std::pair<float, float> best_result = {0, 1.5};
+    float best_track_dist = 1.5;
     for (const auto t : tracks) if (!(t->flags & track::FIXED)) {
       auto result = t->nearest(p);
-      if (result.second < best_result.second) {
-        best_result = result;
+      if (result.second < best_track_dist) {
+        best_track_dist = result.second;
         best_track = t;
       }
     }
-    return {nullptr, best_track};
+
+    if (best_ff != nullptr && best_track != nullptr) {
+      if (best_ff_dist > best_track_dist) best_ff = nullptr;
+      else best_track = nullptr;
+    }
+    return {best_ff, best_track};
   }
 
   void pton(float x, float y) {
