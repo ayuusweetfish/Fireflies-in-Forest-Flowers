@@ -53,8 +53,8 @@ case 2:
     B_ord(vec2(5, 0), 2, 1),
   };
   tutorials = {
-    {vec2(0, -5), "Drag the firefly"},
-    {vec2(0, 5), "So that both bellflowers count down to zero"},
+    {vec2(0, -2), "Drag the firefly...", vec2(0, -4), 1},
+    {vec2(0, 3.5), "So that both bellflowers count down to zero", vec2(-5, 0), 2.5, vec2(5, 0), 2.5},
   };
   break;
 
@@ -126,12 +126,12 @@ case 6:
     B_ord(vec2(6, 0), 2, 2),
   };
   tutorials = {
-    {vec2(0, -5.5), "Tracks with fix marks"},
+    {vec2(0, -5.5), "Tracks with fixation marks"},
     {vec2(0, -4.5), "cannot be moved", vec2(-2, -1), 1, vec2(2, 3), 1},
     {vec2(0, 4.5), "...but fireflies still can",
       vec2(0, -3), 1,
       vec2(0, 2.5) - vec2(2, 0.5) * 0.4, 1},
-    {vec2(0, -5.5), "Tracks with fix marks"},
+    {vec2(0, -5.5), "Tracks with fixation marks"},
     {vec2(0, -4.5), "cannot be moved"},
     {vec2(0, 4.5), "...but fireflies still can"},
   };
@@ -162,6 +162,24 @@ case 7:
   break;
 
 case 8:
+  title = "Intersection";
+  tracks = {
+    T_cir(vec2(-2, 1), 3, track::FIXED, M_PI / 2),
+    T_cir(vec2(2, 1), 3, track::FIXED, M_PI / 2),
+  };
+  fireflies = {
+    F(0, 0.375, 1),
+    F(1, 0.875, 1),
+  };
+  bellflowers = {
+    B_ord(vec2(0, -3), 2, 1),
+    B_ord(vec2(-6, 1), 2, 2),
+    B_ord(vec2(6, 1), 2, 1),
+  };
+  to_text = 15;
+  break;
+
+case 9:
   title = "Ebb and Flow";
   tracks = {
     T_cir(vec2(0, 0), 4, track::FIXED, M_PI / 2),
@@ -180,24 +198,6 @@ case 8:
   tutorials = {
     {vec2(0, -5), "Fireflies may travel at different speeds"},
   };
-  break;
-
-case 9:
-  title = "Intersection";
-  tracks = {
-    T_cir(vec2(-2, 1), 3, track::FIXED, M_PI / 2),
-    T_cir(vec2(2, 1), 3, track::FIXED, M_PI / 2),
-  };
-  fireflies = {
-    F(0, 0.375, 1),
-    F(1, 0.875, 1),
-  };
-  bellflowers = {
-    B_ord(vec2(0, -3), 2, 1),
-    B_ord(vec2(-6, 1), 2, 2),
-    B_ord(vec2(6, 1), 2, 1),
-  };
-  to_text = 15;
   break;
 
 case 10:
@@ -318,7 +318,7 @@ case 15:
     B_ord(vec2(5, 3), 2, 2),
   };
   tutorials = {
-    {vec2(0, -4.5), "Repelling objects make fireflies turn around"},
+    {vec2(0, -4.5), "Repelling lines make fireflies turn around"},
   };
   break;
 
@@ -356,7 +356,7 @@ case 17:
   break;
 
 case 18:
-  title = "Olympiad";
+  title = "Pearl";
   tracks = {
     T_cir(vec2(-6, -1), 2, track::FIXED, 4, true),
     T_cir(vec2(-3, 1), 2, track::FIXED, 2, true),
