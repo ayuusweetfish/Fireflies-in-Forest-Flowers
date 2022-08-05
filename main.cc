@@ -16,6 +16,9 @@ static float pt_lastx, pt_lasty;
 static float time = 0;
 const float STEP = 1.0f / 240;
 
+Music bgm[2];
+int to_bgm_start = 20;
+
 void replace_scene(scene *s)
 {
   prev_scene = cur_scene;
@@ -80,6 +83,17 @@ static void update_draw_frame()
     cur_scene->draw();
   }
 
+  // Background music
+  if (to_bgm_start > 0 && (--to_bgm_start) == 0) PlayMusicStream(bgm[0]);
+  UpdateMusicStream(bgm[0]);
+  UpdateMusicStream(bgm[1]);
+  float bgm_time = GetMusicTimePlayed(bgm[0]);
+  if (bgm_time >= 240) {
+    SeekMusicStream(bgm[1], bgm_time - 240);
+    PlayMusicStream(bgm[1]);
+    Music t = bgm[1]; bgm[1] = bgm[0]; bgm[0] = t;
+  }
+
   EndDrawing();
 }
 
@@ -89,9 +103,15 @@ int main(int argc, char *argv[])
   InitWindow(W, H, NULL);
   SetTargetFPS(60);
 
+  InitAudioDevice();
+  bgm[0] = LoadMusicStream("res/Bellflowers_Wonderland.ogg");
+  bgm[1] = LoadMusicStream("res/Bellflowers_Wonderland.ogg");
+  bgm[0].looping = false;
+  bgm[1].looping = false;
+
   painter::init();
   cur_scene = scene_startup();
-  cur_scene = scene_game(9);
+  //cur_scene = scene_game(9);
   //cur_scene = scene_game(20);
   //cur_scene = scene_text(25);
 
