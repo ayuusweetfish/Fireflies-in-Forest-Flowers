@@ -14,7 +14,8 @@ case 0:
       "This is the firefly", vec2(-1, 0) + vec2(3, 0).rot(1.2 * M_PI), 1},
     {vec2(-1, 4.5), "This is its track", vec2(-1, 0), 3.5},
     {vec2(6, 3.5), "This is the bellflower", vec2(3, 0), 2.5},
-    {vec2(-3.25, -6), "Now press the button to start flying"},
+    {vec2(-3.5, -6), "Press the button to start flying", vec2(-10.2, -6), 1,
+      .allows_interaction = true},
   };
   break;
 
@@ -33,7 +34,8 @@ case 1:
     {vec2(-1, 0), ">"},
     {vec2(-5, 4), "Drag the track to move it",
       vec2(-5, 0), 3,
-      vec2(3, 0), 3},
+      vec2(3, 0), 3,
+      .allows_interaction = true},
     {vec2(-7.8, -6), "(Space)"},
     {vec2(-8.18, -4.25), "(Tab)"},
   };
@@ -53,7 +55,8 @@ case 2:
     B_ord(vec2(5, 0), 2, 1),
   };
   tutorials = {
-    {vec2(0, -2), "Drag the firefly...", vec2(0, -4), 1},
+    {vec2(0, -2), "Drag the firefly...", vec2(0, -4), 1,
+      .allows_interaction = true},
     {vec2(0, 3.5), "So that both bellflowers count down to zero", vec2(-5, 0), 2.5, vec2(5, 0), 2.5},
   };
   break;
@@ -219,7 +222,7 @@ case 10:
   };
   tutorials = {
     {vec2(1, -4.5), "Attracting tracks capture"},
-    {vec2(1, -3.5), "all fireflies touching them"},
+    {vec2(1, -3.5), "fireflies touching them"},
   };
   break;
 
@@ -244,7 +247,7 @@ case 11:
   break;
 
 case 12:
-  title = "Entrance";
+  title = "Capture";
   tracks = {
     T_cir(vec2(2, 0), 3, track::FIXED | track::ATTRACT),
     T_cir(vec2(-2, 0), 3),
@@ -340,7 +343,7 @@ case 16:
   break;
 
 case 17:
-  title = "Linger";
+  title = "Lingering";
   tracks = {
     T_cir(vec2(0, -2), 3),
     T_cir(vec2(0, 0), 3, track::ATTRACT | track::FIXED, 1),

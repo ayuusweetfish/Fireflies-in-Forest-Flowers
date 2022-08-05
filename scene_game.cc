@@ -460,6 +460,7 @@ public:
     float cir0_radius;
     vec2 cir1;
     float cir1_radius;
+    bool allows_interaction;
   };
 
   int puzzle_id;
@@ -619,6 +620,9 @@ public:
     return (tut_show_start < tutorials.size() &&
       tutorials[tut_show_end - 1].cir0_radius != 0);
   }
+  inline bool tut_allows_interaction() const {
+    return tutorials[tut_show_end - 1].allows_interaction;
+  }
   inline void update_tut_show_range(bool always = false) {
     if (!always && !tut_has_next()) return;
     for (tut_show_end = tut_show_start;
@@ -654,14 +658,16 @@ public:
     }
 
     if (best_ff != nullptr && best_track != nullptr) {
-      if (best_ff_dist > best_track_dist) best_ff = nullptr;
+      if (best_ff_dist > best_track_dist &&
+          best_ff->tr != best_track)
+        best_ff = nullptr;
       else best_track = nullptr;
     }
     return {best_ff, best_track};
   }
 
   void pton(float x, float y) {
-    if (tut_has_next()) return;
+    if (tut_has_next() && !tut_allows_interaction()) return;
     if (buttons.pton(x, y)) return;
     if (run_state & 1) return;
 
@@ -681,7 +687,7 @@ public:
   }
 
   void ptmove(float x, float y) {
-    if (tut_has_next()) return;
+    if (tut_has_next() && !tut_allows_interaction()) return;
     if (buttons.ptmove(x, y)) return;
 
     vec2 p = board(x, y);
