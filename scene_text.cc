@@ -17,11 +17,19 @@ struct entry {
 };
 static entry script[] = {
   // 0
-  entry("Here we are,\nthe Magical Forest of Yonder.", "avatar_intro"),
-  entry("Where is Nana?\nIs she in this forest?", "avatar_question"),
-  entry("We won't see her, but we can\nlet her know that we've come.", "avatar_intro"),
+  entry(_("Here we are,\nthe Magical Forest of Yonder.",
+          "我们到了！这里是彼岸之林。"),
+        "avatar_intro"),
+  entry(_("Where is Nana?\nIs she in this forest?",
+          "奈奈在哪儿呀？在这片森林里吗？"),
+        "avatar_question"),
+  entry(_("We won't see her, but we can\nlet her know that we've come.",
+          "我们在这里见不到她，\n不过有办法让她知道我们来啦。"),
+        "avatar_intro"),
   entry("...", "avatar_question"),
-  entry("Here, let the fireflies tell you.", "avatar_intro"),
+  entry(_("Here, let the fireflies tell you.",
+          "来这儿，萤火虫会告诉你的。"),
+        "avatar_intro"),
   // 5
   entry(0),
 

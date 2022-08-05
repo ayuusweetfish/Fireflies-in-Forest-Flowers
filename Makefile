@@ -12,7 +12,7 @@ ifeq ($(WEB),1)
 endif
 
 ifeq ($(shell uname),Darwin)
-  EXTRAFLAGS ?= -framework Cocoa -framework OpenGL -framework IOKit
+  EXTRAFLAGS ?= -framework Cocoa -framework OpenGL -framework IOKit -DLANG_ZH
 endif
 
 RAYLIB_LIB ?= ./deps/raylib/build/raylib/libraylib.a

@@ -1,2 +1,3 @@
-main
-web/
+/main
+/web/
+/res/*.ttf

@@ -86,4 +86,14 @@ public:
     tint4 tint);
 };
 
+// Translation
+
+#if defined(LANG_EN)
+#define _(_en, _zh) (_en)
+#elif defined(LANG_ZH)
+#define _(_en, _zh) (_zh)
+#else
+#define _(_en, _zh) (_en)
+#endif
+
 #endif
