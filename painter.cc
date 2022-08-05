@@ -61,9 +61,10 @@ void painter::init()
   load_tex("avatar_lantern", "res/avatar_lantern.png");
   load_tex("avatar_cat", "res/avatar_cat.png");
   load_tex("avatar_bedside", "res/avatar_bedside.png");
-  load_tex("avatar_night", "res/avatar_night.png");
+  load_tex("avatar_rain", "res/avatar_rain.png");
   load_tex("avatar_bush", "res/avatar_bush.png");
   load_tex("avatar_oracle", "res/avatar_oracle.png");
+  load_tex("avatar_night", "res/avatar_night.png");
 
   load_tex("bellflower_ord", "res/bellflower_ord.png");
   load_tex("bellflower_call", "res/bellflower_call.png");

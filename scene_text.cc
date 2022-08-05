@@ -40,24 +40,29 @@ static entry script[] = {
   entry(-1),
 
   // 15
+  entry("", "avatar_rain"),
   entry("Nana does not want to see you sad.", "avatar_bedside"),
   entry("You might meet her in the dreams.", "avatar_intro"),
   entry("Nighty-night.", "avatar_night"),
   entry(10),
-  entry(-1),
 
   // 20
   entry("Nana, if you can hear me...", "avatar_bush"),
-  entry("... please let your wild friend appear.", "avatar_oracle"),
+  entry("... please let your wild friend come to me.", "avatar_oracle"),
   entry("...", "avatar_bush"),
   entry("...", "avatar_oracle"),
+  entry("...", "avatar_bush"),
+  entry("Maybe I should finally stop daydreaming like this.", "avatar_oracle"),
   entry(15),
 
-  // 25
+  // 27
   entry("...?!", "avatar_cat"),
   entry("Nana, we can't give you treats any more...", "avatar_lantern"),
-  entry("You must take care of yourself!", "avatar_lantern"),
+  entry("Remember to take care of yourself!", "avatar_bellflowers"),
   entry("Alice?! Is that you, Alice?!", "avatar_cat"),
+  entry("We love you always...!", "avatar_lantern"),
+  entry("", "avatar_cat"),
+  entry("", "avatar_lantern"),
   entry("", "avatar_night"),
   entry(-2),
 };

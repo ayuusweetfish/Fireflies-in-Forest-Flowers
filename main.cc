@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
   cur_scene = scene_startup();
   //cur_scene = scene_game(9);
   //cur_scene = scene_game(20);
-  //cur_scene = scene_text(25);
+  //cur_scene = scene_text(27);
 
 #if defined(PLATFORM_WEB) && defined(NO_ASYNCIFY)
   // Not using Asyncify might incur additional power consumption

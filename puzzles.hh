@@ -179,7 +179,6 @@ case 8:
     B_ord(vec2(-6, 1), 2, 2),
     B_ord(vec2(6, 1), 2, 1),
   };
-  to_text = 15;
   break;
 
 case 9:
@@ -201,6 +200,7 @@ case 9:
   tutorials = {
     {vec2(0, -5), "Fireflies may travel at different speeds"},
   };
+  to_text = 15;
   break;
 
 case 10:
@@ -425,7 +425,7 @@ case 20:
     B_ord(vec2(-6, 1), 4, 1),
     B_ord(vec2(6, -1), 4, 6),
   };
-  to_text = 25;
+  to_text = 27;
   break;
 
 /*
