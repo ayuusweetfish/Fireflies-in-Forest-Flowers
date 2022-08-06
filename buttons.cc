@@ -37,14 +37,21 @@ bool button_group::ptoff(float x, float y)
   return true;
 }
 
-void button_group::draw()
+void button_group::draw(tint4 tint)
 {
   for (const auto &btn : buttons) {
-    tint4 tint = tint4(1, 1, 1, 1);
+    tint4 cur_tint = tint;
     if (&btn == sel_button && cur_in)
-      tint = tint4(0.8, 0.8, 0.8, 1);
-    painter::image(
-      btn.image, btn.pos, btn.size,
-      tint);
+      cur_tint = tint4(tint.r * 0.8f, tint.g * 0.8f, tint.b * 0.8f, 1);
+    if (btn.content[0] == '#') {
+      painter::image(
+        btn.content + 1, btn.pos, btn.size,
+        cur_tint);
+    } else {
+      painter::text(
+        btn.content,
+        36, btn.pos + btn.size / 2, vec2(0.5, 0.5),
+        cur_tint);
+    }
   }
 }

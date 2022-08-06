@@ -740,8 +740,8 @@ public:
     update_buttons_images();
   }
   inline void update_buttons_images() {
-    buttons.buttons[0].image = ((run_state & 1) ? "btn_stop" : "btn_play");
-    buttons.buttons[1].image = ((run_state >> 1) == 8 ? "btn_1x" : "btn_2x");
+    buttons.buttons[0].content = ((run_state & 1) ? "#btn_stop" : "#btn_play");
+    buttons.buttons[1].content = ((run_state >> 1) == 8 ? "#btn_1x" : "#btn_2x");
   }
 
   inline void start_run() {

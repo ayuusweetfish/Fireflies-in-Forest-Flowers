@@ -50,7 +50,7 @@ struct psys {
 struct button_group {
   struct button {
     vec2 pos, size;
-    const char *image;
+    const char *content;
     std::function<void ()> fn;
   };
   std::vector<button> buttons;
@@ -58,8 +58,7 @@ struct button_group {
   button *sel_button = nullptr;
   bool cur_in;
 
-  void update();
-  void draw();
+  void draw(tint4 tint = tint4(1, 1, 1, 1));
   bool pton(float, float);
   bool ptmove(float, float);
   bool ptoff(float, float);
