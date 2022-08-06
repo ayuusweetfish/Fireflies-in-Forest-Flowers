@@ -75,7 +75,7 @@ public:
       if (entering) x = 1 - (1 - x) * (1 - x) * (1 - x);
       else x = x * x * x;
       rl::DrawRectangle(0, 0, W, H,
-        (rl::Color){16, 16, 16, (unsigned char)(192 * x + 0.5f)});
+        (rl::Color){16, 16, 24, (unsigned char)(232 * x + 0.5f)});
       painter::text(_("Skip to a puzzle", "跳到谜题"), 36,
         vec2(W / 2, H * 0.21), vec2(0.5, 0.5),
         tint4(1, 1, 1, x));

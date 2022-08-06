@@ -26,7 +26,7 @@ static entry script[] = {
   entry(_("We won't see her, but we can\nlet her know that we've come.",
           "我们在这里见不到她，\n不过有办法让她知道我们来啦。"),
         "avatar_intro"),
-  entry("...", "avatar_question"),
+  entry(_("...", "……"), "avatar_question"),
   entry(_("Here, let the fireflies tell you.",
           "来这儿，萤火虫会告诉你的。"),
         "avatar_intro"),
@@ -34,10 +34,15 @@ static entry script[] = {
   entry(0),
 
   // 6
-  entry("When a bellflower opens its petals,\na light can be seen from Nana's world as well.",
+  entry(_("When a bellflower opens its petals,\na light can be seen from Nana's world as well.",
+          "当一朵风铃花绽放时，\n奈奈的世界里也能看到一束光亮。"),
     "avatar_bellflowers"),
-  entry("She will know it.", "avatar_intro"),
-  entry("Let's light up all of them! She can't miss it!", "avatar_lightall"),
+  entry(_("She will know it.",
+          "她会知道的。"),
+        "avatar_intro"),
+  entry(_("Let's light up all of them! She can't miss it!",
+          "那就把它们全都点亮吧！别让她错过了！"),
+        "avatar_lightall"),
   entry(2),
 
   // 10

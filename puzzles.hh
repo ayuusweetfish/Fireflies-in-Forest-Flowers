@@ -1,5 +1,5 @@
 case 0:
-  title = "Firefly";
+  title = _("Firefly", "萤火");
   tracks = {
     T_cir(vec2(-1, 0), 3),
   };
@@ -11,16 +11,23 @@ case 0:
   };
   tutorials = {
     {vec2(-1, -2) + vec2(3, 0).rot(1.2 * M_PI),
-      "This is the firefly", vec2(-1, 0) + vec2(3, 0).rot(1.2 * M_PI), 1},
-    {vec2(-1, 4.5), "This is its track", vec2(-1, 0), 3.5},
-    {vec2(6, 3.5), "This is the bellflower", vec2(3, 0), 2.5},
-    {vec2(-3.5, -6), "Press the button to start flying", vec2(-10.2, -6), 1,
+      _("This is the firefly", "这是一只萤火虫"),
+      vec2(-1, 0) + vec2(3, 0).rot(1.2 * M_PI), 1},
+    {vec2(-1, 4.5),
+      _("This is its track", "这是它的飞行轨迹"),
+      vec2(-1, 0), 3.5},
+    {vec2(6, 3.5),
+      _("This is the bellflower", "这是一朵风铃花"),
+      vec2(3, 0), 2.5},
+    {vec2(_(-3.5, -4.5), -6),
+      _("Press the button to start flying", "按下按钮让萤火虫飞行"),
+      vec2(-10.2, -6), 1,
       .allows_interaction = true},
   };
   break;
 
 case 1:
-  title = "Closer";
+  title = _("Closer", "傍依");
   tracks = {
     T_cir(vec2(-5, 0), 2.5),
   };
@@ -32,18 +39,19 @@ case 1:
   };
   tutorials = {
     {vec2(-1, 0), ">"},
-    {vec2(-5, 4), "Drag the track to move it",
+    {vec2(-5, 4),
+      _("Drag the track to move it", "拖动轨道并移动之"),
       vec2(-5, 0), 3,
       vec2(3, 0), 3,
       .allows_interaction = true},
-    {vec2(-7.8, -6), "(Space)"},
+    {vec2(_(-7.8, -8.02), -6), _("(Space)", "(空格)")},
     {vec2(-8.18, -4.25), "(Tab)"},
   };
   to_text = 6;
   break;
 
 case 2:
-  title = "Message";
+  title = _("Message", "音信");
   tracks = {
     T_cir(vec2(0, 0), 4),
   };
@@ -55,14 +63,19 @@ case 2:
     B_ord(vec2(5, 0), 2, 1),
   };
   tutorials = {
-    {vec2(0, -2), "Drag the firefly...", vec2(0, -4), 1,
+    {vec2(0, -2),
+      _("Drag the firefly...", "拖动萤火虫……"),
+      vec2(0, -4), 1,
       .allows_interaction = true},
-    {vec2(0, 3.5), "So that both bellflowers count down to zero", vec2(-5, 0), 2.5, vec2(5, 0), 2.5},
+    {vec2(0, 3.5),
+      _("So that both bellflowers are lit up",
+        "使两朵风铃花都被点亮"),
+      vec2(-5, 0), 2.5, vec2(5, 0), 2.5},
   };
   break;
 
 case 3:
-  title = "Arrangement";
+  title = _("Arrangement", "收束");
   tracks = {
     T_cir(vec2(0, 0), 3),
     T_cir(vec2(0, 0), 2),
@@ -79,7 +92,7 @@ case 3:
   break;
 
 case 4:
-  title = "Trail";
+  title = _("Trail", "僻径");
   tracks = {
     T_seg(vec2(0, 0), vec2(5, 1)),
   };
@@ -94,7 +107,7 @@ case 4:
   break;
 
 case 5:
-  title = "Joined Together";
+  title = _("Joined Together", "联结");
   tracks = {
     T_cir(vec2(0, 0), 4),
   };
@@ -112,7 +125,7 @@ case 5:
   break;
 
 case 6:
-  title = "Fate";
+  title = _("Fate", "命定");
   tracks = {
     T_cir(vec2(-6, -1), 2),
     T_cir(vec2(0, -1), 2, track::FIXED),
@@ -141,7 +154,7 @@ case 6:
   break;
 
 case 7:
-  title = "Encounter";
+  title = _("Encounter", "邂逅");
   tracks = {
     T_cir(vec2(-4, 1), 3, track::FIXED, M_PI / 2),
     T_cir(vec2(4, 1), 3, track::FIXED, M_PI / 2),
@@ -165,7 +178,7 @@ case 7:
   break;
 
 case 8:
-  title = "Intersection";
+  title = _("Intersection", "交汇");
   tracks = {
     T_cir(vec2(-2, 1), 3, track::FIXED, M_PI / 2),
     T_cir(vec2(2, 1), 3, track::FIXED, M_PI / 2),
@@ -182,7 +195,7 @@ case 8:
   break;
 
 case 9:
-  title = "Ebb and Flow";
+  title = _("Ebb and Flow", "悲欢");
   tracks = {
     T_cir(vec2(0, 0), 4, track::FIXED, M_PI / 2),
   };
@@ -204,7 +217,7 @@ case 9:
   break;
 
 case 10:
-  title = "Attraction";
+  title = _("Attraction", "吸引");
   tracks = {
     T_cir(vec2(-1, 1), 3, track::FIXED),
     T_cir(vec2(1, 1), 3, track::FIXED | track::ATTRACT),
@@ -227,7 +240,7 @@ case 10:
   break;
 
 case 11:
-  title = "Twin Paradox";
+  title = _("Twin Paradox", "荏苒");
   tracks = {
     T_cir(vec2(2, -1), 3, track::FIXED, 1),
     T_cir(vec2(-2, 1), 3, track::FIXED, 1),
@@ -247,7 +260,7 @@ case 11:
   break;
 
 case 12:
-  title = "Capture";
+  title = _("Capture", "采撷");
   tracks = {
     T_cir(vec2(2, 0), 3, track::FIXED | track::ATTRACT),
     T_cir(vec2(-2, 0), 3),
@@ -266,7 +279,7 @@ case 12:
   break;
 
 case 13:
-  title = "Comet";
+  title = _("Comet", "彗星");
   tracks = {
     T_cir(vec2(-3, 0), sqrtf(5), track::FIXED, M_PI / 2),
     T_cir(vec2(-3, 0), 4, track::ATTRACT | track::FIXED, M_PI / 2),
@@ -284,7 +297,7 @@ case 13:
   break;
 
 case 14:
-  title = "Circulation";
+  title = _("Circulation", "萦回");
   tracks = {
     T_cir(vec2(0, 0.5), 4.5, track::FIXED | track::ATTRACT),
     T_cir(vec2(0, 0.5), 2.5),
@@ -302,7 +315,7 @@ case 14:
   break;
 
 case 15:
-  title = "Return";
+  title = _("Return", "复归");
   tracks = {
     T_cir(vec2(0, 1), 4, track::FIXED, M_PI / 2),
     T_cir(vec2(-5, 1), 4, track::FIXED | track::RETURN, M_PI / 2),
@@ -326,7 +339,7 @@ case 15:
   break;
 
 case 16:
-  title = "Accompany";
+  title = _("Accompany", "相伴");
   tracks = {
     T_seg(vec2(0, -1), vec2(5, 0), track::FIXED),
     T_seg(vec2(0, 1), vec2(5, 0), track::FIXED),
@@ -343,7 +356,7 @@ case 16:
   break;
 
 case 17:
-  title = "Lingering";
+  title = _("Lingering", "流连");
   tracks = {
     T_cir(vec2(0, -2), 3),
     T_cir(vec2(0, 0), 3, track::ATTRACT | track::FIXED, 1),
@@ -359,7 +372,7 @@ case 17:
   break;
 
 case 18:
-  title = "Pearl";
+  title = _("Pearl", "明珠");
   tracks = {
     T_cir(vec2(-6, -1), 2, track::FIXED, 4, true),
     T_cir(vec2(-3, 1), 2, track::FIXED, 2, true),
@@ -388,7 +401,7 @@ case 18:
   break;
 
 case 19:
-  title = "Chords";
+  title = _("Chords", "弦歌");
   tracks = {
     T_cir(vec2(0, 0), 5, track::FIXED | track::ATTRACT, 1.35),
     T_seg(vec2(-0.5, -0.25), vec2(3, -6), track::ATTRACT),
@@ -412,7 +425,7 @@ case 19:
   break;
 
 case 20:
-  title = "Intertwined";
+  title = _("Intertwined", "交织");
   tracks = {
     T_cir(vec2(-1, 0), 2.5, track::ATTRACT),
     T_cir(vec2(0, 0), 2.5, track::ATTRACT),

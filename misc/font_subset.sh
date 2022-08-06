@@ -21,5 +21,6 @@ pyftsubset fonts/Imprima.ttf \
 fontforge -lang=ff -script merge.ff
 rm merge.ff AaKaiSong2_subset.ttf Imprima_subset.ttf
 
-fc-query --format=%{charset} Imprima_AaKaiSong2.ttf
+fc-query --format=%{charset} Imprima_AaKaiSong2.ttf \
+  | python3 parse_charset.py > ../charset.hh
 mv Imprima_AaKaiSong2.ttf ../res
