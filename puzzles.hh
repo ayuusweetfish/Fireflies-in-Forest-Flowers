@@ -127,42 +127,35 @@ case 5:
 case 6:
   title = _("Fate", "命定");
   tracks = {
-    T_cir(vec2(-6, -1), 2),
-    T_cir(vec2(0, -1), 2, track::FIXED),
-    T_seg(vec2(-6, 2.5), vec2(2, 0.5)),
-    T_seg(vec2(0, 2.5), vec2(2, 0.5), track::FIXED),
+    T_cir(vec2(-4.5, -1.5), 2.5),
+    T_cir(vec2(4.5, -1.5), 2.5, track::FIXED),
+    T_seg(vec2(-4.5, 2.5), vec2(3.5, 0.5)),
+    T_seg(vec2(4.5, 2.5), vec2(3.5, 0.5), track::FIXED),
   };
   fireflies = {
-    F(0, 0.75, M_PI / sqrtf(4.25)),
-    F(1, 0.75, M_PI / sqrtf(4.25)),
+    F(0, 0.75, M_PI * 2.5 / sqrtf(12.5) / 2),
+    F(1, 0.75, M_PI * 2.5 / sqrtf(12.5) / 2),
     F(2, 0.3, 1),
     F(3, 0.3, 1),
   };
+  links = {
+    {0, 1},
+    {2, 3},
+  };
   bellflowers = {
-    B_ord(vec2(6, 0), 2, 2),
+    B_ord(vec2(-2, 1), 2, 4),
+    B_ord(vec2(7, 1), 2, 3),
   };
   tutorials = {
-    {vec2(0, -5.5),
-      _("Tracks with fixation marks",
-        "")},
-    {vec2(0, -4.5),
-      _("cannot be moved",
+    {vec2(0, 4.75),
+      _("Tracks with fixation marks cannot be moved",
         "带有固定标记的轨道无法移动"),
-      vec2(-2, -1), 1, vec2(2, 3), 1},
-    {vec2(0, 4.5),
+      vec2(2, -1.5), 1, vec2(1, 2), 1},
+    {vec2(0, 4.75),
       _("...but fireflies still can",
         "……但是萤火虫仍可拖动"),
-      vec2(0, -3), 1,
-      vec2(0, 2.5) - vec2(2, 0.5) * 0.4, 1},
-    {vec2(0, -5.5),
-      _("Tracks with fixation marks",
-        "")},
-    {vec2(0, -4.5),
-      _("cannot be moved",
-        "带有固定标记的轨道无法移动")},
-    {vec2(0, 4.5),
-      _("...but fireflies still can",
-        "……但是萤火虫仍可拖动")},
+      vec2(4.5, -4), 1,
+      vec2(4.5, 2.5) - vec2(3.5, 0.5) * 0.4, 1},
   };
   break;
 
