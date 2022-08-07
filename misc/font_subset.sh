@@ -5,7 +5,7 @@ em1=$em
 Close()
 
 Open("Imprima_subset.ttf")
-ScaleToEm(em1)
+ScaleToEm(Round(em1 * 1.1))
 MergeFonts("AaKaiSong2_subset.ttf")
 Generate("Imprima_AaKaiSong2.ttf")
 Close()

@@ -46,34 +46,68 @@ static entry script[] = {
   entry(2),
 
   // 10
-  entry("Nana! It's me!", "avatar_lantern"),
-  entry("How is your life there?", "avatar_bellflowers"),
-  entry("We miss you so much!", "avatar_lantern"),
+  entry(_("Nana! It's me!",
+          "奈奈！是我呀！"),
+        "avatar_lantern"),
+  entry(_("How is your life there?",
+          "你在那边过得怎么样呀？"),
+        "avatar_bellflowers"),
+  entry(_("We miss you so much!",
+          "我们可太想你啦！"),
+        "avatar_lantern"),
   entry(4),
   entry(-1),
 
   // 15
   entry("", "avatar_rain"),
-  entry("Nana does not want to see you sad.", "avatar_bedside"),
-  entry("You might meet her in the dreams.", "avatar_intro"),
-  entry("Nighty-night.", "avatar_night"),
+  entry(_("Nana does not want to see you sad.",
+          "奈奈看到你那么难过，也会伤心的吧。"),
+        "avatar_bedside"),
+  entry(_("You might meet her in the dreams.",
+          "说不定你能在梦里见到她呢。"),
+        "avatar_intro"),
+  entry(_("Nighty-night.",
+          "晚安宝贝。"),
+        "avatar_night"),
   entry(10),
 
   // 20
-  entry("Nana, if you can hear me...", "avatar_bush"),
-  entry("... please let your wild friend come to me.", "avatar_oracle"),
-  entry("...", "avatar_bush"),
-  entry("...", "avatar_oracle"),
-  entry("...", "avatar_bush"),
-  entry("Maybe I should finally stop daydreaming like this.", "avatar_oracle"),
+  entry(_("Nana, if you can hear me...",
+          "奈奈如果你能听得见这些的话……"),
+        "avatar_bush"),
+  entry(_("... please let your wild friend come to me.",
+          "……就请让你的野生朋友出来吧。"),
+        "avatar_oracle"),
+  entry(_("...",
+          "……"),
+        "avatar_bush"),
+  entry(_("...",
+          "……"),
+        "avatar_oracle"),
+  entry(_("...",
+          "……"),
+        "avatar_bush"),
+  entry(_("Maybe I should finally stop daydreaming like this.",
+          "我是不是不该再做这种白日梦了。"),
+        "avatar_oracle"),
   entry(15),
 
   // 27
-  entry("...?!", "avatar_cat"),
-  entry("Nana, we can't give you treats any more...", "avatar_lantern"),
-  entry("Remember to take care of yourself!", "avatar_bellflowers"),
-  entry("Alice?! Is that you, Alice?!", "avatar_cat"),
-  entry("We love you always...!", "avatar_lantern"),
+  entry(_("...?!",
+          "……？！"),
+        "avatar_cat"),
+  entry(_("Nana, we can't give you treats any more...",
+          "奈奈，我们没法再给你小鱼干了……"),
+        "avatar_lantern"),
+  entry(_("Remember to take care of yourself!",
+          "记得一定照顾好自己呀！"),
+        "avatar_bellflowers"),
+  entry(_("Alice?! Is that you, Alice?!",
+          "爱莉丝？！是你吗，爱莉丝？！"),
+        "avatar_cat"),
+  entry(_("We love you always...!",
+          "我们永远爱你……！"),
+        "avatar_lantern"),
   entry("", "avatar_cat"),
   entry("", "avatar_lantern"),
   entry("", "avatar_night"),
@@ -161,12 +195,14 @@ public:
       );
     } else if (script[entry_id].puzzle == -2) {
       painter::text(
-        "Fireflies and Forest Flowers", 32,
+        _("Fireflies and Forest Flowers",
+          "流萤花语"), 32,
         vec2(W * 0.5, H * 0.49 + displacement * MOVE_Y - 24), vec2(0.5, 0),
         tint4(0.9, 0.9, 0.9, cur_alpha)
       );
       painter::text(
-        "-   The End   -", 32,
+        _("-   The End   -",
+          "-   终   -"), 32,
         vec2(W * 0.5, H * 0.49 + displacement * MOVE_Y + 24), vec2(0.5, 0),
         tint4(0.9, 0.9, 0.9, cur_alpha)
       );
@@ -175,7 +211,7 @@ public:
       x1 = (x1 > 1 ? 1 : x1 < 0 ? 0 : x1);
       x2 = (x2 > 1 ? 1 : x2 < 0 ? 0 : x2);
       painter::text(
-        "Thanks for playing!", 24,
+        _("Thanks for playing!", "谢谢玩到这里！比心~"), 24,
         vec2(W - 16, H - 44 + prog_displ(x1) * MOVE_Y), vec2(1, 1),
         tint4(0.6, 0.6, 0.6, prog_alpha(x1))
       );

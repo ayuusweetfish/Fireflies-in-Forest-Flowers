@@ -142,14 +142,27 @@ case 6:
     B_ord(vec2(6, 0), 2, 2),
   };
   tutorials = {
-    {vec2(0, -5.5), "Tracks with fixation marks"},
-    {vec2(0, -4.5), "cannot be moved", vec2(-2, -1), 1, vec2(2, 3), 1},
-    {vec2(0, 4.5), "...but fireflies still can",
+    {vec2(0, -5.5),
+      _("Tracks with fixation marks",
+        "")},
+    {vec2(0, -4.5),
+      _("cannot be moved",
+        "带有固定标记的轨道无法移动"),
+      vec2(-2, -1), 1, vec2(2, 3), 1},
+    {vec2(0, 4.5),
+      _("...but fireflies still can",
+        "……但是萤火虫仍可拖动"),
       vec2(0, -3), 1,
       vec2(0, 2.5) - vec2(2, 0.5) * 0.4, 1},
-    {vec2(0, -5.5), "Tracks with fixation marks"},
-    {vec2(0, -4.5), "cannot be moved"},
-    {vec2(0, 4.5), "...but fireflies still can"},
+    {vec2(0, -5.5),
+      _("Tracks with fixation marks",
+        "")},
+    {vec2(0, -4.5),
+      _("cannot be moved",
+        "带有固定标记的轨道无法移动")},
+    {vec2(0, 4.5),
+      _("...but fireflies still can",
+        "……但是萤火虫仍可拖动")},
   };
   break;
 
@@ -172,8 +185,12 @@ case 7:
     {0, 1},
   };
   tutorials = {
-    {vec2(0, -4.5), "The bellflower is lit up"},
-    {vec2(0, -3.5), "as long as any firefly is close"},
+    {vec2(0, -4.5),
+      _("The bellflower is lit up",
+        "只要有萤火虫在附近")},
+    {vec2(0, -3.5),
+      _("as long as any firefly is close",
+        "风铃花就会一直被点亮")},
   };
   break;
 
@@ -211,7 +228,9 @@ case 9:
     B_ord(vec2(5, 0), 2, 3),
   };
   tutorials = {
-    {vec2(0, -5), "Fireflies may travel at different speeds"},
+    {vec2(0, -5),
+      _("Fireflies may travel at different speeds",
+        "萤火虫飞行可能有快有慢")},
   };
   to_text = 15;
   break;
@@ -234,8 +253,12 @@ case 10:
     B_ord(vec2(5, 1), 2, 2),
   };
   tutorials = {
-    {vec2(1, -4.5), "Attracting tracks capture"},
-    {vec2(1, -3.5), "fireflies touching them"},
+    {vec2(1, -4.5),
+      _("Attracting tracks capture",
+        "带有吸引特性的轨道")},
+    {vec2(1, -3.5),
+      _("fireflies touching them",
+        "会捕获触碰它的每一只萤火虫")},
   };
   break;
 
@@ -274,7 +297,9 @@ case 12:
     B_ord(vec2(-4, 0), 2, 1),
   };
   tutorials = {
-    {vec2(0, -5), "Fireflies pick the nearest direction when entering"},
+    {vec2(0, -5),
+      _("Fireflies pick the nearest direction when entering",
+        "当萤火虫变换轨道时，会尽可能保持原本的方向")},
   };
   break;
 
@@ -334,7 +359,9 @@ case 15:
     B_ord(vec2(5, 3), 2, 2),
   };
   tutorials = {
-    {vec2(0, -4.5), "Repelling lines make fireflies turn around"},
+    {vec2(0, -4.5),
+      _("Repelling lines make fireflies turn around",
+        "萤火虫触碰到排斥线时会转向")},
   };
   break;
 
