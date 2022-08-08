@@ -721,9 +721,8 @@ public:
   }
 
   void ptoff(float x, float y) {
-    if (tut_has_next()) {
-      if (tut_hide_time == -1) tut_hide_time = T;
-    }
+    if (tut_has_next() && tut_hide_time == -1)
+      tut_hide_time = T;
     if (buttons.ptoff(x, y)) return;
 
     if (sel_ff != nullptr) {
@@ -784,8 +783,12 @@ public:
     if (sel_track == nullptr &&
         finish_timer == -1 &&
         !last_space_down && space_down) {
-      run_state ^= 1;
-      if (run_state & 1) start_run(); else stop_run();
+      if (tut_has_next() && tut_hide_time == -1) {
+        tut_hide_time = T;
+      } else {
+        run_state ^= 1;
+        if (run_state & 1) start_run(); else stop_run();
+      }
     }
     last_space_down = space_down;
 
