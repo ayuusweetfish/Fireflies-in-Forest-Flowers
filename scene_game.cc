@@ -474,6 +474,8 @@ public:
   std::vector<tutorial> tutorials;
   int to_text;
 
+  float bellflower_x_min, bellflower_x_max; // Used for sounds
+
   firefly::trail_manager trail_m;
 
   int tut_show_start, tut_show_end;
@@ -533,6 +535,13 @@ public:
       #include "puzzles.hh"
     }
     build_links(links);
+
+    bellflower_x_min = bellflowers[0]->o.x;
+    bellflower_x_max = bellflowers[0]->o.x;
+    for (auto b : bellflowers) {
+      if (bellflower_x_min > b->o.x) bellflower_x_min = b->o.x;
+      if (bellflower_x_max < b->o.x) bellflower_x_max = b->o.x;
+    }
 
     trail_m.recalc_init();
 
@@ -767,6 +776,8 @@ public:
       tut_hide_time = -1;
       tut_show_start = tut_show_end;
       update_tut_show_range();
+      if (tut_show_start < tutorials.size())
+        sound::play("hint");
     }
 
     bool space_down = rl::IsKeyDown(rl::KEY_SPACE);
@@ -790,28 +801,43 @@ public:
       trail_m.step();
 
       if (finish_timer == -1) {
-        int trigger_ord_count = 0;
-        int trigger_zero_count = 0;
+        std::vector<float> trigger_ord, trigger_zero;
         for (auto b : bellflowers)
           if (b->update(fireflies)) {
-            if (b->c == 0) trigger_zero_count++;
-            else trigger_ord_count++;
+            if (b->c == 0) trigger_zero.push_back(b->o.x);
+            else trigger_ord.push_back(b->o.x);
           }
         // Play sounds
-        if (trigger_zero_count > 0) {
+        if (!trigger_zero.empty()) {
           int total_zeros = 0;
           bool has_minus = false;
           for (auto b : bellflowers)
             if (b->c == 0) total_zeros++;
             else if (b->c < 0) has_minus = true;
-          if (!has_minus)
-            for (int i = total_zeros - trigger_zero_count + 1; i <= total_zeros; i++)
-              sound::bellflower_pop_zero(i, bellflowers.size());
-          else
-            sound::bellflower_pop_zero_with_minus();
+          if (!has_minus) {
+            for (int i = 0; i < trigger_zero.size(); i++) {
+              sound::play(
+                sound::bellflower_pop_zero(
+                  total_zeros - trigger_zero.size() + i + 1,
+                  bellflowers.size()),
+                sound::bellflowers_pan(
+                  trigger_zero[i],
+                  bellflower_x_min, bellflower_x_max)
+              );
+            }
+          } else {
+            for (float x : trigger_zero)
+              sound::play(
+                "bellflower_pop_zero_0",
+                sound::bellflowers_pan(x, bellflower_x_min, bellflower_x_max)
+              );
+          }
         }
-        if (trigger_ord_count > 0) {
-          sound::bellflower_pop_ord(0, 0, 0);
+        for (float x : trigger_ord) {
+          sound::play(
+            "bellflower_pop_ord",
+            sound::bellflowers_pan(x, bellflower_x_min, bellflower_x_max)
+          );
         }
       } else {
         // No bellflowers are changed after finish

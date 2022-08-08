@@ -91,10 +91,9 @@ public:
 class sound {
 public:
   static void init();
-  static void play(const char *name);
-  static void bellflower_pop_ord(float x, float x_min, float x_max);
-  static void bellflower_pop_zero(int cur, int total);
-  static void bellflower_pop_zero_with_minus();
+  static void play(const char *name, float pan = 0.5);
+  static float bellflowers_pan(float x, float x_min, float x_max);
+  static const char *bellflower_pop_zero(int cur, int total);
 };
 
 // Translation

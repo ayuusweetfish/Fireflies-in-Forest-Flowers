@@ -110,6 +110,8 @@ int main(int argc, char *argv[])
   bgm[1] = LoadMusicStream("res/Bellflowers_Wonderland.ogg");
   bgm[0].looping = false;
   bgm[1].looping = false;
+  SetMusicVolume(bgm[0], 0.75);
+  SetMusicVolume(bgm[1], 0.75);
   sound::init();
 
   painter::init();
