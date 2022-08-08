@@ -48,13 +48,12 @@ void sound::play(const char *name, float pan)
   PlaySoundMulti(p->second);
 }
 
-float sound::bellflowers_pan(float x, float x_min, float x_max)
+float sound::bellflowers_pan(float x, float x_cen)
 {
-  if (fabs(x_min - x_max) < 1e-4) return 0.5;
-  float span = (x_max - x_min) / 5;
+  float span = (x - x_cen) / 5;
   if (span > 1) span = 1;
-  span *= 0.4;
-  return 0.5 - ((x - x_min) / (x_max - x_min) - 0.5) * span;
+  if (span < -1) span = -1;
+  return 0.5 - span * 0.2;
 }
 
 const char *sound::bellflower_pop_zero(int cur, int total)

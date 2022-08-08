@@ -474,7 +474,7 @@ public:
   std::vector<tutorial> tutorials;
   int to_text;
 
-  float bellflower_x_min, bellflower_x_max; // Used for sounds
+  float bellflowers_x_cen;  // Used for sounds
 
   firefly::trail_manager trail_m;
 
@@ -536,12 +536,9 @@ public:
     }
     build_links(links);
 
-    bellflower_x_min = bellflowers[0]->o.x;
-    bellflower_x_max = bellflowers[0]->o.x;
-    for (auto b : bellflowers) {
-      if (bellflower_x_min > b->o.x) bellflower_x_min = b->o.x;
-      if (bellflower_x_max < b->o.x) bellflower_x_max = b->o.x;
-    }
+    float x_sum = 0;
+    for (auto b : bellflowers) x_sum += b->o.x;
+    bellflowers_x_cen = x_sum / bellflowers.size();
 
     trail_m.recalc_init();
 
@@ -824,22 +821,21 @@ public:
                   total_zeros - trigger_zero.size() + i + 1,
                   bellflowers.size()),
                 sound::bellflowers_pan(
-                  trigger_zero[i],
-                  bellflower_x_min, bellflower_x_max)
+                  trigger_zero[i], bellflowers_x_cen)
               );
             }
           } else {
             for (float x : trigger_zero)
               sound::play(
                 "bellflower_pop_zero_0",
-                sound::bellflowers_pan(x, bellflower_x_min, bellflower_x_max)
+                sound::bellflowers_pan(x, bellflowers_x_cen)
               );
           }
         }
         for (float x : trigger_ord) {
           sound::play(
             "bellflower_pop_ord",
-            sound::bellflowers_pan(x, bellflower_x_min, bellflower_x_max)
+            sound::bellflowers_pan(x, bellflowers_x_cen)
           );
         }
       } else {

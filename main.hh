@@ -92,7 +92,7 @@ class sound {
 public:
   static void init();
   static void play(const char *name, float pan = 0.5);
-  static float bellflowers_pan(float x, float x_min, float x_max);
+  static float bellflowers_pan(float x, float x_cen);
   static const char *bellflower_pop_zero(int cur, int total);
 };
 
