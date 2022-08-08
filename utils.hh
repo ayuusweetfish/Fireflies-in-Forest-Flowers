@@ -47,6 +47,8 @@ struct psys {
   void update();
 };
 
+// Button group
+
 struct button_group {
   struct button {
     vec2 pos, size;
@@ -66,5 +68,16 @@ struct button_group {
   bool ptmove(float, float);
   bool ptoff(float, float);
 };
+
+// Hashing
+
+typedef unsigned long hash_t;
+
+static inline hash_t hash(const char *s)
+{
+  hash_t r = 0;
+  for (; *s != '\0'; s++) r = r * 997 + *s;
+  return r;
+}
 
 #endif

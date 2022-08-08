@@ -325,18 +325,20 @@ public:
       since_on = since_off = 9999;
       c = c0;
     }
-    void update(bool on) {
+    bool update(bool on) {  // Returns whether triggered
+      bool triggered = false;
       since_on++;
       since_off++;
-      if (!last_on && on) { c--; since_on = 0; }
+      if (!last_on && on) { c--; since_on = 0; triggered = true; }
       if (last_on && !on) since_off = 0;
       last_on = on;
+      return triggered;
     }
     void update_anim_only() {
       since_on++;
       since_off++;
     }
-    virtual void update(const std::vector<firefly> &fireflies) = 0;
+    virtual bool update(const std::vector<firefly> &fireflies) = 0;
     virtual void draw1(int finish_anim) const { }
     virtual void draw2(int finish_anim) const { }
 
@@ -363,9 +365,9 @@ public:
     bellflower_ord(vec2 o, float r, int c0)
       : bellflower(o, r, c0)
       { }
-    void update(const std::vector<firefly> &fireflies) {
+    bool update(const std::vector<firefly> &fireflies) {
       bool on = fireflies_within(fireflies);
-      bellflower::update(on);
+      return bellflower::update(on);
     }
     void draw1(int finish_anim) const {
       using namespace rl;
@@ -430,14 +432,14 @@ public:
       bellflower::reset();
       d = d0;
     }
-    void update(const std::vector<firefly> &fireflies) {
+    bool update(const std::vector<firefly> &fireflies) {
       bool on = fireflies_within(fireflies);
       if (on) {
         if (d > 0) d--;
       } else {
         d = d0;
       }
-      bellflower::update(d == 0);
+      return bellflower::update(d == 0);
     }
     void draw1(int finish_anim) const {
       using namespace rl;
@@ -787,11 +789,34 @@ public:
       for (auto &f : fireflies) f.update(tracks);
       trail_m.step();
 
-      // No bellflowers are changed after finish
-      if (finish_timer == -1)
-        for (auto b : bellflowers) b->update(fireflies);
-      else
+      if (finish_timer == -1) {
+        int trigger_ord_count = 0;
+        int trigger_zero_count = 0;
+        for (auto b : bellflowers)
+          if (b->update(fireflies)) {
+            if (b->c == 0) trigger_zero_count++;
+            else trigger_ord_count++;
+          }
+        // Play sounds
+        if (trigger_zero_count > 0) {
+          int total_zeros = 0;
+          bool has_minus = false;
+          for (auto b : bellflowers)
+            if (b->c == 0) total_zeros++;
+            else if (b->c < 0) has_minus = true;
+          if (!has_minus)
+            for (int i = total_zeros - trigger_zero_count + 1; i <= total_zeros; i++)
+              sound::bellflower_pop_zero(i, bellflowers.size());
+          else
+            sound::bellflower_pop_zero_with_minus();
+        }
+        if (trigger_ord_count > 0) {
+          sound::bellflower_pop_ord(0, 0, 0);
+        }
+      } else {
+        // No bellflowers are changed after finish
         for (auto b : bellflowers) b->update_anim_only();
+      }
 
       // Check for finish
       if (finish_timer == -1) {
@@ -804,6 +829,8 @@ public:
         }
       }
     }
+    if (finish_timer == 360 + 1.2 * 240 + 20)
+      sound::play("puzzle_solved");
     if (finish_timer == 960) {
       if (to_text != -1)
         replace_scene(scene_text(to_text));

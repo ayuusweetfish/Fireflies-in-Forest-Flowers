@@ -86,6 +86,17 @@ public:
     tint4 tint);
 };
 
+// Sound
+
+class sound {
+public:
+  static void init();
+  static void play(const char *name);
+  static void bellflower_pop_ord(float x, float x_min, float x_max);
+  static void bellflower_pop_zero(int cur, int total);
+  static void bellflower_pop_zero_with_minus();
+};
+
 // Translation
 
 extern char lang;

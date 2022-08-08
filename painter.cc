@@ -1,10 +1,9 @@
 #include "main.hh"
+#include "utils.hh"
 using namespace rl;
 
 #include <cstdio>
 #include <map>
-
-typedef unsigned long hash_t;
 
 static std::map<int, Font> font;
 
@@ -13,13 +12,6 @@ struct tex_record {
   int width, height;
 };
 static std::map<hash_t, tex_record> textures;
-
-static inline hash_t hash(const char *s)
-{
-  hash_t r = 0;
-  for (; *s != '\0'; s++) r = r * 997 + *s;
-  return r;
-}
 
 static inline void load_tex(const char *name, const char *path)
 {

@@ -110,6 +110,7 @@ int main(int argc, char *argv[])
   bgm[1] = LoadMusicStream("res/Bellflowers_Wonderland.ogg");
   bgm[0].looping = false;
   bgm[1].looping = false;
+  sound::init();
 
   painter::init();
   cur_scene = scene_startup();
