@@ -88,12 +88,9 @@ public:
 
 // Translation
 
-#if defined(LANG_EN)
-#define _(_en, _zh) (_en)
-#elif defined(LANG_ZH)
-#define _(_en, _zh) (_zh)
-#else
-#define _(_en, _zh) (_en)
-#endif
+extern char lang;
+template <typename T> T _(const T a, const T b) {
+  return (lang == 0 ? a : b);
+}
 
 #endif

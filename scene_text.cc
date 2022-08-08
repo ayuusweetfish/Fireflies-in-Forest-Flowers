@@ -3,22 +3,29 @@
 #include <cstdio>
 
 struct entry {
-  const char *text;
+  const char *_text[2];
   union {
     const char *image;
     int puzzle;
   };
   entry(const char *text, const char *image = NULL)
-    : text(text), image(image)
+    : _text{text, text}, image(image)
+    { }
+  entry(const char *text1, const char *text2, const char *image)
+    : _text{text1, text2}, image(image)
     { }
   entry(int puzzle)
-    : text(NULL), puzzle(puzzle)
+    : _text{NULL, NULL}, puzzle(puzzle)
     { }
+  inline const char *text() const { return _(_text[0], _text[1]); }
 };
+
+#define _(...) __VA_ARGS__
+
 static entry script[] = {
   // 0
   entry(_("Here we are,\nthe Magical Forest of Yonder.",
-          "我们到了！这里是彼岸之林。"),
+          "我们到了！这里是彼岸仙林。"),
         "avatar_intro"),
   entry(_("Where is Nana?\nIs she in this forest?",
           "奈奈在哪儿呀？在这片森林里吗？"),
@@ -28,7 +35,7 @@ static entry script[] = {
         "avatar_intro"),
   entry(_("...", "……"), "avatar_question"),
   entry(_("Here, let the fireflies tell you.",
-          "来这儿，萤火虫会告诉你的。"),
+          "来这儿，看看萤火虫就知道了。"),
         "avatar_intro"),
   // 5
   entry(0),
@@ -88,7 +95,7 @@ static entry script[] = {
           "……"),
         "avatar_bush"),
   entry(_("Maybe I should finally stop daydreaming like this.",
-          "我是不是不该再做这种白日梦了。"),
+          "我是不是真的该从这种幻想里醒醒了。"),
         "avatar_oracle"),
   entry(15),
 
@@ -106,13 +113,15 @@ static entry script[] = {
           "爱莉丝？！是你吗，爱莉丝？！"),
         "avatar_cat"),
   entry(_("We love you always...!",
-          "我们永远爱你……！"),
+          "我们一直一直爱你……！"),
         "avatar_lantern"),
   entry("", "avatar_cat"),
   entry("", "avatar_lantern"),
   entry("", "avatar_night"),
   entry(-2),
 };
+
+#undef _
 
 static inline bool empty(const char *s) { return s != NULL && s[0] == '\0'; }
 
@@ -135,7 +144,7 @@ public:
 
   void update() {
     since_change++;
-    if (script[entry_id].text == NULL &&
+    if (script[entry_id].text() == NULL &&
         script[entry_id].puzzle >= 0 &&
         since_change == 300) {
       replace_scene(scene_game(script[entry_id].puzzle));
@@ -158,7 +167,7 @@ public:
     if (since_change < 180) {
       float x = (float)since_change / 180;
       cur_alpha = prog_alpha(x);
-      if (entry_id > 0 && script[entry_id - 1].text != NULL) {
+      if (entry_id > 0 && script[entry_id - 1].text() != NULL) {
         last_alpha = (x < 0.4 ? cub(1 - x / 0.4) : 0);
       }
       displacement = prog_displ(x);
@@ -169,27 +178,27 @@ public:
         painter::image(
           script[entry_id - 1].image,
           vec2(W * 0.5, H *
-            (empty(script[entry_id - 1].text) ? 0.57 : 0.47)),
+            (empty(script[entry_id - 1].text()) ? 0.57 : 0.47)),
           vec2(0.5, 1), vec2(1, 1),
           tint4(1, 1, 1, last_alpha)
         );
       painter::text(
-        script[entry_id - 1].text, 32,
+        script[entry_id - 1].text(), 32,
         vec2(W * 0.5, H * 0.53 + (-1 + displacement) * MOVE_Y), vec2(0.5, 0),
         tint4(0.9, 0.9, 0.9, last_alpha)
       );
     }
-    if (script[entry_id].text != NULL) {
+    if (script[entry_id].text() != NULL) {
       if (script[entry_id].image != NULL)
         painter::image(
           script[entry_id].image,
           vec2(W * 0.5, H *
-            (empty(script[entry_id].text) ? 0.57 : 0.47)),
+            (empty(script[entry_id].text()) ? 0.57 : 0.47)),
           vec2(0.5, 1), vec2(1, 1),
           tint4(1, 1, 1, cur_alpha)
         );
       painter::text(
-        script[entry_id].text, 32,
+        script[entry_id].text(), 32,
         vec2(W * 0.5, H * 0.53 + displacement * MOVE_Y), vec2(0.5, 0),
         tint4(0.9, 0.9, 0.9, cur_alpha)
       );

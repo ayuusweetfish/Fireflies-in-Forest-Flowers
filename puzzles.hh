@@ -44,7 +44,7 @@ case 1:
       vec2(-5, 0), 3,
       vec2(3, 0), 3,
       .allows_interaction = true},
-    {vec2(_(-7.8, -8.02), -6), _("(Space)", "(空格)")},
+    {vec2(_(-7.8, -8.04), -6), _("(Space)", "(空格)")},
     {vec2(-8.18, -4.25), "(Tab)"},
   };
   to_text = 6;
@@ -270,29 +270,32 @@ case 11:
     {0, 1},
   };
   bellflowers = {
-    B_ord(vec2(-6, 0), 2, 1),
-    B_ord(vec2(6, 0), 2, 4),
+    B_ord(vec2(-6, 0), 2, 2),
+    B_ord(vec2(6, 0), 2, 6),
   };
   break;
 
 case 12:
   title = _("Capture", "采撷");
   tracks = {
-    T_cir(vec2(2, 0), 3, track::FIXED | track::ATTRACT),
-    T_cir(vec2(-2, 0), 3),
+    T_cir(vec2(2, 1), 3, track::FIXED | track::ATTRACT),
+    T_cir(vec2(-2, 1), 3),
   };
   fireflies = {
     F(1, 0.75, 1),
   };
   bellflowers = {
-    B_ord(vec2(6, -2), 2, 1),
-    B_ord(vec2(6, 2), 2, 2),
-    B_ord(vec2(-4, 0), 2, 1),
+    B_ord(vec2(6, -1), 2, 1),
+    B_ord(vec2(6, 3), 2, 2),
+    B_ord(vec2(-4, 1), 2, 1),
   };
   tutorials = {
-    {vec2(0, -5),
-      _("Fireflies pick the nearest direction when entering",
+    {vec2(0, _(-5.0, -4.5)),
+      _("Fireflies pick a direction to avoid acute turns",
         "当萤火虫变换轨道时，会尽可能保持原本的方向")},
+    {vec2(0, -4),
+      _("when entering a different track",
+        "")}
   };
   break;
 
@@ -378,16 +381,16 @@ case 16:
 case 17:
   title = _("Lingering", "流连");
   tracks = {
-    T_cir(vec2(0, -2), 3),
-    T_cir(vec2(0, 0), 3, track::ATTRACT | track::FIXED, 1),
-    T_seg(vec2(4, 0), vec2(1.8, 0), track::RETURN | track::FIXED),
+    T_cir(vec2(0, -1), 3),
+    T_cir(vec2(0, 1), 3, track::ATTRACT | track::FIXED, 1),
+    T_seg(vec2(4, 1), vec2(1.8, 0), track::RETURN | track::FIXED),
   };
   fireflies = {
     F(0, 0.75, 1),
   };
   bellflowers = {
-    B_ord(vec2(-4, 0), 2, 1),
-    B_ord(vec2(4, 0), 2, 3),
+    B_ord(vec2(-4, 1), 2, 1),
+    B_ord(vec2(4, 1), 2, 3),
   };
   break;
 

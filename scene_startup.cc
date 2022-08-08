@@ -12,6 +12,7 @@ public:
   rl::RenderTexture2D render[2];
 
   int hold_time;
+  button_group btns;
 
   // Puzzle selection
   struct puzzle_sel {
@@ -44,20 +45,20 @@ public:
     }
 
     bool pton(float x, float y) {
-      if (T == 0 || (T < T_MAX && !entering)) return false;
+      if (T < T_MAX) return (T != 0);
       if (btns.pton(x, y)) return true;
       pt_captured = true;
       return true;
     }
 
     bool ptmove(float x, float y) {
-      if (T == 0 || (T < T_MAX && !entering)) return false;
+      if (T < T_MAX) return (T != 0);
       if (btns.ptmove(x, y)) return true;
       return true;
     }
 
     bool ptoff(float x, float y) {
-      if (T == 0 || (T < T_MAX && !entering)) return false;
+      if (T < T_MAX) return (T != 0);
       if (btns.ptoff(x, y)) return true;
       T--;
       entering = false;
@@ -99,6 +100,30 @@ public:
     tex_glow = rl::LoadTexture("res/intro_glow.png");
     rl::GenTextureMipmaps(&tex_glow);
     rl::SetTextureFilter(tex_glow, rl::TEXTURE_FILTER_BILINEAR);
+
+    btns.buttons = {(button_group::button){
+      vec2(W - 180, H - 116),
+      vec2(160, 48),
+      nullptr,  // Will be filled later
+      [this]() {
+        this->ps.entering = true;
+        this->ps.T = 1;
+      }
+    }, (button_group::button){
+      vec2(W - 180, H - 68),
+      vec2(160, 48),
+      nullptr,  // Will be filled later
+      [this]() {
+        lang = (lang + 1) % 2;
+        this->update_buttons_text();
+      }
+    }};
+    update_buttons_text();
+  }
+
+  inline void update_buttons_text() {
+    btns.buttons[0].content = _("Skip to puzzle", "跳到谜题");
+    btns.buttons[1].content = "En/中";
   }
 
   ~scene_startup() {
@@ -107,33 +132,28 @@ public:
 
   void pton(float x, float y) {
     if (ps.pton(x, y)) return;
+    if (btns.pton(x, y)) return;
     hold_time = 0;
   }
 
   void ptmove(float x, float y) {
     if (ps.ptmove(x, y)) return;
+    if (btns.ptmove(x, y)) return;
   }
 
   void ptoff(float x, float y) {
-    if (hold_time >= 240) {
-      hold_time = -1;
-      return;
-    }
-    if (ps.ptoff(x, y)) return;
+    int orig_hold_time = hold_time;
     hold_time = -1;
-    replace_scene(scene_text(0));
+    if (ps.ptoff(x, y)) return;
+    if (btns.ptoff(x, y)) return;
+    if (orig_hold_time >= 0 && orig_hold_time < 240)
+      replace_scene(scene_text(0));
   }
 
   void update() {
     ps_fireflies.update();
     ps.update();
-    if (hold_time >= 0) {
-      hold_time++;
-      if (hold_time == 240) {
-        ps.T = 1;
-        ps.entering = true;
-      }
-    }
+    if (hold_time >= 0) hold_time++;
   }
 
   void draw() {
@@ -172,6 +192,10 @@ public:
       }
     }
 
+    btns.draw(
+      tint4(0.8, 0.8, 0.8, 0.4),
+      32,
+      vec2(1, 0.5));
     ps.draw();
   }
 };

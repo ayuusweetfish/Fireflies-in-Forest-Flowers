@@ -37,7 +37,7 @@ bool button_group::ptoff(float x, float y)
   return true;
 }
 
-void button_group::draw(tint4 tint)
+void button_group::draw(tint4 tint, int text_size, vec2 text_anchor)
 {
   for (const auto &btn : buttons) {
     tint4 cur_tint = tint;
@@ -50,7 +50,9 @@ void button_group::draw(tint4 tint)
     } else {
       painter::text(
         btn.content,
-        36, btn.pos + btn.size / 2, vec2(0.5, 0.5),
+        text_size,
+        btn.pos + btn.size * text_anchor,
+        text_anchor,
         cur_tint);
     }
   }

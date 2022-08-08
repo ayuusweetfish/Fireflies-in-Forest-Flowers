@@ -7,6 +7,8 @@ using namespace rl;
 
 #include <cmath>
 
+char lang = 0;
+
 static scene *cur_scene, *prev_scene = NULL;
 static const int TRANSITION_DUR = 360;
 static int transition_timer;

@@ -58,7 +58,10 @@ struct button_group {
   button *sel_button = nullptr;
   bool cur_in;
 
-  void draw(tint4 tint = tint4(1, 1, 1, 1));
+  void draw(
+    tint4 tint = tint4(1, 1, 1, 1),
+    int text_size = 36,
+    vec2 text_anchor = vec2(0.5, 0.5));
   bool pton(float, float);
   bool ptmove(float, float);
   bool ptoff(float, float);
