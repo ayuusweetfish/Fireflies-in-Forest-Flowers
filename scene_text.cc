@@ -136,7 +136,9 @@ public:
   }
 
   void ptoff(float x, float y) {
-    if (script[entry_id].puzzle != -2 && since_change >= 180) {
+    // Not ending, enough time, and not an entry for a puzzle
+    if (script[entry_id].puzzle != -2 && since_change >= 180 &&
+      !(script[entry_id].text() == NULL && script[entry_id].puzzle >= 0)) {
       entry_id++;
       since_change = 0;
     }
