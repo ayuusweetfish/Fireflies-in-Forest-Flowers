@@ -77,7 +77,7 @@ case 2:
   break;
 
 case 3:
-  title = _("Arrangement", "收束");
+  title = _("Arrangement", "罗布");
   tracks = {
     T_cir(vec2(0, 0), 3),
     T_cir(vec2(0, 0), 2),
