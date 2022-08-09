@@ -7,7 +7,7 @@ ifeq ($(WEB),1)
   CXX = emcc
   RAYLIB_LIB ?= ./deps/raylib/build_wasm/raylib/libraylib.a
   TARGET = web/index.html
-  EXTRAFLAGS ?= -O3 -o $(TARGET) -s USE_GLFW=3 --preload-file res --shell-file shell.html -DPLATFORM_WEB -s ASYNCIFY
+  EXTRAFLAGS ?= -O3 -o $(TARGET) -s USE_GLFW=3 --preload-file res --shell-file shell.html -DPLATFORM_WEB -s ASYNCIFY -s TOTAL_MEMORY=67108864
   EXTRASTEP = $(MD) web 2>/dev/null
 endif
 

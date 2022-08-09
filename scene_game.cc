@@ -574,8 +574,8 @@ public:
       }
       trees[i] = {
         .pos = vec2(rands[0] % W, rands[1] % H),
-        .rot_cen = (float)rands[2] / 0x7fffffff * (float)M_PI * 2,
-        .rot_amp = 0.05f + (float)rands[3] / 0x7fffffff * 0.05f,
+        .rot_cen = (float)rands[2] / (float)0x7fffffff * (float)M_PI * 2,
+        .rot_amp = 0.05f + (float)rands[3] / (float)0x7fffffff * 0.05f,
         .rot_period = 1200 + 1200 * (float)((rands[4] >> 8) % 256) / 256,
         .tint = (192 + ((rands[4] >> 16) % 32)) / 255.0f,
       };

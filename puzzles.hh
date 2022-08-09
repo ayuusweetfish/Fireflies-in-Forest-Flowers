@@ -1,3 +1,5 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wc99-designator"
 case 0:
   title = _("Firefly", "萤火");
   tracks = {
@@ -514,3 +516,4 @@ case 99:
   };
   break;
 */
+#pragma GCC diagnostic pop
