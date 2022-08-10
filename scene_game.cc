@@ -77,6 +77,7 @@ public:
       return t;
     }
     inline void ripples(int T, float &dist, float &alpha) const {
+#ifndef SHOWCASE
       if (flags & RETURN) {
         float phase = (float)((T + 450) % 900) / 600;
         if (phase < 1) {
@@ -91,6 +92,7 @@ public:
           alpha = (19 * expf(-5.9 * phase) * sin(phase) * (1 - phase)) * 0.6;
         }
       }
+#endif
     }
   };
 
@@ -487,7 +489,15 @@ public:
   int run_state = (8 << 1); // Initial speed 8 steps/update
   int finish_timer = -1;
 
-  const float RT_SCALE = 2; // Scaling factor for render targets
+  // Scaling factor for render targets
+  const float RT_SCALE_BASE = 2;
+  const float RT_SCALE_BLOOM =
+#ifdef SHOWCASE
+    2
+#else
+    1
+#endif
+  ;
   rl::RenderTexture2D texBloomBase, texBloomStage1, texBloomStage2;
   rl::Shader shaderBloom;
   int shaderBloomPassLoc;
@@ -546,12 +556,15 @@ public:
     update_tut_show_range(true);
     tut_hide_time = -1;
 
-    texBloomBase = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
+    texBloomBase = rl::LoadRenderTexture(W * RT_SCALE_BASE, H * RT_SCALE_BASE);
     rl::SetTextureFilter(texBloomBase.texture, rl::TEXTURE_FILTER_BILINEAR);
-    texBloomStage1 = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
+    rl::SetTextureWrap(texBloomBase.texture, rl::TEXTURE_WRAP_CLAMP);
+    texBloomStage1 = rl::LoadRenderTexture(W * RT_SCALE_BLOOM, H * RT_SCALE_BLOOM);
     rl::SetTextureFilter(texBloomStage1.texture, rl::TEXTURE_FILTER_BILINEAR);
-    texBloomStage2 = rl::LoadRenderTexture(W * RT_SCALE, H * RT_SCALE);
+    rl::SetTextureWrap(texBloomStage1.texture, rl::TEXTURE_WRAP_CLAMP);
+    texBloomStage2 = rl::LoadRenderTexture(W * RT_SCALE_BLOOM, H * RT_SCALE_BLOOM);
     rl::SetTextureFilter(texBloomStage2.texture, rl::TEXTURE_FILTER_BILINEAR);
+    rl::SetTextureWrap(texBloomStage2.texture, rl::TEXTURE_WRAP_CLAMP);
   #ifdef PLATFORM_WEB
     shaderBloom = rl::LoadShader("res/bloom_web.vert", "res/bloom_web.frag");
     shaderSpotlight = rl::LoadShader("res/spotlight_web.vert", "res/spotlight_web.frag");
@@ -765,6 +778,15 @@ public:
 
   bool last_space_down = false;
   bool last_tab_down = false;
+#ifndef SHOWCASE
+  #define show_title true
+  #define show_grid true
+#else
+  bool show_title = true;
+  bool show_grid = true;
+  bool last_1_down = false;
+  bool last_2_down = false;
+#endif
   void update() {
     T++;
     if (finish_timer >= 0) finish_timer++;
@@ -795,6 +817,15 @@ public:
       btn_speed();
     }
     last_tab_down = tab_down;
+
+#ifdef SHOWCASE
+    bool _1_down = rl::IsKeyDown(rl::KEY_ONE);
+    if (!last_1_down && _1_down) show_title = !show_title;
+    last_1_down = _1_down;
+    bool _2_down = rl::IsKeyDown(rl::KEY_TWO);
+    if (!last_2_down && _2_down) show_grid = !show_grid;
+    last_2_down = _2_down;
+#endif
 
     if (run_state & 1) for (int i = 0; i < (run_state >> 1); i++) {
       for (auto &f : fireflies) f.update(tracks);
@@ -891,15 +922,17 @@ public:
     }
 
     // Rule grid
-    int x_range = (W / 2 / SCALE) + 1;
-    for (int i = -x_range; i <= x_range; i++) {
-      float x = scr(vec2(i, 0)).x;
-      DrawLineV((Vector2){x, 0}, (Vector2){x, H}, (Color){30, 30, 30, 255});
-    }
-    int y_range = (H / 2 / SCALE) + 1;
-    for (int i = -y_range; i <= y_range; i++) {
-      float y = scr(vec2(0, i)).y;
-      DrawLineV((Vector2){0, y}, (Vector2){W, y}, (Color){30, 30, 30, 255});
+    if (show_grid) {
+      int x_range = (W / 2 / SCALE) + 1;
+      for (int i = -x_range; i <= x_range; i++) {
+        float x = scr(vec2(i, 0)).x;
+        DrawLineV((Vector2){x, 0}, (Vector2){x, H}, (Color){30, 30, 30, 255});
+      }
+      int y_range = (H / 2 / SCALE) + 1;
+      for (int i = -y_range; i <= y_range; i++) {
+        float y = scr(vec2(0, i)).y;
+        DrawLineV((Vector2){0, y}, (Vector2){W, y}, (Color){30, 30, 30, 255});
+      }
     }
 
     // Render scaled to texture
@@ -907,7 +940,7 @@ public:
 
     Color bg = (Color){0, 0, 0, 0};
     BeginTextureMode(texBloomBase);
-    BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE});
+    BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE_BASE});
       ClearBackground(bg);
       for (const auto t : tracks) t->draw(T);
       for (const auto &f : fireflies) f.draw(trail_m.pointer);
@@ -916,13 +949,13 @@ public:
 
     int pass;
     BeginTextureMode(texBloomStage1);
-    BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE});
+    BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE_BLOOM});
     pass = 1;
     SetShaderValue(shaderBloom, shaderBloomPassLoc, &pass, SHADER_UNIFORM_INT);
     BeginShaderMode(shaderBloom);
       ClearBackground(bg);
       DrawTexturePro(texBloomBase.texture,
-        (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
+        (Rectangle){0, 0, W * RT_SCALE_BASE, -H * RT_SCALE_BASE},
         (Rectangle){0, 0, W, H},
         (Vector2){0, 0}, 0, WHITE);
     EndShaderMode();
@@ -930,13 +963,13 @@ public:
     EndTextureMode();
 
     BeginTextureMode(texBloomStage2);
-    BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE});
+    BeginMode2D((Camera2D){(Vector2){0, 0}, (Vector2){0, 0}, 0, RT_SCALE_BLOOM});
     pass = 2;
     SetShaderValue(shaderBloom, shaderBloomPassLoc, &pass, SHADER_UNIFORM_INT);
     BeginShaderMode(shaderBloom);
       ClearBackground(bg);
       DrawTexturePro(texBloomStage1.texture,
-        (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
+        (Rectangle){0, 0, W * RT_SCALE_BLOOM, -H * RT_SCALE_BLOOM},
         (Rectangle){0, 0, W, H},
         (Vector2){0, 0}, 0, WHITE);
     EndShaderMode();
@@ -951,16 +984,17 @@ public:
     for (const auto b : bellflowers) b->draw1(finish_anim);
 
     DrawTexturePro(texBloomBase.texture,
-      (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
+      (Rectangle){0, 0, W * RT_SCALE_BASE, -H * RT_SCALE_BASE},
       (Rectangle){0, 0, W, H},
       (Vector2){0, 0}, 0, (Color){255, 255, 255, 160});
     DrawTexturePro(texBloomStage2.texture,
-      (Rectangle){0, 0, W * RT_SCALE, -H * RT_SCALE},
+      (Rectangle){0, 0, W * RT_SCALE_BLOOM, -H * RT_SCALE_BLOOM},
       (Rectangle){0, 0, W, H},
       (Vector2){0, 0}, 0, WHITE);
 
     for (const auto b : bellflowers) b->draw2(finish_anim);
 
+#ifndef SHOWCASE
     // Tutorials
     float tut_alpha = 1;
     if (tut_hide_time >= 0) {
@@ -998,14 +1032,17 @@ public:
 
     // Buttons
     buttons.draw();
+#endif
 
     // Title
-    char title_text[64];
-    snprintf(title_text, sizeof title_text,
-      "%02d. %s", puzzle_id, title);
-    painter::text(title_text, 36,
-      vec2(20, H - 20),
-      vec2(0, 1), tint4(0.9, 0.9, 0.9, 1));
+    if (show_title) {
+      char title_text[64];
+      snprintf(title_text, sizeof title_text,
+        "%02d. %s", puzzle_id, title);
+      painter::text(title_text, 36,
+        vec2(20, H - 20),
+        vec2(0, 1), tint4(0.9, 0.9, 0.9, 1));
+    }
   }
 };
 

@@ -17,9 +17,9 @@ void main()
   fragTexCoord = vertexTexCoord;
   gl_Position = mvp * vec4(vertexPosition, 1);
 
+  vec2 s = vec2(1. / W, 1. / H) * sqrt(2.);
+  if (pass == 1) s.x = -s.x;
   for (int i = 0; i < 11; i++) {
-    float d = float(i - 5);
-    samplePosition[i] = vertexTexCoord +
-      (pass == 1 ? vec2(d / W, 0) : vec2(0, d / H));
+    samplePosition[i] = vertexTexCoord + float(i - 5) * s;
   }
 }

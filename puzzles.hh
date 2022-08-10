@@ -467,6 +467,21 @@ case 20:
   to_text = 27;
   break;
 
+case 98:
+  title = "";
+  tracks = {
+    T_cir(vec2(0, -4), 5.3),
+    T_cir(vec2(0, -4), 6, track::ATTRACT),
+  };
+  fireflies = {
+    F(0, 0.19, 1),
+    F(1, 0.13, -1),
+  };
+  bellflowers = {
+    B_ord(vec2(-99, -99), 1, 1),
+  };
+  break;
+
 /*
 case 96:
   title = "Embellishment";

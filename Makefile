@@ -1,3 +1,4 @@
+# cd deps/raylib
 # mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=Release
 # emcmake cmake -S . -B build_wasm -DCMAKE_BUILD_TYPE=Release -DPLATFORM=Web
 
@@ -13,6 +14,10 @@ endif
 
 ifeq ($(shell uname),Darwin)
   EXTRAFLAGS ?= -framework Cocoa -framework OpenGL -framework IOKit
+endif
+
+ifeq ($(SHOWCASE),1)
+  EXTRAFLAGS += -DSHOWCASE
 endif
 
 RAYLIB_LIB ?= ./deps/raylib/build/raylib/libraylib.a

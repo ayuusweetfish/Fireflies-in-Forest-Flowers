@@ -7,6 +7,10 @@ using namespace rl;
 
 #include <cmath>
 
+#ifdef SHOWCASE
+#include <ctime>
+#endif
+
 char lang = 0;
 
 static scene *cur_scene, *prev_scene = NULL;
@@ -15,7 +19,7 @@ static int transition_timer;
 static bool pt_laston = false;
 static float pt_lastx, pt_lasty;
 
-static float time = 0;
+static float cum_time = 0;
 const float STEP = 1.0f / 240;
 
 Music bgm[2];
@@ -63,9 +67,9 @@ static void update_draw_frame()
   pt_laston = pt_on;
 
   // Update
-  time += GetFrameTime();
-  while (time >= STEP) {
-    time -= STEP;
+  cum_time += GetFrameTime();
+  while (cum_time >= STEP) {
+    cum_time -= STEP;
     cur_scene->update();
     // Transition
     if (prev_scene != NULL) {
@@ -97,6 +101,14 @@ static void update_draw_frame()
   }
 
   EndDrawing();
+
+#ifdef SHOWCASE
+  if (IsKeyPressed(KEY_ENTER)) {
+    char name[64];
+    snprintf(name, sizeof name, "%u.png", (unsigned)time(NULL));
+    TakeScreenshot(name);
+  }
+#endif
 }
 
 int main(int argc, char *argv[])
