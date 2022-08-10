@@ -552,6 +552,9 @@ public:
 
     trail_m.recalc_init();
 
+#ifdef SHOWCASE
+    tutorials = {};
+#endif
     tut_show_start = 0;
     update_tut_show_range(true);
     tut_hide_time = -1;
@@ -782,10 +785,10 @@ public:
   #define show_title true
   #define show_grid true
 #else
-  bool show_title = true;
+  bool show_title = false;
   bool show_grid = true;
-  bool last_1_down = false;
-  bool last_2_down = false;
+  bool last_1_down = false, last_2_down = false;
+  bool last_left_down = false, last_right_down = false;
 #endif
   void update() {
     T++;
@@ -825,6 +828,12 @@ public:
     bool _2_down = rl::IsKeyDown(rl::KEY_TWO);
     if (!last_2_down && _2_down) show_grid = !show_grid;
     last_2_down = _2_down;
+    bool left_down = rl::IsKeyDown(rl::KEY_LEFT);
+    if (T >= 240 && !last_left_down && left_down) replace_scene(new scene_game(puzzle_id - 1));
+    last_left_down = left_down;
+    bool right_down = rl::IsKeyDown(rl::KEY_RIGHT);
+    if (T >= 240 && !last_right_down && right_down) replace_scene(new scene_game(puzzle_id + 1));
+    last_right_down = right_down;
 #endif
 
     if (run_state & 1) for (int i = 0; i < (run_state >> 1); i++) {
@@ -903,6 +912,9 @@ public:
     // Background
     for (int i = 0; i < BG_TREES_N; i++) {
       int id = i % 4;
+#ifdef SHOWCASE
+      int T = 220810;
+#endif
       float rot = trees[i].rot_cen + trees[i].rot_amp *
         sinf((float)T / trees[i].rot_period * M_PI * 2);
       float tint = trees[i].tint;
@@ -1044,6 +1056,23 @@ public:
         vec2(0, 1), tint4(0.9, 0.9, 0.9, 1));
     }
   }
+
+#ifdef SHOWCASE
+  const char *scr() {
+    static char s[256];
+    char *p = &s[0];
+    p += sprintf(p, "%02d", puzzle_id);
+    for (const auto &t : tracks)
+      if (!(t->flags & track::FIXED))
+        p += sprintf(p, "_%d_%d",
+          (int)floorf(t->o.x * 10000),
+          (int)floorf(t->o.y * 10000));
+    for (const auto &f : fireflies)
+      p += sprintf(p, "_%d", (int)floorf(f.t * 10000));
+    p += sprintf(p, ".png");
+    return s;
+  }
+#endif
 };
 
 scene *scene_game(int puzzle_id) {

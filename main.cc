@@ -94,7 +94,7 @@ static void update_draw_frame()
   UpdateMusicStream(bgm[0]);
   UpdateMusicStream(bgm[1]);
   float bgm_time = GetMusicTimePlayed(bgm[0]);
-  if (bgm_time >= 240) {
+  if (bgm_time >= 240 && GetMusicTimePlayed(bgm[1]) < 240) {
     SeekMusicStream(bgm[1], bgm_time - 240);
     PlayMusicStream(bgm[1]);
     Music t = bgm[1]; bgm[1] = bgm[0]; bgm[0] = t;
@@ -104,9 +104,13 @@ static void update_draw_frame()
 
 #ifdef SHOWCASE
   if (IsKeyPressed(KEY_ENTER)) {
-    char name[64];
-    snprintf(name, sizeof name, "%u.png", (unsigned)time(NULL));
-    TakeScreenshot(name);
+    const char *path = cur_scene->scr();
+    char timepath[64];
+    if (path == nullptr) {
+      snprintf(timepath, sizeof timepath, "%u.png", (unsigned)time(NULL));
+      path = (const char *)timepath;
+    }
+    TakeScreenshot(path);
   }
 #endif
 }

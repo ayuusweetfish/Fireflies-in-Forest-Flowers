@@ -1,118 +1,179 @@
 # Solutions to Fireflies and Forest Flowers
 
-**How to use**: For each puzzle, there is a text hint and an image of the full solution.
+### 01. Closer
 
-Text is encoded to avoid spoilers. To read the text —
-> paste whatever in this blockquote into the browser's address bar.
-
-### 01. Firefly
-No text hint
-
-[Image](img/01.png?raw=1)
+[Solution image](img/01.png?raw=1)
 
 ### 02. Message
-> data:text/plain;base64,T25lIG9mIHRoZSBiZWxsZmxvd2VycyB3aWxsIGJlIHRvdWNoZWQgZWFybGllciB0aGFuIHRoZSBvdGhlci4=
 
-[Image](img/02.png?raw=1)
+[Solution image](img/02.png?raw=1)
 
-### 03. Plan
-> data:text/plain;base64,QXQgdGhlIHNhbWUgc3BlZWQsIHNtYWxsZXIgb3JiaXRzIGN5Y2xlIGZhc3Rlci4=
+### 03. Arrangement
 
-[Image](img/03.png?raw=1)
+<details>
+  <summary>Hint</summary>
+  Assign each firefly to a bellflower, and then push each to the extreme.
+
+  [Solution image](img/03.png?raw=1)
+</details>
 
 ### 04. Trail
-> data:text/plain;base64,VGhlIHNlZ21lbnQgaXMgZXNzZW50aWFsbHkgYSBjaXJjbGUu
 
-[Image](img/04.png?raw=1)
+<details>
+  <summary>Hint</summary>
+  The segment is essentially a circle.
+
+  [Solution image](img/04.png?raw=1)
+</details>
 
 ### 05. Joined Together
-> data:text/plain;base64,SXQncyBqdXN0IHRoZSBNZXNzYWdlIHB1enpsZSBkb3VibGVkLg==
 
-[Image](img/05.png?raw=1)
+[Solution image](img/05.png?raw=1)
 
-### 06. Ebb and Flow
-> data:text/plain;base64,R2V0IG9uZSB2aXNpdCAiZm9yIGZyZWUiIGJ5IHN0YXJ0aW5nIGluc2lkZS4=
+### 06. Fate
 
-[Image](img/06.png?raw=1)
+<details>
+  <summary>Hint, one among multiple possible solutions</summary>
+  The bellflower on the left can be touched slightly earlier.
 
-### 07. Constraint
-No text hint
+  [Solution image](img/06.png?raw=1)
+</details>
 
-[Image](img/07.png?raw=1)
+### 07. Encounter
 
-### 08. Comrade
-> data:text/plain;base64,SXQncyBqdXN0IHRoZSBNZXNzYWdlIHB1enpsZSBkb3VibGVkLCBhZ2Fpbi4=
+<details>
+  <summary>Hint</summary>
+  It's just the Message puzzle doubled.
 
-[Image](img/08.png?raw=1)
+  [Solution image](img/07.png?raw=1)
+</details>
 
-### 09. Intersection
-> data:text/plain;base64,SXQncyBqdXN0IHRoZSBDb21yYWRlIHB1enpsZSBmbGlwcGVkLg==
+### 08. Intersection
 
-[Image](img/09.png?raw=1)
+<details>
+  <summary>Hint</summary>
+  It's just the Encounter puzzle.
+</details>
+
+[Solution image](img/08.png?raw=1)
+
+### 09. Ebb and Flow
+
+<details>
+  <summary>Hint</summary>
+  Achieve one visit as quickly as possible by starting inside.
+
+  [Solution image](img/09.png?raw=1)
+</details>
 
 ### 10. Attraction
-No text hint
 
-[Image](img/10.png?raw=1)
+[Solution image](img/10.png?raw=1)
 
 ### 11. Twin Paradox
-> data:text/plain;base64,SXQncyBqdXN0IHRoZSBQbGFuIHB1enpsZS4=
 
-[Image](img/11.png?raw=1)
+<details>
+  <summary>Hint</summary>
+  It's just the Arrangement puzzle.
 
-### 12. Entrance
-> data:text/plain;base64,VGhlIHJlc3VsdGluZyBkaXJlY3Rpb24gZGVwZW5kcyBvbiBob3cgZmFyIGFwYXJ0IHRoZSB0d28gY2lyY2xlcyBhcmUu
+  [Solution image](img/11.png?raw=1)
+</details>
 
-[Image](img/12.png?raw=1)
+### 12. Capture
+
+<details>
+  <summary>Hint</summary>
+  The resulting direction depends on how far apart the two circles are.
+
+  [Solution image](img/12.png?raw=1)
+</details>
 
 ### 13. Comet
-> data:text/plain;base64,SXQncyBqdXN0IHRoZSBFbnRyYW5jZSBwdXp6bGUu
 
-[Image](img/13.png?raw=1)
+<details>
+  <summary>Hint</summary>
+  The two fireflies' speeds allow them to be in sync. Whether to unite them or to pull them apart is left to you.
+
+  [Solution image A](img/13a.png?raw=1)
+
+  [Solution image B](img/13b.png?raw=1)
+
+  [Solution image C](img/13c.png?raw=1)
+</details>
 
 ### 14. Circulation
-> data:text/plain;base64,WW91IGNhbiBnZXQgdGhlIGZpcnN0IHRocmVlIHZpc2l0cyBwcmV0dHkgcXVpY2su
 
-[Image](img/14.png?raw=1)
+<details>
+  <summary>Hint</summary>
+  You can obtain the first three visits pretty quick.
+
+  [Solution image](img/14.png?raw=1)
+</details>
 
 ### 15. Return
-No text hint
 
-[Image](img/15.png?raw=1)
+[Solution image](img/15.png?raw=1)
 
 ### 16. Accompany
-> data:text/plain;base64,TmVlZCB0byAiZnJlZSIgdmlzaXRzIHRvIHRoZSBsZWZ0LCBhbmQgInNhdmUiIHZpc2l0cyB0byB0aGUgcmlnaHQu
 
-[Image](img/16.png?raw=1)
+<details>
+  <summary>Hint</summary>
+  Add more visits to the left, and "save" visits to the right.
 
-### 17. Linger
-> data:text/plain;base64,SXQncyBzaW1pbGFyIHRvIHRoZSBDaXJjdWxhdGlvbiBwdXp6bGUu
+  [Solution image](img/16.png?raw=1)
+</details>
 
-[Image](img/17.png?raw=1)
+### 17. Lingering
 
-### 18. Olympiad
-(1)
-> data:text/plain;base64,VGhlcmUgaXMgb25seSBvbmUgcmluZyBvbiB3aGljaCB0aGUgcmVwZWxsaW5nIHJpbmcgY2FuIGJlIHBsYWNlZC4=
+<details>
+  <summary>Hint</summary>
+  How many times should the firefly visit the flower at the time of being attracted?
 
-(2)
-> data:text/plain;base64,TWFueSBsb2Nrc3RlcHMgaGFwcGVuLCBidXQgdGhlIHJlcGVsbGluZyByaW5nIGRlc3luY2hyb25pc2VzIHRoZW0u
+  [Solution image](img/17.png?raw=1)
+</details>
 
-[Image](img/18.png?raw=1)
+### 18. Pearl
+
+<details>
+ <summary>Hint — step 1</summary>
+ Many locksteps happen, but the repelling ring desynchronises them.
+
+ <details>
+  <summary>Hint — step 2</summary>
+  If you break a lockstep, the number of visits can probably double — hence 3:6.
+
+  <details>
+   <summary>Hint — step 3</summary>
+   One way to "totally break a lockstep" is to reverse a firefly's direction.
+
+   [Solution image](img/18.png?raw=1)
+  </details>
+ </details>
+</details>
 
 ### 19. Chords
+
 There are two solutions.
 
-**A - the repelling segment is to the right of the attracting track**
-> data:text/plain;base64,S2VlcCB0aGUgbGVmdCBwYXJ0IGFzIHNob3J0IGFzIHBvc3NpYmxlLg==
+<details>
+  <summary>Hint — if the repelling segment is to the right of the attracting track</summary>
+  Keep the left part as short as possible.
 
-[Image](img/19a.png?raw=1)
+  [Solution image](img/19a.png?raw=1)
+</details>
 
-**B - the repelling segment is to the left of the attracting track**
-> data:text/plain;base64,WW91IGNhbiB0b3RhbGx5IG1hbmlwdWxhdGUgdGhlIGxlbmd0aCBvZiB0aGUgbGVmdCBwYXJ0IG5vdy4=
+<details>
+  <summary>Hint — if the repelling segment is to the left of the attracting track</summary>
+  You can totally manipulate the length of the left part now.
 
-[Image](img/19b.png?raw=1)
+  [Solution image](img/19b.png?raw=1)
+</details>
 
 ### 20. Intertwined
-> data:text/plain;base64,Tm9ybWFsbHkgeW91IGRvbid0IGVudGVyIGEgcmFuZ2UgdHdpY2Ugb24gYSBzYW1lIGNpcmNsZS4=
 
-[Image](img/20.png?raw=1)
+<details>
+  <summary>Hint</summary>
+  Normally you don't enter a bellflower's range twice on a same circle.
+
+  [Solution image](img/20.png?raw=1)
+</details>

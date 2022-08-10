@@ -18,6 +18,9 @@ public:
   virtual void pton(float, float) {}
   virtual void ptmove(float, float) {}
   virtual void ptoff(float, float) {}
+#ifdef SHOWCASE
+  virtual const char *scr() { return nullptr; }
+#endif
   virtual ~scene() { }
 };
 
