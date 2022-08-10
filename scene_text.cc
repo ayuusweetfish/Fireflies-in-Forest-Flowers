@@ -206,7 +206,7 @@ public:
       );
     } else if (script[entry_id].puzzle == -2) {
       painter::text(
-        _("Fireflies and Forest Flowers",
+        _("Fireflies in Forest Flowers",
           "流萤花语"), 32,
         vec2(W * 0.5, H * 0.49 + displacement * MOVE_Y - 24), vec2(0.5, 0),
         tint4(0.9, 0.9, 0.9, cur_alpha)
@@ -218,18 +218,25 @@ public:
         tint4(0.9, 0.9, 0.9, cur_alpha)
       );
       float x1 = (float)(since_change - 480) / 240;
-      float x2 = (float)(since_change - 500) / 240;
+      float x2 = (float)(since_change - 505) / 240;
+      float x3 = (float)(since_change - 520) / 240;
       x1 = (x1 > 1 ? 1 : x1 < 0 ? 0 : x1);
       x2 = (x2 > 1 ? 1 : x2 < 0 ? 0 : x2);
+      x3 = (x3 > 1 ? 1 : x3 < 0 ? 0 : x3);
       painter::text(
         _("Thanks for playing!", "谢谢玩到这里！比心~"), 24,
-        vec2(W - 16, H - 44 + prog_displ(x1) * MOVE_Y), vec2(1, 1),
+        vec2(W - 16, H - 72 + prog_displ(x1) * MOVE_Y), vec2(1, 1),
         tint4(0.6, 0.6, 0.6, prog_alpha(x1))
       );
       painter::text(
-        "Ayu  2022.02-08", 24,
-        vec2(W - 16, H - 16 + prog_displ(x2) * MOVE_Y), vec2(1, 1),
+        "Ayu  2022.01-08", 24,
+        vec2(W - 16, H - 44 + prog_displ(x2) * MOVE_Y), vec2(1, 1),
         tint4(0.4, 0.4, 0.4, prog_alpha(x2))
+      );
+      painter::text(
+        _("Dedicated to our piebald cat", "献给我们的黑白花猫"), 24,
+        vec2(W - 16, H - 16 + prog_displ(x3) * MOVE_Y), vec2(1, 1),
+        tint4(0.3, 0.3, 0.3, prog_alpha(x3))
       );
     }
   }

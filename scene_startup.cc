@@ -160,7 +160,7 @@ public:
     using namespace rl;
     painter::image("intro_bg", vec2(0, 0), tint4(1, 1, 1, 1));
     painter::text(
-      _("Fireflies and Forest Flowers",
+      _("Fireflies in Forest Flowers",
         "流萤花语"),
       60,
       vec2(40, 60), vec2(0, 0),

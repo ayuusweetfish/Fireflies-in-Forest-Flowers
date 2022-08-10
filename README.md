@@ -1,8 +1,8 @@
-# Fireflies and Forest Flowers
+# Fireflies in Forest Flowers
 
-A puzzle game about fireflies and bellflowers.
+A puzzle game — when you reconnect with your loved one.
 
-[**itch.io**](https://ayuusweetfish.itch.io/fireflies-and-forest-flowers)
+[**itch.io**](https://ayuusweetfish.itch.io/fireflies-in-forest-flowers)
 
 ![Cover](misc/cover.png)
 

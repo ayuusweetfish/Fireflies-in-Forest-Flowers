@@ -1,4 +1,5 @@
 #pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunknown-warning-option"
 #pragma GCC diagnostic ignored "-Wc99-designator"
 case 0:
   title = _("Firefly", "萤火");
@@ -225,7 +226,7 @@ case 9:
   tutorials = {
     {vec2(0, -5),
       _("Fireflies may travel at different speeds",
-        "萤火虫飞行可能有快有慢")},
+        "萤火虫飞行有快有慢")},
   };
   to_text = 15;
   break;
