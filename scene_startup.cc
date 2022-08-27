@@ -159,6 +159,9 @@ public:
   void draw() {
     using namespace rl;
     painter::image("intro_bg", vec2(0, 0), tint4(1, 1, 1, 1));
+#ifdef SHOWCASE
+    if (!IsKeyDown(KEY_LEFT_SHIFT)) {
+#endif
     painter::text(
       _("Fireflies in Forest Flowers",
         "流萤花语"),
@@ -171,6 +174,9 @@ public:
       32,
       vec2(40, 130), vec2(0, 0),
       tint4(0.9, 0.9, 0.9, 0.4));
+#ifdef SHOWCASE
+    }
+#endif
 
     for (int i = 0; i < ps_fireflies.num; i++) {
       auto p = ps_fireflies.particles[i];
@@ -192,6 +198,9 @@ public:
       }
     }
 
+#ifdef SHOWCASE
+    if (!IsKeyDown(KEY_LEFT_SHIFT))
+#endif
     btns.draw(
       tint4(0.8, 0.8, 0.8, 0.4),
       32,
